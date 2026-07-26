@@ -10,6 +10,7 @@ NORMALIZED_DATA_DIR = PROJECT_ROOT / '.dev/data/normalized'  # typed+merged enti
 DIST_JSON_DATA_DIR = PROJECT_ROOT / 'dist/json'  # final JSON output
 DIST_YAML_DATA_DIR = PROJECT_ROOT / 'dist/yaml'  # final YAML output
 DATA_CACHE_DIR = PROJECT_ROOT / '.dev/data/cache'  # normalize-stage fallback cache
+EMENDATIONS_DIR = PROJECT_ROOT / '.dev/emendations'  # hand-authored emendation rules (plain Python)
 
 # ---- Filtering (stage 1: HTML -> filtered/*.ndjson) ----
 # Maps each raw source page to the section names extracted from it. Keys match

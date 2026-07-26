@@ -3,7 +3,7 @@ import logging
 import re
 import string
 import sys
-from collections.abc import Iterator
+from collections.abc import Callable, Iterator
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -11,6 +11,7 @@ from typing import Any
 from slugify import slugify
 
 from config import DUMP_JSON_KWARGS
+from emending_engine import Emender
 from filtering_engine import (
     RawAriaRole,
     RawAttribute,
@@ -343,10 +344,11 @@ class Normalizer:
         self,
         filtered_data_dir: Path,
         cache_dir: Path,
+        emender: Emender | None = None,
     ) -> None:
         self.filtered_data_dir = filtered_data_dir
         self.cache_dir = cache_dir
-        self._sections: dict[tuple[str, str], list] = {}
+        self.emender = emender if emender is not None else Emender(domain='normalize')
         self._global_attributes: set[str] | None = None
         self._manifest: dict[str, dict] = {}  # populated by _validate(), collected by get_all()
 
@@ -430,6 +432,7 @@ class Normalizer:
         def builder() -> dict[str, Any]:
             parser = getattr(sys.modules[__name__], f'parse_{section}')
             entries = list(parse_section(self.filtered_data_dir, page, section, cls, parser, **parser_kwargs))
+            self.emender.emend_domain(section, entries)
             return dictify(entries, merge=merge)
 
         return self._build_cached(section, builder)
