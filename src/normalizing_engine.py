@@ -196,7 +196,7 @@ def parse_aria_roles(rows: Iterator[RawAriaRole]) -> Iterator[str]:
         yield raw.name
 
 
-def parse_attribute_info(elements_info: str, value_info: str) -> tuple[set, str, bool]:
+def _parse_attribute_info(elements_info: str, value_info: str) -> tuple[set, str, bool]:
     is_complicated = value_info.endswith('*')
     if is_complicated:
         value_info = value_info[:-1]
@@ -229,7 +229,7 @@ def parse_attributes(rows: Iterator[RawAttribute]) -> Iterator[Attribute]:
 
         elements_info = split_splittables(elements_info, f'Attribute {raw.attribute!r} tag scope')
 
-        tag_scope, tag_notes, value_type, value_info, is_complicated = parse_attribute_info(elements_info, value_info)
+        tag_scope, tag_notes, value_type, value_info, is_complicated = _parse_attribute_info(elements_info, value_info)
 
         value_enum = set(gen_enum(value_type))
         if value_enum:
@@ -378,13 +378,14 @@ class Normalizer:
             return None
         return json.loads(path.read_text(encoding='utf-8'))
 
-    def _load_section(self, page: str, section: str, cls: type) -> list:
-        """Lazy-load a filtered (page, section) NDJSON file and cache the result."""
-        key = (page, section)
-        if key not in self._sections:
-            path = self.filtered_data_dir / f'{page}.{section}.ndjson'
-            self._sections[key] = read_ndjson(path, cls)
-        return self._sections[key]
+    def _build_cached(self, key: str, builder: Callable[[], dict | set]) -> dict | set:
+        """Run `builder`, validate and cache its result under `key`; on a recoverable error, fall back to the cache."""
+        try:
+            result = builder()
+            self._validate(key, len(result))
+            return self._cache(key, len(result), result)
+        except RECOVERABLE_FILTER_ERRORS as e:
+            return self._log_parse_error_and_fallback(e, key)
 
     def _log_parse_error_and_fallback(self, e: Exception, cache_key: str) -> dict | list | None:
         logger.error('❌ Filtered data missing or unexpected shape: %s', e)
@@ -424,26 +425,19 @@ class Normalizer:
         return entry
 
     def _get_dictified(
-        self, page: str, section: str, cls: type, **parser_kwargs: set[str]
+        self, page: str, section: str, cls: type, *, merge: bool = True, **parser_kwargs: set[str]
     ) -> dict[str, Any]:
-        try:
+        def builder() -> dict[str, Any]:
             parser = getattr(sys.modules[__name__], f'parse_{section}')
-            rows = self._load_section(page, section, cls)
-            entries = list(parser(rows, **parser_kwargs))
-            result = dictify(entries, merge=True)
-            self._validate(section, len(result))
-            return self._cache(section, len(result), result)
-        except RECOVERABLE_FILTER_ERRORS as e:
-            return self._log_parse_error_and_fallback(e, section)
+            entries = list(parse_section(self.filtered_data_dir, page, section, cls, parser, **parser_kwargs))
+            return dictify(entries, merge=merge)
+
+        return self._build_cached(section, builder)
 
     # ---- public builders ----
 
     def get_attributes(self) -> dict[str, Any]:
-        """Build attributes (including type & role) with caching and validation."""
-        key = 'attributes'
-        try:
-            entries = list(parse_attributes(self._load_section('indices', 'attributes', RawAttribute)))
-
+        """Build attributes with caching and validation."""
             ## TODO(emend): re-add synthetic "type" and "role" attributes via the emend system, once it exists.
             #entries.extend((
             #    # Append "type" from input.html
@@ -468,12 +462,7 @@ class Normalizer:
             #    ),
             #))
 
-            # Note: merge=False for attributes
-            result = dictify(entries, merge=False)
-            self._validate(key, len(result))
-            return self._cache(key, len(result), result)
-        except RECOVERABLE_FILTER_ERRORS as e:
-            return self._log_parse_error_and_fallback(e, key)
+        return self._get_dictified('indices', 'attributes', RawAttribute, merge=False)
 
     def get_content_categories(self) -> dict[str, Any]:
         """Build content categories with caching and validation."""
@@ -501,15 +490,14 @@ class Normalizer:
         if self._global_attributes is not None:
             return self._global_attributes
 
-        key = 'global_attributes'
-        try:
-            rows = self._load_section('dom', 'global_attributes', RawGlobalAttribute)
-            entries = parse_global_attributes(rows)
-            self._validate(key, len(entries))
-            self._global_attributes = self._cache(key, len(entries), entries)
-        except RECOVERABLE_FILTER_ERRORS as e:
-            cached = self._log_parse_error_and_fallback(e, key)
-            self._global_attributes = set(cached) if isinstance(cached, list) else cached
+        def builder() -> set[str]:
+            return parse_section(
+                self.filtered_data_dir, 'dom', 'global_attributes', RawGlobalAttribute, parse_global_attributes
+            )
+
+        # _build_cached returns a set from builder(), but a list when falling back to the JSON cache
+        # (make_serializable turns sets into sorted lists) -- set() normalizes either case.
+        self._global_attributes = set(self._build_cached('global_attributes', builder))
         return self._global_attributes
 
     def get_all(self) -> dict[str, Any]:
