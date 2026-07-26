@@ -21,7 +21,7 @@ from filtering_engine import (
     RawGlobalAttribute,
     RawInputType,
 )
-from util import dictify, make_serializable, read_ndjson
+from util import dictify, make_serializable, parse_section, sort_top_level
 
 logger = logging.getLogger(__name__)
 
@@ -364,6 +364,8 @@ class Normalizer:
         """Save a Python object to the cache directory as JSON."""
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         serialized = make_serializable(data)
+        if isinstance(serialized, dict):
+            serialized = sort_top_level(serialized)
         (self.cache_dir / f'{key}.json').write_text(
             json.dumps(serialized, **DUMP_JSON_KWARGS),
             encoding='utf-8',
@@ -518,6 +520,6 @@ class Normalizer:
             'element_types': self.get_element_types(),
             'event_handlers': self.get_event_handlers(),
             # Plain list, not the {name: {}} dict convention the other domains use.
-            'global_attributes': sorted(self.get_global_attributes()),
+            'global_attributes': self.get_global_attributes(),
         }
         return results, dict(self._manifest)

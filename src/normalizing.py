@@ -10,17 +10,19 @@ from config import (
     NORMALIZED_DATA_MANIFEST_FILE,
 )
 from normalizing_engine import Normalizer
-from util import make_serializable, short_path
+from util import make_serializable, short_path, sort_top_level
 
 logging.basicConfig(level=LOG_LEVEL, format='%(levelname)s: %(message)s')
 logger = logging.getLogger(__name__)
 
 
 def write_data_domains(results: dict) -> None:
-    """Write each datat domain result to NORMALIZED_DATA_DIR as its own JSON file."""
+    """Write each data domain result to NORMALIZED_DATA_DIR as its own JSON file."""
     for category, data in results.items():
         path = NORMALIZED_DATA_DIR / f'{category}.json'
         serializable = make_serializable(data)
+        if isinstance(serializable, dict):
+            serializable = sort_top_level(serializable)
         path.write_text(json.dumps(serializable, **DUMP_JSON_KWARGS), encoding='utf-8')
         logger.info('🔀 Normalized %s (%s -> %s)', len(data), category, path.name)
 

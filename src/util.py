@@ -53,6 +53,11 @@ def dictify(xs: list[Any], *, merge: bool) -> dict[str, Any]:
     return result
 
 
+def sort_top_level(d: dict) -> dict:
+    """Return a new dict with only the top-level keys sorted; inner key order is left untouched."""
+    return dict(sorted(d.items()))
+
+
 def write_ndjson(path: Path, rows: Iterable[Any]) -> int:
     """Write dataclass instances to path, one JSON object per line. Return the number of rows written."""
     path.parent.mkdir(parents=True, exist_ok=True)

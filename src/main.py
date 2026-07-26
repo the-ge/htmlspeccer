@@ -18,7 +18,7 @@ from config import (
     PROJECT_ROOT,
     RAW_DATA_MANIFEST_FILE,
 )
-from util import short_path
+from util import short_path, sort_top_level
 
 logging.basicConfig(level=LOG_LEVEL, format='%(levelname)s: %(message)s')
 logger = logging.getLogger(__name__)
@@ -105,6 +105,8 @@ def build_manifest(counts: dict[str, int]) -> dict:
 
 def write_output(data: dict, path: Path) -> None:
     """Write the aggregate result for one category as JSON. Data is already JSON-serializable."""
+    if isinstance(data, dict):
+        data = sort_top_level(data)
     path.write_text(
         json.dumps(data, **DUMP_JSON_KWARGS),
         encoding='utf-8',
