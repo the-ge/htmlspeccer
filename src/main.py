@@ -7,16 +7,16 @@ from pathlib import Path
 import yaml
 
 from config import (
-    DIST_DATA_MANIFEST_FILE,
+    DIST_DATA_MANIFEST,
     DIST_JSON_DATA_DIR,
     DIST_YAML_DATA_DIR,
     DUMP_JSON_KWARGS,
     DUMP_YAML_KWARGS,
     LOG_LEVEL,
-    NORMALIZED_DATA_DIR,
-    NORMALIZED_DATA_MANIFEST_FILE,
+    ATOMIC_DATA_DIR,
+    ATOMIC_DATA_MANIFEST,
     PROJECT_ROOT,
-    RAW_DATA_MANIFEST_FILE,
+    RAW_DATA_MANIFEST,
 )
 from util import short_path, sort_top_level
 
@@ -36,11 +36,11 @@ def copy_notice() -> None:
 
 
 def read_data_domains() -> dict[str, object]:
-    """Load categories produced by the normalize stage from NORMALIZED_DATA_DIR, using its manifest as the index."""
-    manifest = json.loads(NORMALIZED_DATA_MANIFEST_FILE.read_text(encoding='utf-8'))
+    """Load categories produced by the normalize stage from ATOMIC_DATA_DIR, using its manifest as the index."""
+    manifest = json.loads(ATOMIC_DATA_MANIFEST.read_text(encoding='utf-8'))
     results = {}
     for category in manifest:
-        path = NORMALIZED_DATA_DIR / f'{category}.json'
+        path = ATOMIC_DATA_DIR / f'{category}.json'
         results[category] = json.loads(path.read_text(encoding='utf-8'))
     return results
 
@@ -88,13 +88,13 @@ def get_repo_version() -> dict[str, str]:
 def build_manifest(counts: dict[str, int]) -> dict:
     """Combine the raw manifest written by make into RAW_DATA_DIR with category counts and repository version info."""
     sources = {}
-    if not RAW_DATA_MANIFEST_FILE.exists():
-        logger.error('❌ File missing: %s; did you run `make -C acquire` first?', short_path(RAW_DATA_MANIFEST_FILE))
+    if not RAW_DATA_MANIFEST.exists():
+        logger.error('❌ File missing: %s; did you run `make -C acquire` first?', short_path(RAW_DATA_MANIFEST))
     else:
         try:
-            sources = json.loads(RAW_DATA_MANIFEST_FILE.read_text(encoding='utf-8'))
+            sources = json.loads(RAW_DATA_MANIFEST.read_text(encoding='utf-8'))
         except json.JSONDecodeError:
-            logger.exception('❌ Failed to parse %s', short_path(RAW_DATA_MANIFEST_FILE))
+            logger.exception('❌ Failed to parse %s', short_path(RAW_DATA_MANIFEST))
 
     return {
         'sources': sources,
@@ -142,7 +142,7 @@ def main() -> None:
     DIST_JSON_DATA_DIR.mkdir(parents=True, exist_ok=True)
     DIST_YAML_DATA_DIR.mkdir(parents=True, exist_ok=True)
 
-    # Assemble from the normalized layer; this stage only formats and writes.
+    # Assemble from the atomic data layer; this stage only formats and writes.
     results = read_data_domains()
 
     # Write each result
@@ -169,8 +169,8 @@ def main() -> None:
 
     # Single manifest capturing per-source fetch times, generation time, and item counts
     manifest = build_manifest(counts)
-    DIST_DATA_MANIFEST_FILE.write_text(json.dumps(manifest, **DUMP_JSON_KWARGS), encoding='utf-8')
-    logger.info('📝 Wrote %s', short_path(DIST_DATA_MANIFEST_FILE))
+    DIST_DATA_MANIFEST.write_text(json.dumps(manifest, **DUMP_JSON_KWARGS), encoding='utf-8')
+    logger.info('📝 Wrote %s', short_path(DIST_DATA_MANIFEST))
 
 
 if __name__ == '__main__':

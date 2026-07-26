@@ -85,7 +85,7 @@ SPECIAL_ELEMENTS = {
     'SVG svg': ['svg'],
 }
 
-RECOVERABLE_FILTER_ERRORS = (AttributeError, ValueError, FileNotFoundError)
+RECOVERABLE_ERRORS = (AttributeError, ValueError, FileNotFoundError)
 
 ATTRIBUTE_TYPE_IF_EQUALS = {
     'Boolean attribute':                    'bool',
@@ -188,8 +188,7 @@ def split_splittables(text: str, context: str) -> str:
 
 
 # ---- Parsers for each section ----
-# Each function takes the filtered rows for its section (read from
-# FILTERED_DATA_DIR by Normalizer).
+# Each function takes the terse data rows for its section (read from TERSE_DATA_DIR by Normalizer).
 
 
 def parse_aria_roles(rows: Iterator[RawAriaRole]) -> Iterator[str]:
@@ -338,15 +337,15 @@ def parse_input_types(rows: Iterator[RawInputType]) -> Iterator[str]:
 
 
 class Normalizer:
-    """Normalizing stage engine: filtered NDJSON -> typed, merged entities, with validation and fallback cache."""
+    """Normalizing stage engine: terse data NDJSON -> typed, merged entities, with validation and fallback cache."""
 
     def __init__(
         self,
-        filtered_data_dir: Path,
+        terse_data_dir: Path,
         cache_dir: Path,
         emender: Emender | None = None,
     ) -> None:
-        self.filtered_data_dir = filtered_data_dir
+        self.terse_data_dir = terse_data_dir
         self.cache_dir = cache_dir
         self.emender = emender if emender is not None else Emender(domain='normalize')
         self._global_attributes: set[str] | None = None
@@ -386,11 +385,11 @@ class Normalizer:
             result = builder()
             self._validate(key, len(result))
             return self._cache(key, len(result), result)
-        except RECOVERABLE_FILTER_ERRORS as e:
+        except RECOVERABLE_ERRORS as e:
             return self._log_parse_error_and_fallback(e, key)
 
     def _log_parse_error_and_fallback(self, e: Exception, cache_key: str) -> dict | list | None:
-        logger.error('❌ Filtered data missing or unexpected shape: %s', e)
+        logger.error('❌ Terse data missing or unexpected shape: %s', e)
         cached = self._load_cache(cache_key)
         if cached is None:
             msg = f'No cache available for {cache_key}'
@@ -431,8 +430,8 @@ class Normalizer:
     ) -> dict[str, Any]:
         def builder() -> dict[str, Any]:
             parser = getattr(sys.modules[__name__], f'parse_{section}')
-            entries = list(parse_section(self.filtered_data_dir, page, section, cls, parser, **parser_kwargs))
-            self.emender.emend_domain(section, entries)
+            entries = list(parse_section(self.terse_data_dir, page, section, cls, parser, **parser_kwargs))
+            self.emender.emend_normalizing_section(section, entries)
             return dictify(entries, merge=merge)
 
         return self._build_cached(section, builder)
@@ -471,7 +470,7 @@ class Normalizer:
 
         def builder() -> set[str]:
             return parse_section(
-                self.filtered_data_dir, 'dom', 'global_attributes', RawGlobalAttribute, parse_global_attributes
+                self.terse_data_dir, 'dom', 'global_attributes', RawGlobalAttribute, parse_global_attributes
             )
 
         # _build_cached returns a set from builder(), but a list when falling back to the JSON cache

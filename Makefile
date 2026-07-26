@@ -2,12 +2,12 @@
 
 default: all
 
-RAW_DATA_DIR        := .dev/data/raw/
-FILTERED_DATA_DIR   := .dev/data/filtered/
-NORMALIZED_DATA_DIR := .dev/data/normalized/
-DIST_DATA_DIR       := dist/
+RAW_DATA_DIR    := .dev/data/raw/
+TERSE_DATA_DIR  := .dev/data/terse/
+ATOMIC_DATA_DIR := .dev/data/atomic/
+DIST_DATA_DIR   := dist/
 
-DATA_DIRS := $(RAW_DATA_DIR) $(FILTERED_DATA_DIR) $(NORMALIZED_DATA_DIR) $(DIST_DATA_DIR)
+DATA_DIRS := $(RAW_DATA_DIR) $(TERSE_DATA_DIR) $(ATOMIC_DATA_DIR) $(DIST_DATA_DIR)
 
 specs      := indices.html dom.html input.html syntax.html
 spec_etags := $(addprefix $(RAW_DATA_DIR), $(specs:.html=.etag))
@@ -42,31 +42,31 @@ install:
 publish: $(DIST_DATA_DIR)manifest.json | $(DIST_DATA_DIR)
 	$(call confirm, Publishing and all preceding steps complete (see $(DIST_DATA_DIR)manifest.json).)
 
-normalize: $(NORMALIZED_DATA_DIR)manifest.json | $(NORMALIZED_DATA_DIR)
-	$(call confirm, Normalization and all preceding steps complete (see $(NORMALIZED_DATA_DIR)manifest.json))
+normalize: $(ATOMIC_DATA_DIR)manifest.json | $(ATOMIC_DATA_DIR)
+	$(call confirm, Normalization and all preceding steps complete (see $(ATOMIC_DATA_DIR)manifest.json))
 
-filter: $(FILTERED_DATA_DIR)manifest.json | $(FILTERED_DATA_DIR)
-	$(call confirm, Filtering and acquiring steps complete (see $(FILTERED_DATA_DIR)manifest.json))
+filter: $(TERSE_DATA_DIR)manifest.json | $(TERSE_DATA_DIR)
+	$(call confirm, Filtering and acquiring steps complete (see $(TERSE_DATA_DIR)manifest.json))
 
 acquire: $(RAW_DATA_DIR)manifest.json | $(RAW_DATA_DIR)
 	$(call confirm, Acquiring step complete (see $(RAW_DATA_DIR)manifest.json))
 
 # --- Build rules ---
 
-$(DIST_DATA_DIR)manifest.json: $(NORMALIZED_DATA_DIR)manifest.json
+$(DIST_DATA_DIR)manifest.json: $(ATOMIC_DATA_DIR)manifest.json
 	$(call say, 📦 Publishing dist/ files...)
 	@python3 src/main.py
 	$(call confirm, Publishing completed; updated end data manifest.)
 
-$(NORMALIZED_DATA_DIR)manifest.json: $(FILTERED_DATA_DIR)manifest.json
-	$(call say, 🧲 Converting filtered data to normalized data under .dev/data/normalized/...)
+$(ATOMIC_DATA_DIR)manifest.json: $(TERSE_DATA_DIR)manifest.json
+	$(call say, 🧲 Converting terse data to atomic data under $(ATOMIC_DATA_DIR)...)
 	@python3 src/normalizing.py
-	$(call confirm, Normalization completed; updated normalized data manifest.)
+	$(call confirm, Normalization completed; updated atomic data manifest.)
 
-$(FILTERED_DATA_DIR)manifest.json: $(RAW_DATA_DIR)manifest.json
-	$(call say, 🧲 Extracting raw HTML into faithful NDJSON records + manifest under .dev/data/filtered/...)
+$(TERSE_DATA_DIR)manifest.json: $(RAW_DATA_DIR)manifest.json
+	$(call say, 🧲 Extracting raw HTML into faithful NDJSON records + manifest under $(TERSE_DATA_DIR)...)
 	@python3 src/filtering.py
-	$(call confirm, Extraction completed; updated filtered data manifest.)
+	$(call confirm, Extraction completed; updated terse data manifest.)
 
 $(DATA_DIRS): %/:
 	@mkdir -p $@

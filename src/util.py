@@ -79,7 +79,7 @@ def read_ndjson(path: Path, cls: type[T]) -> list[T]:
 def parse_section(
     dir_path: Path, page: str, section: str, cls: type[T], parser: Callable[..., Any], **kwargs: Any
 ) -> Any:
-    """Load the filtered (page, section) NDJSON file from dir_path and run its rows through `parser`.
+    """Load the terse (page, section) NDJSON file from dir_path and run its rows through `parser`.
     Returns whatever `parser` returns (a generator, list, or set, depending on the parser).
     """
     rows = read_ndjson(dir_path / f'{page}.{section}.ndjson', cls)

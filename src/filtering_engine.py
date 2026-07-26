@@ -230,16 +230,16 @@ EXTRACTORS = {
 class Extractor:
     """Stage 1: raw spec HTML -> faithful NDJSON records, one file per (page, section)."""
 
-    def __init__(self, raw_data_dir: Path, filtered_data_dir: Path) -> None:
+    def __init__(self, raw_data_dir: Path, terse_data_dir: Path) -> None:
         self.raw_data_dir = raw_data_dir
-        self.filtered_data_dir = filtered_data_dir
+        self.terse_data_dir = terse_data_dir
 
     def _load_soup(self, page: str) -> BeautifulSoup:
         with (self.raw_data_dir / f'{page}.html').open('r') as fp:
             return BeautifulSoup(fp, 'lxml')
 
     def _ndjson_path(self, page: str, section: str) -> Path:
-        return self.filtered_data_dir / f'{page}.{section}.ndjson'
+        return self.terse_data_dir / f'{page}.{section}.ndjson'
 
     def extract_page(self, page: str, sections: tuple[str, ...]) -> dict[str, dict]:
         """Extract sections belonging to one source page. Returns one manifest entry per (page, section)."""
@@ -275,7 +275,7 @@ class Extractor:
                 logger.info('🛟 Kept previous %s (%s rows, extraction unavailable this run)', path.name, row_count)
                 entries[key] = {'status': 'fallback', 'row_count': row_count}
             else:
-                logger.error('❌ No filtered data available for %s (no previous file to fall back to)', key)
+                logger.error('❌ No terse data available for %s (no previous file to fall back to)', key)
                 entries[key] = {'status': 'missing', 'row_count': 0}
 
         return entries

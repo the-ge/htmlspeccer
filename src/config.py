@@ -5,17 +5,17 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 # ---- Directories ----
 RAW_DATA_DIR = PROJECT_ROOT / '.dev/data/raw'  # raw spec HTML files
-FILTERED_DATA_DIR = PROJECT_ROOT / '.dev/data/filtered'  # NDJSON records, one file per (page, section)
-NORMALIZED_DATA_DIR = PROJECT_ROOT / '.dev/data/normalized'  # typed+merged entities, one JSON file per category
+TERSE_DATA_DIR = PROJECT_ROOT / '.dev/data/terse'  # NDJSON records, one file per (page, section)
+ATOMIC_DATA_DIR = PROJECT_ROOT / '.dev/data/atomic'  # typed+merged entities, one JSON file per category
 DIST_JSON_DATA_DIR = PROJECT_ROOT / 'dist/json'  # final JSON output
 DIST_YAML_DATA_DIR = PROJECT_ROOT / 'dist/yaml'  # final YAML output
-DATA_CACHE_DIR = PROJECT_ROOT / '.dev/data/cache'  # normalize-stage fallback cache
+ATOMIC_DATA_CACHE_DIR = PROJECT_ROOT / '.dev/data/cache'  # normalize-stage fallback cache
 EMENDATIONS_DIR = PROJECT_ROOT / '.dev/emendations'  # hand-authored emendation rules (plain Python)
 
-# ---- Filtering (stage 1: HTML -> filtered/*.ndjson) ----
-# Maps each raw source page to the section names extracted from it. Keys match
-# RAW_DATA_DIR/{page}.html; each (page, section) pair has exactly one NDJSON file
-# at FILTERED_DATA_DIR/{page}.{section}.ndjson and one entry in FILTERED_DATA_MANIFEST_FILE.
+# ---- Filtering (stage 1: HTML -> TERSE_DATA_DIR/*.ndjson) ----
+# Maps each raw source page to the section names extracted from it. Keys match RAW_DATA_DIR/{page}.html;
+# each (page, section) pair has exactly one NDJSON file at TERSE_DATA_DIR/{page}.{section}.ndjson
+# and one entry in TERSE_DATA_MANIFEST.
 PAGE_SECTIONS = {
     'indices': ('elements', 'content_categories', 'attributes', 'event_handlers'),
     'dom': ('global_attributes',),  # NOTE! to create a tuple with one element, it needs the trailing comma.
@@ -25,10 +25,10 @@ PAGE_SECTIONS = {
 }
 
 # ---- Manifest ----
-RAW_DATA_MANIFEST_FILE = RAW_DATA_DIR / 'manifest.json'  # raw per-source fetch timestamps
-FILTERED_DATA_MANIFEST_FILE = FILTERED_DATA_DIR / 'manifest.json'  # per (page, section) extraction status
-NORMALIZED_DATA_MANIFEST_FILE = NORMALIZED_DATA_DIR / 'manifest.json'  # per-category normalization status
-DIST_DATA_MANIFEST_FILE = PROJECT_ROOT / 'dist/manifest.json'
+RAW_DATA_MANIFEST = RAW_DATA_DIR / 'manifest.json'  # raw per-source fetch timestamps
+TERSE_DATA_MANIFEST = TERSE_DATA_DIR / 'manifest.json'  # per (page, section) extraction status
+ATOMIC_DATA_MANIFEST = ATOMIC_DATA_DIR / 'manifest.json'  # per-category normalization status
+DIST_DATA_MANIFEST = PROJECT_ROOT / 'dist/manifest.json'
 
 # ---- Logging ----
 LOG_LEVEL = 'DEBUG'  # DEBUG INFO WARNING ERROR CRITICAL
