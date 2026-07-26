@@ -6,6 +6,7 @@ from typing import Any, TypeAlias, TypeVar
 
 from config import DUMP_NDJSON_KWARGS, PROJECT_ROOT
 
+R = TypeVar('R')
 T = TypeVar('T')
 JSONType: TypeAlias = bool | int | float | str | list['JSONType'] | dict[str, 'JSONType'] | None
 
@@ -76,9 +77,7 @@ def read_ndjson(path: Path, cls: type[T]) -> list[T]:
         return [cls(**json.loads(line)) for line in fp if line.strip()]
 
 
-def parse_section(
-    dir_path: Path, page: str, section: str, cls: type[T], parser: Callable[..., Any], **kwargs: Any
-) -> Any:
+def parse_section(dir_path: Path, page: str, section: str, cls: type[T], parser: Callable[..., R], **kwargs: object) -> R:
     """Load the terse (page, section) NDJSON file from dir_path and run its rows through `parser`.
     Returns whatever `parser` returns (a generator, list, or set, depending on the parser).
     """
