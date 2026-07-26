@@ -1,6 +1,6 @@
 import dataclasses
 import json
-from collections.abc import Iterable, Iterator
+from collections.abc import Callable, Iterable
 from pathlib import Path
 from typing import Any, TypeAlias, TypeVar
 
@@ -74,6 +74,16 @@ def read_ndjson(path: Path, cls: type[T]) -> list[T]:
     """Read an NDJSON file back into a list of `cls` instances. Return a list of JSON objects. Raises FileNotFoundError if path doesn't exist."""
     with path.open('r', encoding='utf-8') as fp:
         return [cls(**json.loads(line)) for line in fp if line.strip()]
+
+
+def parse_section(
+    dir_path: Path, page: str, section: str, cls: type[T], parser: Callable[..., Any], **kwargs: Any
+) -> Any:
+    """Load the filtered (page, section) NDJSON file from dir_path and run its rows through `parser`.
+    Returns whatever `parser` returns (a generator, list, or set, depending on the parser).
+    """
+    rows = read_ndjson(dir_path / f'{page}.{section}.ndjson', cls)
+    return parser(rows, **kwargs)
 
 
 def make_serializable(obj: object) -> JSONType:
