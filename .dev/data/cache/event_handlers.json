@@ -14,11 +14,11 @@
   "onbeforeprint": {
     "applies_to": "body"
   },
-  "onbeforeunload": {
-    "applies_to": "body"
-  },
   "onbeforetoggle": {
     "applies_to": "HTML elements"
+  },
+  "onbeforeunload": {
+    "applies_to": "body"
   },
   "onblur": {
     "applies_to": "HTML elements"
@@ -203,14 +203,14 @@
   "onratechange": {
     "applies_to": "HTML elements"
   },
+  "onrejectionhandled": {
+    "applies_to": "body"
+  },
   "onreset": {
     "applies_to": "HTML elements"
   },
   "onresize": {
     "applies_to": "HTML elements"
-  },
-  "onrejectionhandled": {
-    "applies_to": "body"
   },
   "onscroll": {
     "applies_to": "HTML elements"

@@ -1,4 +1,32 @@
 {
+  "escapable-raw-text-elements": {
+    "tags": [
+      "textarea",
+      "title"
+    ],
+    "info": ""
+  },
+  "foreign-elements": {
+    "tags": [],
+    "info": "Elements from the MathML namespace and the SVG namespace."
+  },
+  "normal-elements": {
+    "tags": [],
+    "info": "All other allowed HTML elements are normal elements."
+  },
+  "raw-text-elements": {
+    "tags": [
+      "script",
+      "style"
+    ],
+    "info": ""
+  },
+  "the-template-element": {
+    "tags": [
+      "template"
+    ],
+    "info": ""
+  },
   "void-elements": {
     "tags": [
       "area",
@@ -16,33 +44,5 @@
       "wbr"
     ],
     "info": ""
-  },
-  "the-template-element": {
-    "tags": [
-      "template"
-    ],
-    "info": ""
-  },
-  "raw-text-elements": {
-    "tags": [
-      "script",
-      "style"
-    ],
-    "info": ""
-  },
-  "escapable-raw-text-elements": {
-    "tags": [
-      "textarea",
-      "title"
-    ],
-    "info": ""
-  },
-  "foreign-elements": {
-    "tags": [],
-    "info": "Elements from the MathML namespace and the SVG namespace."
-  },
-  "normal-elements": {
-    "tags": [],
-    "info": "All other allowed HTML elements are normal elements."
   }
 }
