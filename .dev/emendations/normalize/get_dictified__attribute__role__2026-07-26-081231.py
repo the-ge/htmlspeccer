@@ -4,7 +4,7 @@ from normalizing_engine import Attribute, parse_aria_roles
 from util import parse_section
 
 
-def emend(section, data) -> bool:
+def emend(section: str, data: list) -> bool:
     if section != 'attributes':
         return False
 

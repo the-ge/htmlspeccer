@@ -4,7 +4,7 @@ from normalizing_engine import Attribute, parse_input_types
 from util import parse_section
 
 
-def emend(section, data) -> None:
+def emend(section: str, data: list) -> None:
     if section != 'attributes':
         return False
 
