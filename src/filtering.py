@@ -3,11 +3,11 @@ import logging
 
 from config import (
     DUMP_JSON_KWARGS,
-    TERSE_DATA_DIR,
-    TERSE_DATA_MANIFEST,
     LOG_LEVEL,
     PAGE_SECTIONS,
     RAW_DATA_DIR,
+    TERSE_DATA_DIR,
+    TERSE_DATA_MANIFEST,
 )
 from filtering_engine import Extractor
 from util import short_path

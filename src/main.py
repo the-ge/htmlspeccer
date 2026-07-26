@@ -7,14 +7,14 @@ from pathlib import Path
 import yaml
 
 from config import (
+    ATOMIC_DATA_DIR,
+    ATOMIC_DATA_MANIFEST,
     DIST_DATA_MANIFEST,
     DIST_JSON_DATA_DIR,
     DIST_YAML_DATA_DIR,
     DUMP_JSON_KWARGS,
     DUMP_YAML_KWARGS,
     LOG_LEVEL,
-    ATOMIC_DATA_DIR,
-    ATOMIC_DATA_MANIFEST,
     PROJECT_ROOT,
     RAW_DATA_MANIFEST,
 )

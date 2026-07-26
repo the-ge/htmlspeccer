@@ -3,11 +3,11 @@ import logging
 
 from config import (
     ATOMIC_DATA_CACHE_DIR,
-    DUMP_JSON_KWARGS,
-    TERSE_DATA_DIR,
-    LOG_LEVEL,
     ATOMIC_DATA_DIR,
     ATOMIC_DATA_MANIFEST,
+    DUMP_JSON_KWARGS,
+    LOG_LEVEL,
+    TERSE_DATA_DIR,
 )
 from normalizing_engine import Normalizer
 from util import make_serializable, short_path, sort_top_level
