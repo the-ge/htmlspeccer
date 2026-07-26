@@ -7,7 +7,7 @@ from config import EMENDATIONS_DIR
 
 logger = logging.getLogger(__name__)
 
-Emendation = Callable[[str, Any], bool]
+Emendation = Callable[[str, list], bool]
 
 
 class Emender:
@@ -32,7 +32,7 @@ class Emender:
             emendations.append((path.stem, module.emend))
         return emendations
 
-    def emend_normalizing_section(self, section: str, data: Any) -> None:
+    def emend_normalizing_section(self, section: str, data: list) -> None:
         """Mutate `entries` in place."""
         for name, emend in self._emendations:
             if emend(section, data):
