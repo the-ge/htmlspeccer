@@ -444,28 +444,29 @@ class Normalizer:
         try:
             entries = list(parse_attributes(self._load_section('indices', 'attributes', RawAttribute)))
 
-            entries.extend((
-                # Append "type" from input.html
-                Attribute(
-                    name='type',
-                    tag_scope={'input'},
-                    description='Type of form control',
-                    value_type='string',
-                    value_enum=set(parse_input_types(self._load_section('input', 'input_types', RawInputType))),
-                    value_info='An input type e.g. "text", "number", or "week".',
-                    separator='',
-                ),
-                # Append "role" from aria.html
-                Attribute(
-                    name='role',
-                    tag_scope=set(),
-                    description='ARIA semantic role',
-                    value_type='string',
-                    value_enum=set(parse_aria_roles(self._load_section('aria', 'aria_roles', RawAriaRole))),
-                    value_info='',
-                    separator=' ',
-                ),
-            ))
+            ## TODO(emend): re-add synthetic "type" and "role" attributes via the emend system, once it exists.
+            #entries.extend((
+            #    # Append "type" from input.html
+            #    Attribute(
+            #        name='type',
+            #        tag_scope={'input'},
+            #        description='Type of form control',
+            #        value_type='string',
+            #        value_enum=set(parse_input_types(self._load_section('input', 'input_types', RawInputType))),
+            #        value_info='An input type e.g. "text", "number", or "week".',
+            #        separator='',
+            #    ),
+            #    # Append "role" from aria.html
+            #    Attribute(
+            #        name='role',
+            #        tag_scope=set(),
+            #        description='ARIA semantic role',
+            #        value_type='string',
+            #        value_enum=set(parse_aria_roles(self._load_section('aria', 'aria_roles', RawAriaRole))),
+            #        value_info='',
+            #        separator=' ',
+            #    ),
+            #))
 
             # Note: merge=False for attributes
             result = dictify(entries, merge=False)
