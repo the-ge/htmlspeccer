@@ -6,10 +6,10 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 # ---- Directories ----
 RAW_DATA_DIR = PROJECT_ROOT / '.dev/data/raw'  # raw spec HTML files
 TERSE_DATA_DIR = PROJECT_ROOT / '.dev/data/terse'  # NDJSON records, one file per (page, section)
+ATOMIC_DATA_CACHE_DIR = PROJECT_ROOT / '.dev/data/cache'  # normalize-stage fallback cache
 ATOMIC_DATA_DIR = PROJECT_ROOT / '.dev/data/atomic'  # typed+merged entities, one JSON file per category
 DIST_JSON_DATA_DIR = PROJECT_ROOT / 'dist/json'  # final JSON output
 DIST_YAML_DATA_DIR = PROJECT_ROOT / 'dist/yaml'  # final YAML output
-ATOMIC_DATA_CACHE_DIR = PROJECT_ROOT / '.dev/data/cache'  # normalize-stage fallback cache
 EMENDATIONS_DIR = PROJECT_ROOT / '.dev/emendations'  # hand-authored emendation rules (plain Python)
 
 # ---- Filtering (stage 1: HTML -> TERSE_DATA_DIR/*.ndjson) ----
