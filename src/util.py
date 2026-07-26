@@ -10,7 +10,7 @@ T = TypeVar('T')
 JSONType: TypeAlias = bool | int | float | str | list['JSONType'] | dict[str, 'JSONType'] | None
 
 
-def dictify(xs: Iterator[Any], *, merge: bool) -> dict[str, Any]:
+def dictify(xs: list[Any], *, merge: bool) -> dict[str, Any]:
     """Convert a dataclass objects list/generator to a dict with unique keys as the the first field in each object."""
     result = {}
 
