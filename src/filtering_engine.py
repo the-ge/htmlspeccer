@@ -65,6 +65,7 @@ class RawEventHandler:
 @dataclass(frozen=True, slots=True)
 class RawGlobalAttribute:
     name: str
+    url: str
 
 
 @dataclass(frozen=True, slots=True)
@@ -210,7 +211,10 @@ def extract_global_attributes(soup: BeautifulSoup) -> Iterator[RawGlobalAttribut
     # https://html.spec.whatwg.org/dev/dom.html#global-attributes
     anchors = soup.find('h4', {'id': 'global-attributes'}).find_next('ul', {'class': 'brief'}).find_all('a')
     for a in anchors:
-        yield RawGlobalAttribute(name=a.get_text().strip())
+        yield RawGlobalAttribute(
+            name=a.get_text().strip(),
+            url=f'https://html.spec.whatwg.org/dev/{a['href'].strip()}',
+        )
 
 
 def extract_input_types(soup: BeautifulSoup) -> Iterator[RawInputType]:
