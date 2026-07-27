@@ -97,5 +97,8 @@ def make_serializable(obj: object) -> JSONType:
 
 
 def short_path(path: Path) -> str:
-    """Format a path relative to PROJECT_ROOT for logging."""
-    return str(path.relative_to(PROJECT_ROOT))
+    """Format a path relative to PROJECT_ROOT for logging, or as an absolute path if outside it."""
+    try:
+        return str(path.relative_to(PROJECT_ROOT))
+    except ValueError:
+        return str(path)
