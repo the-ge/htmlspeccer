@@ -17,7 +17,7 @@ from filtering_engine import (
     RawAttribute,
     RawContentCategory,
     RawElement,
-    RawElementType,
+    RawElementKind,
     RawEventHandler,
     RawGlobalAttribute,
     RawInputType,
@@ -64,7 +64,7 @@ class EventHandler:
 
 
 @dataclass(frozen=True, slots=True)
-class ElementType:
+class ElementKind:
     name: str
     tags: set[str]
     info: str
@@ -316,9 +316,9 @@ def parse_elements(rows: Iterator[RawElement], global_attributes: set[str]) -> I
             )
 
 
-def parse_element_types(rows: Iterator[RawElementType]) -> Iterator[ElementType]:
+def parse_element_kinds(rows: Iterator[RawElementKind]) -> Iterator[ElementKind]:
     for raw in rows:
-        yield ElementType(name=slugify(raw.name), tags=set(raw.tags), info=raw.info)
+        yield ElementKind(name=slugify(raw.name), tags=set(raw.tags), info=raw.info)
 
 
 def parse_event_handlers(rows: Iterator[RawEventHandler]) -> Iterator[EventHandler]:
@@ -455,9 +455,9 @@ class Normalizer:
             global_attributes=self.get_global_attributes(),
         )
 
-    def get_element_types(self) -> dict[str, Any]:
+    def get_element_kinds(self) -> dict[str, Any]:
         """Build element types with caching and validation."""
-        return self._get_dictified('syntax', 'element_types', RawElementType)
+        return self._get_dictified('syntax', 'element_kinds', RawElementKind)
 
     def get_event_handlers(self) -> dict[str, Any]:
         """Build event handlers with caching and validation."""
@@ -484,7 +484,7 @@ class Normalizer:
             'attributes': self.get_attributes(),
             'content_categories': self.get_content_categories(),
             'elements': self.get_elements(),
-            'element_types': self.get_element_types(),
+            'element_kinds': self.get_element_kinds(),
             'event_handlers': self.get_event_handlers(),
             # Plain list, not the {name: {}} dict convention the other domains use.
             'global_attributes': self.get_global_attributes(),

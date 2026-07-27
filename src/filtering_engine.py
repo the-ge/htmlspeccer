@@ -48,7 +48,7 @@ class RawElement:
 
 
 @dataclass(frozen=True, slots=True)
-class RawElementType:
+class RawElementKind:
     name: str  # literal <dfn> text, pre-slugify — slugified in stage 2
     tags: list[str]
     info: str
@@ -159,7 +159,7 @@ def extract_elements(soup: BeautifulSoup) -> Iterator[RawElement]:
         )
 
 
-def extract_element_types(soup: BeautifulSoup) -> Iterator[RawElementType]:
+def extract_element_kinds(soup: BeautifulSoup) -> Iterator[RawElementKind]:
     # https://html.spec.whatwg.org/dev/syntax.html#elements-2
     rows = soup.find('h4', {'id': 'elements-2'}).find_next('dl').find_all(['dt', 'dd'], recursive=False)
     prev = None  # tag name of the last row seen: None, 'dt', or 'dd'
@@ -177,7 +177,7 @@ def extract_element_types(soup: BeautifulSoup) -> Iterator[RawElementType]:
             tags = [tag.get_text().strip() for tag in row.find_all('code')]
             info = '' if tags else row.get_text().strip()
             prev = 'dd'
-            yield RawElementType(name=name, tags=tags, info=info)
+            yield RawElementKind(name=name, tags=tags, info=info)
     if prev == 'dt':
         logger.error('❌ Trailing <dt> with no following <dd>: %s', name)
 
@@ -220,7 +220,7 @@ EXTRACTORS = {
     'attributes': extract_attributes,
     'content_categories': extract_content_categories,
     'elements': extract_elements,
-    'element_types': extract_element_types,
+    'element_kinds': extract_element_kinds,
     'event_handlers': extract_event_handlers,
     'global_attributes': extract_global_attributes,
     'input_types': extract_input_types,

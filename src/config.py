@@ -26,7 +26,7 @@ PAGE_SECTIONS = {
     'indices': ('elements', 'content_categories', 'attributes', 'event_handlers'),
     'dom': ('global_attributes',),  # NOTE! to create a tuple with one element, it needs the trailing comma.
     'input': ('input_types',),
-    'syntax': ('element_types',),
+    'syntax': ('element_kinds',),
     'aria': ('aria_roles',),
 }
 
