@@ -36,7 +36,7 @@ jobs:
 
       - name: Run pipeline
         env:
-          HTMLSPEC_DIST_DIR: ${{ runner.temp }}/htmlspec
+          DIST_DATA_DIR: ${{ runner.temp }}/htmlspec
         run: make publish
 
       - name: Check for changes
