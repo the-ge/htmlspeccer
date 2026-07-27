@@ -413,12 +413,12 @@ class Normalizer:
         delta_fatal = 2
         previous = self._load_cache(key)
         previous_count = len(previous) if previous is not None else None
-        delta = None if previous_count is None else count - previous_count
+        delta = 0 if previous_count is None else count - previous_count
 
-        if delta is not None and abs(delta) >= delta_fatal:
+        if abs(delta) >= delta_fatal:
             msg = f'{key}: count changed by {delta:+d} since last run ({previous_count} -> {count})'
             raise ValueError(msg)
-        if delta is not None and abs(delta) == delta_warn:
+        if abs(delta) == delta_warn:
             logger.warning('⚠️ %s: count changed by %d since last run (%d -> %d)', key, delta, previous_count, count)
 
         entry = {'status': 'ok', 'row_count': count, 'delta': delta}
