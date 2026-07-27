@@ -26,14 +26,17 @@ logger = logging.getLogger(__name__)
 
 # ---- Licenses (single consumer: this driver) ----
 LICENSES_DIR = PROJECT_ROOT / 'licenses'
-NOTICE_FILE = LICENSES_DIR / 'NOTICE'  # static, copied verbatim to dist/NOTICE
-DIST_NOTICE_FILE = DIST_ROOT_DIR / 'NOTICE'
+COPYRIGHT_FILE = LICENSES_DIR / 'COPYRIGHT'  # static, copied verbatim to DIST_ROOT_DIR/COPYRIGHT
+DIST_COPYRIGHT_FILE = DIST_ROOT_DIR / 'COPYRIGHT'
+W3C_LICENSE_FILE = LICENSES_DIR / 'W3C-Document-License.html'  # static, copied verbatim alongside COPYRIGHT
+DIST_W3C_LICENSE_FILE = DIST_ROOT_DIR / 'W3C-Document-License.html'
 
 
 def copy_notice() -> None:
     """Copy the static licenses/NOTICE file to dist/NOTICE, unmodified."""
-    DIST_NOTICE_FILE.parent.mkdir(parents=True, exist_ok=True)
-    DIST_NOTICE_FILE.write_text(NOTICE_FILE.read_text(encoding='utf-8'), encoding='utf-8')
+    DIST_ROOT_DIR.mkdir(parents=True, exist_ok=True)
+    DIST_COPYRIGHT_FILE.write_text(COPYRIGHT_FILE.read_text(encoding='utf-8'), encoding='utf-8')
+    DIST_W3C_LICENSE_FILE.write_text(W3C_LICENSE_FILE.read_text(encoding='utf-8'), encoding='utf-8')
 
 
 def read_data_domains() -> dict[str, object]:
@@ -166,7 +169,7 @@ def main() -> None:
 
     # Static legal notice, copied once — no per-file duplication
     copy_notice()
-    logger.info('📝 Wrote %s', short_path(DIST_NOTICE_FILE))
+    logger.info('📝 Wrote %s, %s', short_path(DIST_COPYRIGHT_FILE), short_path(DIST_W3C_LICENSE_FILE))
 
     # Single manifest capturing per-source fetch times, generation time, and item counts
     manifest = build_manifest(counts)
