@@ -80,9 +80,9 @@ def get_repo_version() -> dict[str, str]:
     ).stdout.strip()
 
     return {
-        'official_release': official_release,
-        'current_tag': current_tag,
-        'current_commit_id': current_commit_id,
+        'generator_release': official_release,
+        'generator_tag': current_tag,
+        'generator_commit_id': current_commit_id,
     }
 
 
