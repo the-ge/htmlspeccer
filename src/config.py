@@ -43,3 +43,6 @@ LOG_LEVEL = 'DEBUG'  # DEBUG INFO WARNING ERROR CRITICAL
 DUMP_NDJSON_KWARGS = {'sort_keys': False, 'ensure_ascii': False}
 DUMP_JSON_KWARGS = {**DUMP_NDJSON_KWARGS, 'indent': 2}
 DUMP_YAML_KWARGS = {'sort_keys': False, 'indent': 2, 'allow_unicode': True, 'width': float('inf')}
+
+# ---- Content hash for published data ----
+DIST_HASH_FILE = ATOMIC_DATA_CACHE_DIR / 'dist_content.sha256'  # detects real data changes across publish runs
