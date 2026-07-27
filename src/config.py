@@ -10,10 +10,13 @@ RAW_DATA_DIR = DATA_DIR / 'raw'  # raw spec HTML files
 TERSE_DATA_DIR = DATA_DIR / 'terse'  # NDJSON records, one file per (page, section)
 ATOMIC_DATA_CACHE_DIR = DATA_DIR / 'cache'  # normalize-stage fallback cache
 ATOMIC_DATA_DIR = DATA_DIR / 'atomic'  # typed+merged entities, one JSON file per category
-DIST_DATA_DIR = Path(os.environ['HTMLSPEC_DIST_DIR']) if 'HTMLSPEC_DIST_DIR' in os.environ else DATA_DIR / 'dist'
+EMENDATIONS_DIR = PROJECT_ROOT / '.dev/emendations'  # hand-authored emendation rules (plain Python)
+
+_dist_env = os.environ.get('DIST_DATA_DIR')
+DIST_ROOT_DIR, _dist_subfolder = (Path(_dist_env), 'data') if _dist_env else (DATA_DIR, 'dist')
+DIST_DATA_DIR = DIST_ROOT_DIR / _dist_subfolder  # published json/yaml/manifest; NOTICE stays at DIST_ROOT_DIR
 DIST_JSON_DATA_DIR = DIST_DATA_DIR / 'json'  # final JSON output
 DIST_YAML_DATA_DIR = DIST_DATA_DIR / 'yaml'  # final YAML output
-EMENDATIONS_DIR = PROJECT_ROOT / '.dev/emendations'  # hand-authored emendation rules (plain Python)
 
 # ---- Filtering (stage 1: HTML -> TERSE_DATA_DIR/*.ndjson) ----
 # Maps each raw source page to the section names extracted from it. Keys match RAW_DATA_DIR/{page}.html;

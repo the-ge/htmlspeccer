@@ -9,9 +9,9 @@ import yaml
 from config import (
     ATOMIC_DATA_DIR,
     ATOMIC_DATA_MANIFEST,
-    DIST_DATA_DIR,
     DIST_DATA_MANIFEST,
     DIST_JSON_DATA_DIR,
+    DIST_ROOT_DIR,
     DIST_YAML_DATA_DIR,
     DUMP_JSON_KWARGS,
     DUMP_YAML_KWARGS,
@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 # ---- Licenses (single consumer: this driver) ----
 LICENSES_DIR = PROJECT_ROOT / 'licenses'
 NOTICE_FILE = LICENSES_DIR / 'NOTICE'  # static, copied verbatim to dist/NOTICE
-DIST_NOTICE_FILE = DIST_DATA_DIR / 'NOTICE'
+DIST_NOTICE_FILE = DIST_ROOT_DIR / 'NOTICE'
 
 
 def copy_notice() -> None:
