@@ -131,12 +131,13 @@ def extract_attributes(soup: BeautifulSoup) -> Iterator[RawAttribute]:
             logger.error('❌ Expected %s cells, got %s. Skipping row: %s', count, len(cells), row)
             continue
         attribute, elements, description, value = cells
+        urls = [('' if x['href'].strip().startswith('https://') else 'https://html.spec.whatwg.org/multipage/') + x['href'].strip() for x in row.find_all('a')]
         yield RawAttribute(
             attribute=attribute,
             elements=elements,
             description=description,
             value=value,
-            urls=[f'https://html.spec.whatwg.org/multipage/{x['href'].strip()}' for x in row.find_all('a')],
+            urls=urls,
         )
 
 
