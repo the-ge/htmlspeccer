@@ -14,7 +14,7 @@
     "element_types": 6,
     "event_handlers": 89
   },
-  "official_release": "0.6.0",
-  "current_tag": "0.6.0-14-ge3d7e67-dirty",
-  "current_commit_id": "e3d7e6705ad4ea5d041c8727c1b28d1949fe8822"
+  "official_release": "0.7.1",
+  "current_tag": "0.7.1-2-g25e32f6-dirty",
+  "current_commit_id": "25e32f60e38355e246f4d953ff6a1eecff365ae0"
 }
