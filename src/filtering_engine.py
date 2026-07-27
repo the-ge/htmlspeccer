@@ -35,6 +35,7 @@ class RawAttribute:
 @dataclass(frozen=True, slots=True)
 class RawContentCategory:
     category: str
+    url: str
     elements: str
     exceptions: str
 
@@ -146,7 +147,12 @@ def extract_content_categories(soup: BeautifulSoup) -> Iterator[RawContentCatego
             logger.error('❌ Expected %s cells, got %s. Skipping row: %s', count, len(cells), row)
             continue
         category, elements, exceptions = cells
-        yield RawContentCategory(category=category, elements=elements, exceptions=exceptions)
+        yield RawContentCategory(
+            category=category,
+            url=f'https://html.spec.whatwg.org/multipage/{row.td.a['href']}',
+            elements=elements,
+            exceptions=exceptions,
+        )
 
 
 def extract_elements(soup: BeautifulSoup) -> Iterator[RawElement]:
