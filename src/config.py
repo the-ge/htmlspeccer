@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 # ---- Project root ----
@@ -8,8 +9,9 @@ RAW_DATA_DIR = PROJECT_ROOT / '.dev/data/raw'  # raw spec HTML files
 TERSE_DATA_DIR = PROJECT_ROOT / '.dev/data/terse'  # NDJSON records, one file per (page, section)
 ATOMIC_DATA_CACHE_DIR = PROJECT_ROOT / '.dev/data/cache'  # normalize-stage fallback cache
 ATOMIC_DATA_DIR = PROJECT_ROOT / '.dev/data/atomic'  # typed+merged entities, one JSON file per category
-DIST_JSON_DATA_DIR = PROJECT_ROOT / 'dist/json'  # final JSON output
-DIST_YAML_DATA_DIR = PROJECT_ROOT / 'dist/yaml'  # final YAML output
+DIST_DATA_DIR = Path(os.environ['HTMLSPEC_DIST_DIR']) if 'HTMLSPEC_DIST_DIR' in os.environ else PROJECT_ROOT / 'dist'
+DIST_JSON_DATA_DIR = DIST_DATA_DIR / 'json'  # final JSON output
+DIST_YAML_DATA_DIR = DIST_DATA_DIR / 'yaml'  # final YAML output
 EMENDATIONS_DIR = PROJECT_ROOT / '.dev/emendations'  # hand-authored emendation rules (plain Python)
 
 # ---- Filtering (stage 1: HTML -> TERSE_DATA_DIR/*.ndjson) ----
@@ -28,7 +30,7 @@ PAGE_SECTIONS = {
 RAW_DATA_MANIFEST = RAW_DATA_DIR / 'manifest.json'  # raw per-source fetch timestamps
 TERSE_DATA_MANIFEST = TERSE_DATA_DIR / 'manifest.json'  # per (page, section) extraction status
 ATOMIC_DATA_MANIFEST = ATOMIC_DATA_DIR / 'manifest.json'  # per-category normalization status
-DIST_DATA_MANIFEST = PROJECT_ROOT / 'dist/manifest.json'
+DIST_DATA_MANIFEST = DIST_DATA_DIR / 'manifest.json'
 
 # ---- Logging ----
 LOG_LEVEL = 'DEBUG'  # DEBUG INFO WARNING ERROR CRITICAL
