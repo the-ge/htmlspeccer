@@ -11,10 +11,10 @@
     "content_categories": 15,
     "global_attributes": 32,
     "elements": 115,
-    "element_types": 6,
+    "element_kinds": 6,
     "event_handlers": 89
   },
   "generator_release": "0.7.1",
-  "generator_tag": "0.7.1-3-g37d6caa-dirty",
-  "generator_commit_id": "37d6caa2d512ffbc73ece15e3ed834de9d586aea"
+  "generator_tag": "0.7.1-8-g55acd4f-dirty",
+  "generator_commit_id": "55acd4f899494d58193f43ddda34b824d13a4a84"
 }
