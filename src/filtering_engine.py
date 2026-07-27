@@ -74,6 +74,7 @@ class RawInputType:
     state: str
     data_type: str
     control_type: str
+    url: str
 
 
 # Expected cell count in each domain of the online HTML sources
@@ -82,6 +83,7 @@ HTML_CELL_COUNT = {
     'content_categories': 3,
     'elements':           7,
     'event_handlers':     4,
+    'input_types':        4,
 }
 
 
@@ -220,12 +222,19 @@ def extract_global_attributes(soup: BeautifulSoup) -> Iterator[RawGlobalAttribut
 def extract_input_types(soup: BeautifulSoup) -> Iterator[RawInputType]:
     # https://html.spec.whatwg.org/dev/input.html#attr-input-type-keywords
     rows = soup.find('table', {'id': 'attr-input-type-keywords'}).find_next('tbody').find_all('tr')
+    count = HTML_CELL_COUNT['input_types']
     for row in rows:
+        cells = [x.get_text().strip() for x in row.contents]
+        if len(cells) != count:
+            logger.error('❌ Expected %s cells, got %s. Skipping row: %s', count, len(cells), row)
+            continue
+        keyword, state, data_type, control_type = cells
         yield RawInputType(
-            keyword=row.code.get_text().strip(),
-            state=f'https://html.spec.whatwg.org/dev/input.html{row.a['href'].strip()}',
-            data_type=row.contents[2].get_text().strip(),
-            control_type=row.contents[3].get_text().strip(),
+            keyword=keyword,
+            state=state,
+            data_type=data_type,
+            control_type=control_type,
+            url=f'https://html.spec.whatwg.org/dev/input.html{row.a['href'].strip()}',
         )
 
 
