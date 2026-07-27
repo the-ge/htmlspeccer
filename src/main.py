@@ -32,7 +32,7 @@ W3C_LICENSE_FILE = LICENSES_DIR / 'W3C-Document-License.html'  # static, copied 
 DIST_W3C_LICENSE_FILE = DIST_ROOT_DIR / 'W3C-Document-License.html'
 
 
-def copy_notice() -> None:
+def copy_licenses() -> None:
     """Copy the static licenses/NOTICE file to dist/NOTICE, unmodified."""
     DIST_ROOT_DIR.mkdir(parents=True, exist_ok=True)
     DIST_COPYRIGHT_FILE.write_text(COPYRIGHT_FILE.read_text(encoding='utf-8'), encoding='utf-8')
@@ -168,7 +168,7 @@ def main() -> None:
             logger.info('📦 Published %s', short_path(yaml_path))
 
     # Static legal notice, copied once — no per-file duplication
-    copy_notice()
+    copy_licenses()
     logger.info('📝 Wrote %s, %s', short_path(DIST_COPYRIGHT_FILE), short_path(DIST_W3C_LICENSE_FILE))
 
     # Single manifest capturing per-source fetch times, generation time, and item counts
