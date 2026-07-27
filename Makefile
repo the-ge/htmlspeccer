@@ -5,7 +5,7 @@ default: all
 RAW_DATA_DIR    := .dev/data/raw/
 TERSE_DATA_DIR  := .dev/data/terse/
 ATOMIC_DATA_DIR := .dev/data/atomic/
-DIST_DATA_DIR   := dist/
+DIST_DATA_DIR   := .dev/data/dist/
 
 DATA_DIRS := $(RAW_DATA_DIR) $(TERSE_DATA_DIR) $(ATOMIC_DATA_DIR) $(DIST_DATA_DIR)
 
@@ -54,7 +54,7 @@ acquire: $(RAW_DATA_DIR)manifest.json | $(RAW_DATA_DIR)
 # --- Build rules ---
 
 $(DIST_DATA_DIR)manifest.json: $(ATOMIC_DATA_DIR)manifest.json
-	$(call say, 📦 Publishing dist/ files...)
+	$(call say, 📦 Publishing $(DIST_DATA_DIR) files...)
 	@python3 src/main.py
 	$(call confirm, Publishing completed; updated end data manifest.)
 
