@@ -1,0 +1,87 @@
+name: Publish data
+
+on:
+  push:
+    tags: ['*']
+  schedule:
+    - cron: '17 * * * *'  # hourly, offset from :00 to avoid GitHub's peak-minute congestion
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout htmlspeccer
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
+
+      - name: Install dependencies
+        run: python3 -m pip install -r requirements.txt
+
+      - name: Restore .dev/data cache
+        uses: actions/cache@v4
+        with:
+          path: .dev/data
+          key: htmlspec-data-${{ github.run_id }}
+          restore-keys: htmlspec-data-
+
+      - name: Clone htmlspec
+        run: |
+          git clone https://x-access-token:${{ secrets.HTMLSPEC_DEPLOY_TOKEN }}@github.com/the-ge/htmlspec.git \
+              ${{ runner.temp }}/htmlspec
+
+      - name: Run pipeline
+        env:
+          HTMLSPEC_DIST_DIR: ${{ runner.temp }}/htmlspec
+        run: make publish
+
+      - name: Check for changes
+        id: diff
+        working-directory: ${{ runner.temp }}/htmlspec
+        run: |
+          git add -A
+          git reset -- manifest.json
+          if git diff --cached --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit, tag, and push
+        if: steps.diff.outputs.changed == 'true'
+        working-directory: ${{ runner.temp }}/htmlspec
+        env:
+          GH_TOKEN: ${{ secrets.HTMLSPEC_DEPLOY_TOKEN }}
+        run: |
+          git config user.name 'htmlspeccer bot'
+          git config user.email 'actions@users.noreply.github.com'
+
+          official_release=$(git -C "$GITHUB_WORKSPACE" describe --tags --abbrev=0 2>/dev/null || echo '')
+          current_tag=$(git -C "$GITHUB_WORKSPACE" describe --tags --always --dirty)
+          current_commit_id=$(git -C "$GITHUB_WORKSPACE" rev-parse HEAD)
+
+          git add -A
+          git commit -m "chore: publish data" \
+              -m "Source: htmlspeccer official_release=${official_release} current_tag=${current_tag} current_commit_id=${current_commit_id}"
+
+          latest_tag=$(git tag --list 'v*' --sort=-v:refname | head -1)
+          if [ -z "$latest_tag" ]; then
+            next_tag='v0.1.0'
+          else
+            IFS='.' read -r major minor patch <<< "${latest_tag#v}"
+            next_tag="v${major}.${minor}.$((patch + 1))"
+          fi
+
+          git tag "$next_tag"
+          git push origin HEAD "$next_tag"
+
+      - name: Save .dev/data cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: .dev/data
+          key: htmlspec-data-${{ github.run_id }}
