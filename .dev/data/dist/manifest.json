@@ -14,7 +14,7 @@
     "element_kinds": 6,
     "event_handlers": 89
   },
-  "generator_release": "0.7.1",
-  "generator_tag": "0.7.1-11-ga5991c9-dirty",
-  "generator_commit_id": "a5991c982f424b9cd6a77368bad58933f5fa21b5"
+  "generator_release": "0.7.3",
+  "generator_tag": "0.7.3-1-gfb63ef8",
+  "generator_commit_id": "fb63ef82b7ff9f19e2605ff8a317eda7d243ddbe"
 }
