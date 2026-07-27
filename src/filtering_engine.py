@@ -29,6 +29,7 @@ class RawAttribute:
     elements: str
     description: str
     value: str
+    urls: list[str]
 
 
 @dataclass(frozen=True, slots=True)
@@ -127,7 +128,11 @@ def extract_attributes(soup: BeautifulSoup) -> Iterator[RawAttribute]:
             continue
         attribute, elements, description, value = cells
         yield RawAttribute(
-            attribute=attribute, elements=elements, description=description, value=value
+            attribute=attribute,
+            elements=elements,
+            description=description,
+            value=value,
+            urls=[f'https://html.spec.whatwg.org/multipage/{x['href'].strip()}' for x in row.find_all('a')],
         )
 
 
