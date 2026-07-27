@@ -10,7 +10,6 @@ import yaml
 from config import (
     ATOMIC_DATA_DIR,
     ATOMIC_DATA_MANIFEST,
-    DIST_DATA_DIR,
     DIST_DATA_MANIFEST,
     DIST_HASH_FILE,
     DIST_JSON_DATA_DIR,
