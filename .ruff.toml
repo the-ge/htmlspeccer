@@ -1,0 +1,49 @@
+extend = ".dev/config/ruff.toml"
+
+[lint]
+ignore = [
+    "undocumented-public-module",            # D100 Missing docstring in public module
+    "undocumented-public-class",             # D101 Missing docstring in public class
+    "undocumented-public-method",            # D102 Missing docstring in public method
+    "undocumented-public-function",          # D103 Missing docstring in public function
+    "undocumented-public-package",           # D104 Missing docstring in public package
+    "undocumented-magic-method",             # D105 Missing docstring in magic method
+    "undocumented-public-nested-class",      # D106 Missing docstring in public nested class
+    "undocumented-public-init",              # D107 Missing docstring in __init__
+    "multi-line-summary-second-line",        # D213 Missing summary on 2nd docstring line (conflicts with D212)
+    "missing-blank-line-after-last-section", # D413 Missing blank line after last docstring section
+    "line-contains-todo",                    # FIX002 Alerts when finds TODO comments
+    "compare-to-empty-string",               # PLC1901 Replaces comparisons to empty string with falsy condition
+    "missing-todo-author",                   # TD002 Missing TODO author in comment
+    # --- made redundant by the formatter ---
+    "missing-trailing-comma",                    # COM812
+    "prohibited-trailing-comma",                 # COM819
+    "incorrect-blank-line-before-class",         # D203 (conflicts with D211)
+    "docstring-tab-indentation",                 # D206
+    "triple-single-quotes",                      # D300
+    "indentation-with-invalid-multiple",         # E111
+    "indentation-with-invalid-multiple-comment", # E114
+    "over-indented",                             # E117
+    "line-too-long",                             # E501
+    #"single-line-implicit-string-concatenation", # ISC001
+    "multi-line-implicit-string-concatenation", # ISC002
+    "bad-quotes-inline-string",                 # Q000
+    "bad-quotes-multiline-string",              # Q001
+    "bad-quotes-docstring",                     # Q002
+    "avoidable-escaped-quote",                  # Q003
+    "unnecessary-escaped-quote",                # Q004
+    "noqa-comments",                            # RUF105
+    "tab-indentation",                          # W191
+    # --- personal ---
+    "docstring-missing-returns",   # DOC201
+    "docstring-missing-exception", # DOC501
+    # --- temporary ---
+    "missing-copyright-notice",         # CPY001
+    "missing-blank-line-after-summary", # D205
+]
+
+[lint.per-file-ignores]
+"**/.dev/emendations/normalize/*.py" = [
+	"invalid-module-name",        # N999
+	"implicit-namespace-package", # INP001
+]

@@ -1,3 +1,0 @@
-#!/bin/bash
-
-ruff check --fix --preview --cache-dir .dev/cache/ruff --config /media/sync/var/panos/devcfg/ruff.toml "$@"
