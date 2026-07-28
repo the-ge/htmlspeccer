@@ -13,14 +13,14 @@ from slugify import slugify
 from config import DUMP_JSON_KWARGS
 from emending_engine import Emender
 from filtering_engine import (
-    RawAriaRole,
-    RawAttribute,
-    RawContentCategory,
-    RawElement,
-    RawElementKind,
-    RawEventHandler,
-    RawGlobalAttribute,
-    RawInputType,
+    AriaRoleTerseData,
+    AttributeTerseData,
+    ContentCategoryTerseData,
+    ElementKindTerseData,
+    ElementTerseData,
+    EventHandlerTerseData,
+    GlobalAttributeTerseData,
+    InputTypeTerseData,
 )
 from util import dictify, make_serializable, parse_section, sort_top_level
 
@@ -191,9 +191,9 @@ def split_splittables(text: str, context: str) -> str:
 # Each function takes the terse data rows for its section (read from TERSE_DATA_DIR by Normalizer).
 
 
-def parse_aria_roles(rows: Iterator[RawAriaRole]) -> Iterator[str]:
-    for raw in rows:
-        yield raw.name
+def parse_aria_roles(rows: Iterator[AriaRoleTerseData]) -> Iterator[str]:
+    for row in rows:
+        yield row.name
 
 
 def _parse_attribute_info(elements_info: str, value_info: str) -> tuple[set, str, bool]:
@@ -218,16 +218,16 @@ def _parse_attribute_info(elements_info: str, value_info: str) -> tuple[set, str
     return elements_set, elements_notes, value_type, value_info, is_complicated
 
 
-def parse_attributes(rows: Iterator[RawAttribute]) -> Iterator[Attribute]:
-    for raw in rows:
+def parse_attributes(rows: Iterator[AttributeTerseData]) -> Iterator[Attribute]:
+    for row in rows:
         name, elements_info, description, value_info = (
-            raw.attribute,
-            raw.elements,
-            raw.description,
-            raw.value,
+            row.attribute,
+            row.elements,
+            row.description,
+            row.value,
         )
 
-        elements_info = split_splittables(elements_info, f'Attribute {raw.attribute!r} tag scope')
+        elements_info = split_splittables(elements_info, f'Attribute {row.attribute!r} tag scope')
 
         tag_scope, tag_notes, value_type, value_info, is_complicated = _parse_attribute_info(elements_info, value_info)
 
@@ -277,18 +277,18 @@ def parse_attributes(rows: Iterator[RawAttribute]) -> Iterator[Attribute]:
         )
 
 
-def parse_content_categories(rows: Iterator[RawContentCategory]) -> Iterator[ContentCategory]:
-    for raw in rows:
-        category = ' '.join(raw.category.split())
+def parse_content_categories(rows: Iterator[ContentCategoryTerseData]) -> Iterator[ContentCategory]:
+    for row in rows:
+        category = ' '.join(row.category.split())
 
-        exceptions = '; '.join(x.strip() for x in raw.exceptions.split(';'))
+        exceptions = '; '.join(x.strip() for x in row.exceptions.split(';'))
         if exceptions == '—':
             exceptions = ''
         if category.endswith('*'):
             exceptions += '; The tabindex attribute can also make any element into interactive content.'
         category = category.rstrip('*').strip()
 
-        elements_set = set(gen_elements(raw.elements))
+        elements_set = set(gen_elements(row.elements))
         elements_maybe = list(gen_element_exceptions(exceptions))
 
         yield ContentCategory(
@@ -299,41 +299,41 @@ def parse_content_categories(rows: Iterator[RawContentCategory]) -> Iterator[Con
         )
 
 
-def parse_elements(rows: Iterator[RawElement], global_attributes: set[str]) -> Iterator[Element]:
-    for raw in rows:
-        elements = gen_elements(raw.element)
-        categories = set(gen_content_categories(raw.categories))
-        attributes = set(gen_attributes(raw.attributes, global_attributes))
-        children = set(gen_content_categories(raw.children))
+def parse_elements(rows: Iterator[ElementTerseData], global_attributes: set[str]) -> Iterator[Element]:
+    for row in rows:
+        elements = gen_elements(row.element)
+        categories = set(gen_content_categories(row.categories))
+        attributes = set(gen_attributes(row.attributes, global_attributes))
+        children = set(gen_content_categories(row.children))
 
         for e in sorted(elements):
             yield Element(
                 name=e,
-                description=raw.description.strip(),
+                description=row.description.strip(),
                 categories=categories,
                 attributes=attributes,
                 children=children,
             )
 
 
-def parse_element_kinds(rows: Iterator[RawElementKind]) -> Iterator[ElementKind]:
-    for raw in rows:
-        yield ElementKind(name=slugify(raw.name), tags=set(raw.tags), info=raw.info)
+def parse_element_kinds(rows: Iterator[ElementKindTerseData]) -> Iterator[ElementKind]:
+    for row in rows:
+        yield ElementKind(name=slugify(row.name), tags=set(row.tags), info=row.info)
 
 
-def parse_event_handlers(rows: Iterator[RawEventHandler]) -> Iterator[EventHandler]:
-    for raw in rows:
-        yield EventHandler(name=raw.attribute, applies_to=raw.elements)
+def parse_event_handlers(rows: Iterator[EventHandlerTerseData]) -> Iterator[EventHandler]:
+    for row in rows:
+        yield EventHandler(name=row.attribute, applies_to=row.elements)
 
 
-def parse_global_attributes(rows: Iterator[RawGlobalAttribute]) -> set[str]:
+def parse_global_attributes(rows: Iterator[GlobalAttributeTerseData]) -> set[str]:
     default = {'class', 'id', 'role', 'slot'}
-    return default.union({raw.name for raw in rows})
+    return default.union({row.name for row in rows})
 
 
-def parse_input_types(rows: Iterator[RawInputType]) -> Iterator[str]:
-    for raw in rows:
-        yield raw.keyword
+def parse_input_types(rows: Iterator[InputTypeTerseData]) -> Iterator[str]:
+    for row in rows:
+        yield row.keyword
 
 
 class Normalizer:
@@ -440,28 +440,28 @@ class Normalizer:
 
     def get_attributes(self) -> dict[str, Any]:
         """Build attributes with caching and validation."""
-        return self._get_dictified('indices', 'attributes', RawAttribute, merge=False)
+        return self._get_dictified('indices', 'attributes', AttributeTerseData, merge=False)
 
     def get_content_categories(self) -> dict[str, Any]:
         """Build content categories with caching and validation."""
-        return self._get_dictified('indices', 'content_categories', RawContentCategory)
+        return self._get_dictified('indices', 'content_categories', ContentCategoryTerseData)
 
     def get_elements(self) -> dict[str, Any]:
         """Build elements with caching and validation."""
         return self._get_dictified(
             'indices',
             'elements',
-            RawElement,
+            ElementTerseData,
             global_attributes=self.get_global_attributes(),
         )
 
     def get_element_kinds(self) -> dict[str, Any]:
         """Build element types with caching and validation."""
-        return self._get_dictified('syntax', 'element_kinds', RawElementKind)
+        return self._get_dictified('syntax', 'element_kinds', ElementKindTerseData)
 
     def get_event_handlers(self) -> dict[str, Any]:
         """Build event handlers with caching and validation."""
-        return self._get_dictified('indices', 'event_handlers', RawEventHandler)
+        return self._get_dictified('indices', 'event_handlers', EventHandlerTerseData)
 
     def get_global_attributes(self) -> set[str]:
         """Build or load cached global attributes. Memoized on instance, get_elements() and get_all() both depend on this."""
@@ -470,7 +470,7 @@ class Normalizer:
 
         def builder() -> set[str]:
             return parse_section(
-                self.terse_data_dir, 'dom', 'global_attributes', RawGlobalAttribute, parse_global_attributes
+                self.terse_data_dir, 'dom', 'global_attributes', GlobalAttributeTerseData, parse_global_attributes
             )
 
         # _build_cached returns a set from builder(), but a list when falling back to the JSON cache

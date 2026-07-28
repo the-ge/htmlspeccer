@@ -17,14 +17,14 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True, slots=True)
-class RawAriaRole:
+class AriaRoleTerseData:
     name: str
     url: str
     deprecated_since_version: str
 
 
 @dataclass(frozen=True, slots=True)
-class RawAttribute:
+class AttributeTerseData:
     attribute: str
     elements: str
     description: str
@@ -33,7 +33,7 @@ class RawAttribute:
 
 
 @dataclass(frozen=True, slots=True)
-class RawContentCategory:
+class ContentCategoryTerseData:
     category: str
     url: str
     elements: str
@@ -41,7 +41,7 @@ class RawContentCategory:
 
 
 @dataclass(frozen=True, slots=True)
-class RawElement:
+class ElementTerseData:
     element: str
     description: str
     categories: str
@@ -50,26 +50,26 @@ class RawElement:
 
 
 @dataclass(frozen=True, slots=True)
-class RawElementKind:
+class ElementKindTerseData:
     name: str  # literal <dfn> text, pre-slugify — slugified in stage 2
     tags: list[str]
     info: str
 
 
 @dataclass(frozen=True, slots=True)
-class RawEventHandler:
+class EventHandlerTerseData:
     attribute: str
     elements: str
 
 
 @dataclass(frozen=True, slots=True)
-class RawGlobalAttribute:
+class GlobalAttributeTerseData:
     name: str
     url: str
 
 
 @dataclass(frozen=True, slots=True)
-class RawInputType:
+class InputTypeTerseData:
     keyword: str
     state: str
     data_type: str
@@ -94,7 +94,7 @@ HTML_CELL_COUNT = {
 # consumes these same dataclasses from disk instead of a live soup.
 
 
-def extract_aria_roles(soup: BeautifulSoup) -> Iterator[RawAriaRole]:
+def extract_aria_roles(soup: BeautifulSoup) -> Iterator[AriaRoleTerseData]:
     # https://w3c.github.io/aria/#widget
     # https://w3c.github.io/aria/#document_structure_roles
     # https://w3c.github.io/aria/#landmark_roles
@@ -114,14 +114,14 @@ def extract_aria_roles(soup: BeautifulSoup) -> Iterator[RawAriaRole]:
             if deprecated != '':
                 deprecated = re.search(r'(?<=ARIA )\d+\.\d+', deprecated)
                 deprecated = deprecated[0] if deprecated else ''
-            yield RawAriaRole(
+            yield AriaRoleTerseData(
                 name=row.code.get_text().strip(),
                 url=row.a['href'].strip(),
                 deprecated_since_version=deprecated,
             )
 
 
-def extract_attributes(soup: BeautifulSoup) -> Iterator[RawAttribute]:
+def extract_attributes(soup: BeautifulSoup) -> Iterator[AttributeTerseData]:
     # https://html.spec.whatwg.org/multipage/indices.html#attributes-3
     rows = soup.find('h3', {'id': 'attributes-3'}).find_next('tbody').find_all('tr')
     count = HTML_CELL_COUNT['attributes']
@@ -132,7 +132,7 @@ def extract_attributes(soup: BeautifulSoup) -> Iterator[RawAttribute]:
             continue
         attribute, elements, description, value = cells
         urls = [('' if x['href'].strip().startswith('https://') else 'https://html.spec.whatwg.org/multipage/') + x['href'].strip() for x in row.find_all('a')]
-        yield RawAttribute(
+        yield AttributeTerseData(
             attribute=attribute,
             elements=elements,
             description=description,
@@ -141,7 +141,7 @@ def extract_attributes(soup: BeautifulSoup) -> Iterator[RawAttribute]:
         )
 
 
-def extract_content_categories(soup: BeautifulSoup) -> Iterator[RawContentCategory]:
+def extract_content_categories(soup: BeautifulSoup) -> Iterator[ContentCategoryTerseData]:
     # https://html.spec.whatwg.org/multipage/indices.html#element-content-categories
     rows = soup.find('h3', {'id': 'element-content-categories'}).find_next('tbody').find_all('tr')
     count = HTML_CELL_COUNT['content_categories']
@@ -151,7 +151,7 @@ def extract_content_categories(soup: BeautifulSoup) -> Iterator[RawContentCatego
             logger.error('❌ Expected %s cells, got %s. Skipping row: %s', count, len(cells), row)
             continue
         category, elements, exceptions = cells
-        yield RawContentCategory(
+        yield ContentCategoryTerseData(
             category=category,
             url=f'https://html.spec.whatwg.org/multipage/{row.td.a['href']}',
             elements=elements,
@@ -159,7 +159,7 @@ def extract_content_categories(soup: BeautifulSoup) -> Iterator[RawContentCatego
         )
 
 
-def extract_elements(soup: BeautifulSoup) -> Iterator[RawElement]:
+def extract_elements(soup: BeautifulSoup) -> Iterator[ElementTerseData]:
     # https://html.spec.whatwg.org/multipage/indices.html#elements-3
     rows = soup.find('h3', {'id': 'elements-3'}).find_next('tbody').find_all('tr')
     count = HTML_CELL_COUNT['elements']
@@ -169,12 +169,12 @@ def extract_elements(soup: BeautifulSoup) -> Iterator[RawElement]:
             logger.error('❌ Expected %s cells, got %s. Skipping row: %s', count, len(cells), row)
             continue
         element, description, categories, _, children, attributes, _ = cells
-        yield RawElement(
+        yield ElementTerseData(
             element=element, description=description, categories=categories, children=children, attributes=attributes
         )
 
 
-def extract_element_kinds(soup: BeautifulSoup) -> Iterator[RawElementKind]:
+def extract_element_kinds(soup: BeautifulSoup) -> Iterator[ElementKindTerseData]:
     # https://html.spec.whatwg.org/dev/syntax.html#elements-2
     rows = soup.find('h4', {'id': 'elements-2'}).find_next('dl').find_all(['dt', 'dd'], recursive=False)
     prev = None  # tag name of the last row seen: None, 'dt', or 'dd'
@@ -192,12 +192,12 @@ def extract_element_kinds(soup: BeautifulSoup) -> Iterator[RawElementKind]:
             tags = [tag.get_text().strip() for tag in row.find_all('code')]
             info = '' if tags else row.get_text().strip()
             prev = 'dd'
-            yield RawElementKind(name=name, tags=tags, info=info)
+            yield ElementKindTerseData(name=name, tags=tags, info=info)
     if prev == 'dt':
         logger.error('❌ Trailing <dt> with no following <dd>: %s', name)
 
 
-def extract_event_handlers(soup: BeautifulSoup) -> Iterator[RawEventHandler]:
+def extract_event_handlers(soup: BeautifulSoup) -> Iterator[EventHandlerTerseData]:
     # https://html.spec.whatwg.org/multipage/indices.html#ix-event-handlers
     rows = soup.find('table', {'id': 'ix-event-handlers'}).find_next('tbody').find_all('tr')
     count = HTML_CELL_COUNT['event_handlers']
@@ -207,20 +207,20 @@ def extract_event_handlers(soup: BeautifulSoup) -> Iterator[RawEventHandler]:
             logger.error('❌ Expected %s cells, got %s. Skipping row: %s', count, len(cells), row)
             continue
         attribute, elements, _, _ = cells
-        yield RawEventHandler(attribute=attribute, elements=elements)
+        yield EventHandlerTerseData(attribute=attribute, elements=elements)
 
 
-def extract_global_attributes(soup: BeautifulSoup) -> Iterator[RawGlobalAttribute]:
+def extract_global_attributes(soup: BeautifulSoup) -> Iterator[GlobalAttributeTerseData]:
     # https://html.spec.whatwg.org/dev/dom.html#global-attributes
     anchors = soup.find('h4', {'id': 'global-attributes'}).find_next('ul', {'class': 'brief'}).find_all('a')
     for a in anchors:
-        yield RawGlobalAttribute(
+        yield GlobalAttributeTerseData(
             name=a.get_text().strip(),
             url=f'https://html.spec.whatwg.org/dev/{a['href'].strip()}',
         )
 
 
-def extract_input_types(soup: BeautifulSoup) -> Iterator[RawInputType]:
+def extract_input_types(soup: BeautifulSoup) -> Iterator[InputTypeTerseData]:
     # https://html.spec.whatwg.org/dev/input.html#attr-input-type-keywords
     rows = soup.find('table', {'id': 'attr-input-type-keywords'}).find_next('tbody').find_all('tr')
     count = HTML_CELL_COUNT['input_types']
@@ -230,7 +230,7 @@ def extract_input_types(soup: BeautifulSoup) -> Iterator[RawInputType]:
             logger.error('❌ Expected %s cells, got %s. Skipping row: %s', count, len(cells), row)
             continue
         keyword, state, data_type, control_type = cells
-        yield RawInputType(
+        yield InputTypeTerseData(
             keyword=keyword,
             state=state,
             data_type=data_type,
