@@ -1,4 +1,5 @@
-extend = ".dev/config/ruff.toml"
+extend = "$RUFF_SHARED_CFGFILE"
+cache-dir = ".dev/cache/ruff"
 
 [lint]
 ignore = [
