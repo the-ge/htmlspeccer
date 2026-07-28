@@ -1,6 +1,6 @@
 from config import TERSE_DATA_DIR
 from filtering_engine import InputTypeTerseData
-from normalizing_engine import Attribute, parse_input_types
+from normalizing_engine import AttributeData, parse_input_types
 from util import parse_section
 
 
@@ -8,7 +8,7 @@ def emend(section: str, data: list) -> None:
     if section != 'attributes':
         return False
 
-    data.append(Attribute(
+    data.append(AttributeData(
         name='type',
         tag_scope={'input'},
         description='Type of form control',

@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True, slots=True)
-class Attribute:
+class AttributeData:
     name: str
     tag_scope: set[str]
     description: str
@@ -41,7 +41,7 @@ class Attribute:
 
 
 @dataclass(frozen=True, slots=True)
-class ContentCategory:
+class ContentCategoryData:
     name: str
     elements: set[str]
     elements_maybe: list[str]
@@ -49,7 +49,7 @@ class ContentCategory:
 
 
 @dataclass(frozen=True, slots=True)
-class Element:
+class ElementData:
     name: str
     description: str
     categories: set[str]
@@ -58,13 +58,13 @@ class Element:
 
 
 @dataclass(frozen=True, slots=True)
-class EventHandler:
+class EventHandlerData:
     name: str
     applies_to: str
 
 
 @dataclass(frozen=True, slots=True)
-class ElementKind:
+class ElementKindData:
     name: str
     tags: set[str]
     info: str
@@ -218,7 +218,7 @@ def _parse_attribute_info(elements_info: str, value_info: str) -> tuple[set, str
     return elements_set, elements_notes, value_type, value_info, is_complicated
 
 
-def parse_attributes(rows: Iterator[AttributeTerseData]) -> Iterator[Attribute]:
+def parse_attributes(rows: Iterator[AttributeTerseData]) -> Iterator[AttributeData]:
     for row in rows:
         name, elements_info, description, value_info = (
             row.attribute,
@@ -266,7 +266,7 @@ def parse_attributes(rows: Iterator[AttributeTerseData]) -> Iterator[Attribute]:
             if v
         ])
 
-        yield Attribute(
+        yield AttributeData(
             name=name,
             tag_scope=tag_scope,
             description=description,
@@ -277,7 +277,7 @@ def parse_attributes(rows: Iterator[AttributeTerseData]) -> Iterator[Attribute]:
         )
 
 
-def parse_content_categories(rows: Iterator[ContentCategoryTerseData]) -> Iterator[ContentCategory]:
+def parse_content_categories(rows: Iterator[ContentCategoryTerseData]) -> Iterator[ContentCategoryData]:
     for row in rows:
         category = ' '.join(row.category.split())
 
@@ -291,7 +291,7 @@ def parse_content_categories(rows: Iterator[ContentCategoryTerseData]) -> Iterat
         elements_set = set(gen_elements(row.elements))
         elements_maybe = list(gen_element_exceptions(exceptions))
 
-        yield ContentCategory(
+        yield ContentCategoryData(
             name=category,
             elements=elements_set,
             elements_maybe=elements_maybe,
@@ -299,7 +299,7 @@ def parse_content_categories(rows: Iterator[ContentCategoryTerseData]) -> Iterat
         )
 
 
-def parse_elements(rows: Iterator[ElementTerseData], global_attributes: set[str]) -> Iterator[Element]:
+def parse_elements(rows: Iterator[ElementTerseData], global_attributes: set[str]) -> Iterator[ElementData]:
     for row in rows:
         elements = gen_elements(row.element)
         categories = set(gen_content_categories(row.categories))
@@ -307,7 +307,7 @@ def parse_elements(rows: Iterator[ElementTerseData], global_attributes: set[str]
         children = set(gen_content_categories(row.children))
 
         for e in sorted(elements):
-            yield Element(
+            yield ElementData(
                 name=e,
                 description=row.description.strip(),
                 categories=categories,
@@ -316,14 +316,14 @@ def parse_elements(rows: Iterator[ElementTerseData], global_attributes: set[str]
             )
 
 
-def parse_element_kinds(rows: Iterator[ElementKindTerseData]) -> Iterator[ElementKind]:
+def parse_element_kinds(rows: Iterator[ElementKindTerseData]) -> Iterator[ElementKindData]:
     for row in rows:
-        yield ElementKind(name=slugify(row.name), tags=set(row.tags), info=row.info)
+        yield ElementKindData(name=slugify(row.name), tags=set(row.tags), info=row.info)
 
 
-def parse_event_handlers(rows: Iterator[EventHandlerTerseData]) -> Iterator[EventHandler]:
+def parse_event_handlers(rows: Iterator[EventHandlerTerseData]) -> Iterator[EventHandlerData]:
     for row in rows:
-        yield EventHandler(name=row.attribute, applies_to=row.elements)
+        yield EventHandlerData(name=row.attribute, applies_to=row.elements)
 
 
 def parse_global_attributes(rows: Iterator[GlobalAttributeTerseData]) -> set[str]:
