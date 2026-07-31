@@ -494,7 +494,6 @@ class Normalizer:
             'indices',
             'attributes',
             AttributeTerseData,
-            merge=False,
         )
 
     def get_content_categories(self) -> dict[str, Any]:
