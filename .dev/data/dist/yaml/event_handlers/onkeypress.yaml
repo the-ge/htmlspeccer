@@ -1,1 +1,5 @@
 applies_to: HTML elements
+urls:
+- https://html.spec.whatwg.org/multipage/webappapis.html#handler-onkeypress
+- https://w3c.github.io/uievents/#event-type-keypress
+- https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes

@@ -1,1 +1,5 @@
 applies_to: HTML elements
+urls:
+- https://html.spec.whatwg.org/multipage/webappapis.html#handler-onmouseenter
+- https://w3c.github.io/pointerevents/#mouseenter
+- https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes

@@ -1,1 +1,5 @@
 applies_to: HTML elements
+urls:
+- https://html.spec.whatwg.org/multipage/webappapis.html#handler-onloadeddata
+- https://html.spec.whatwg.org/multipage/media.html#event-media-loadeddata
+- https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes

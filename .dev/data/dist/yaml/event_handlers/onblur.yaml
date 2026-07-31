@@ -1,1 +1,5 @@
 applies_to: HTML elements
+urls:
+- https://html.spec.whatwg.org/multipage/webappapis.html#handler-onblur
+- https://html.spec.whatwg.org/multipage/#event-blur
+- https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes

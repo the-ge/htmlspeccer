@@ -1,1 +1,5 @@
 applies_to: HTML elements
+urls:
+- https://html.spec.whatwg.org/multipage/webappapis.html#handler-onmouseup
+- https://w3c.github.io/pointerevents/#mouseup
+- https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes

@@ -1,1 +1,5 @@
 applies_to: HTML elements
+urls:
+- https://html.spec.whatwg.org/multipage/webappapis.html#handler-onslotchange
+- https://dom.spec.whatwg.org/#eventdef-htmlslotelement-slotchange
+- https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes

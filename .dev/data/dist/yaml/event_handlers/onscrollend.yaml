@@ -1,1 +1,5 @@
 applies_to: HTML elements
+urls:
+- https://html.spec.whatwg.org/multipage/webappapis.html#handler-onscrollend
+- https://drafts.csswg.org/cssom-view/#eventdef-document-scrollend
+- https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes
