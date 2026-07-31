@@ -78,6 +78,14 @@ class ElementKindData:
     info: str = ''
 
 
+@dataclass(frozen=True, slots=True)
+class InputTypeData:
+    name: str
+    value_type: str
+    control_type: str
+    url: str
+
+
 # Match a list of one-or-more keywords such as `"foo"; "bar"; "the empty string"`
 KEYWORDS_PATTERN = re.compile(r'^(?:"[a-zA-Z0-9/-]*"|the empty string)(?:; (?:"[a-zA-Z0-9/-]*"|the empty string))*$')
 
@@ -345,9 +353,14 @@ def parse_global_attributes(rows: Iterator[GlobalAttributeTerseData]) -> set[str
     return default.union({row.name for row in rows})
 
 
-def parse_input_types(rows: Iterator[InputTypeTerseData]) -> Iterator[str]:
+def parse_input_types(rows: Iterator[InputTypeTerseData]) -> Iterator[InputTypeData]:
     for row in rows:
-        yield row.keyword
+        yield InputTypeData(
+            name=row.keyword,
+            value_type=row.data_type,
+            control_type=row.control_type,
+            url=row.url,
+        )
 
 
 class Normalizer:
@@ -516,6 +529,14 @@ class Normalizer:
         self._global_attributes = set(self._build_cached('global_attributes', builder))
         return self._global_attributes
 
+    def get_input_types(self) -> dict[str, Any]:
+        """Build input types with caching and validation."""
+        return self._get_dictified(
+            'input',
+            'input_types',
+            InputTypeTerseData,
+        )
+
     def get_all(self) -> dict[str, Any]:
         """Run all builders and return a dict of results."""
         results = {
@@ -525,6 +546,7 @@ class Normalizer:
             'elements': self.get_elements(),
             'element_kinds': self.get_element_kinds(),
             'event_handlers': self.get_event_handlers(),
+            'input_types': self.get_input_types(),
             # Plain list, not the {name: {}} dict convention the other domains use.
             'global_attributes': self.get_global_attributes(),
         }
