@@ -376,11 +376,12 @@ class Normalizer:
         try:
             result = builder()
             self._validate(key, len(result))
+        except RECOVERABLE_ERRORS as e:
+            return self._log_parse_error_and_fallback(e, key)
+        else:
             self._save_cache(key, result)
             logger.info('🏗️ Built and cached %s %s', len(result), key)
             return result
-        except RECOVERABLE_ERRORS as e:
-            return self._log_parse_error_and_fallback(e, key)
 
     def _log_parse_error_and_fallback(self, e: Exception, cache_key: str) -> dict | list | None:
         logger.error('❌ Terse data missing or unexpected shape: %s', e)
