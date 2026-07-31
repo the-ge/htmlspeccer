@@ -138,13 +138,9 @@ ATTRIBUTE_SEPARATOR_IF_CONTAINS = {
 # ---- Generators for splitting spec strings ----
 
 
-def gen_attributes(attributes: str, global_attributes: dict[str, Any]) -> Iterator[str]:
+def gen_attributes(attributes: str) -> Iterator[str]:
     for attribute in attributes.strip(string.whitespace + ';').split(';'):
-        attr = attribute.strip('*').strip()
-        if attr == 'globals':
-            yield from global_attributes
-        else:
-            yield attr
+        yield attribute.strip('*').strip()
 
 
 def gen_content_categories(categories: str) -> Iterator[str]:
@@ -331,11 +327,11 @@ def parse_content_categories(rows: Iterator[ContentCategoryTerseData]) -> Iterat
         )
 
 
-def parse_elements(rows: Iterator[ElementTerseData], global_attributes: dict[str, Any]) -> Iterator[ElementData]:
+def parse_elements(rows: Iterator[ElementTerseData]) -> Iterator[ElementData]:
     for row in rows:
         elements = gen_elements(row.element)
         categories = set(gen_content_categories(row.categories))
-        attributes = set(gen_attributes(row.attributes, global_attributes))
+        attributes = set(gen_attributes(row.attributes))
         children = set(gen_content_categories(row.children))
 
         for e in sorted(elements):
