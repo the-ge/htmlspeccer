@@ -7,4 +7,6 @@ value_enum:
 - 'on'
 value_info: ''
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/forms.html#attr-form-autocomplete
 next: autocomplete(2)

@@ -5,3 +5,7 @@ value_type: int
 value_enum: []
 value_info: Valid integer
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/grouping-content.html#attr-ol-start
+- https://html.spec.whatwg.org/multipage/grouping-content.html#concept-ol-start
+- https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#valid-integer

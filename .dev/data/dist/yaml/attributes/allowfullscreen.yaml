@@ -5,3 +5,8 @@ value_type: bool
 value_enum: []
 value_info: Boolean attribute
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/iframe-embed-object.html#attr-iframe-allowfullscreen
+- https://html.spec.whatwg.org/multipage/iframe-embed-object.html#the-iframe-element
+- https://fullscreen.spec.whatwg.org/#dom-element-requestfullscreen
+- https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#boolean-attribute

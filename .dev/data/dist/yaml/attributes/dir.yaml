@@ -7,4 +7,10 @@ value_enum:
 - rtl
 value_info: ''
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/dom.html#attr-dir
+- https://html.spec.whatwg.org/multipage/dom.html#the-directionality
+- https://html.spec.whatwg.org/multipage/dom.html#attr-dir-ltr
+- https://html.spec.whatwg.org/multipage/dom.html#attr-dir-rtl
+- https://html.spec.whatwg.org/multipage/dom.html#attr-dir-auto
 next: dir(2)

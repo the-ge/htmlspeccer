@@ -10,4 +10,11 @@ value_enum:
 - i
 value_info: ''
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/grouping-content.html#attr-ol-type
+- https://html.spec.whatwg.org/multipage/grouping-content.html#attr-ol-type-keyword-decimal
+- https://html.spec.whatwg.org/multipage/grouping-content.html#attr-ol-type-keyword-lower-alpha
+- https://html.spec.whatwg.org/multipage/grouping-content.html#attr-ol-type-keyword-upper-alpha
+- https://html.spec.whatwg.org/multipage/grouping-content.html#attr-ol-type-keyword-lower-roman
+- https://html.spec.whatwg.org/multipage/grouping-content.html#attr-ol-type-keyword-upper-roman
 next: type(6)

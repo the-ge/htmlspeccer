@@ -1,0 +1,246 @@
+{
+  "alert": {
+    "url": "https://w3c.github.io/aria/#alert",
+    "deprecated_since_version": ""
+  },
+  "alertdialog": {
+    "url": "https://w3c.github.io/aria/#alertdialog",
+    "deprecated_since_version": ""
+  },
+  "application": {
+    "url": "https://w3c.github.io/aria/#application",
+    "deprecated_since_version": ""
+  },
+  "article": {
+    "url": "https://w3c.github.io/aria/#article",
+    "deprecated_since_version": ""
+  },
+  "banner": {
+    "url": "https://w3c.github.io/aria/#banner",
+    "deprecated_since_version": ""
+  },
+  "blockquote": {
+    "url": "https://w3c.github.io/aria/#blockquote",
+    "deprecated_since_version": ""
+  },
+  "caption": {
+    "url": "https://w3c.github.io/aria/#caption",
+    "deprecated_since_version": ""
+  },
+  "cell": {
+    "url": "https://w3c.github.io/aria/#cell",
+    "deprecated_since_version": ""
+  },
+  "code": {
+    "url": "https://w3c.github.io/aria/#code",
+    "deprecated_since_version": ""
+  },
+  "columnheader": {
+    "url": "https://w3c.github.io/aria/#columnheader",
+    "deprecated_since_version": ""
+  },
+  "command": {
+    "url": "https://w3c.github.io/aria/#command",
+    "deprecated_since_version": ""
+  },
+  "comment": {
+    "url": "https://w3c.github.io/aria/#comment",
+    "deprecated_since_version": ""
+  },
+  "complementary": {
+    "url": "https://w3c.github.io/aria/#complementary",
+    "deprecated_since_version": ""
+  },
+  "composite": {
+    "url": "https://w3c.github.io/aria/#composite",
+    "deprecated_since_version": ""
+  },
+  "contentinfo": {
+    "url": "https://w3c.github.io/aria/#contentinfo",
+    "deprecated_since_version": ""
+  },
+  "definition": {
+    "url": "https://w3c.github.io/aria/#definition",
+    "deprecated_since_version": ""
+  },
+  "deletion": {
+    "url": "https://w3c.github.io/aria/#deletion",
+    "deprecated_since_version": ""
+  },
+  "dialog": {
+    "url": "https://w3c.github.io/aria/#dialog",
+    "deprecated_since_version": ""
+  },
+  "directory": {
+    "url": "https://w3c.github.io/aria/#directory",
+    "deprecated_since_version": ""
+  },
+  "document": {
+    "url": "https://w3c.github.io/aria/#document",
+    "deprecated_since_version": ""
+  },
+  "emphasis": {
+    "url": "https://w3c.github.io/aria/#emphasis",
+    "deprecated_since_version": ""
+  },
+  "feed": {
+    "url": "https://w3c.github.io/aria/#feed",
+    "deprecated_since_version": ""
+  },
+  "figure": {
+    "url": "https://w3c.github.io/aria/#figure",
+    "deprecated_since_version": ""
+  },
+  "form": {
+    "url": "https://w3c.github.io/aria/#form",
+    "deprecated_since_version": ""
+  },
+  "generic": {
+    "url": "https://w3c.github.io/aria/#generic",
+    "deprecated_since_version": ""
+  },
+  "gridcell": {
+    "url": "https://w3c.github.io/aria/#gridcell",
+    "deprecated_since_version": ""
+  },
+  "group": {
+    "url": "https://w3c.github.io/aria/#group",
+    "deprecated_since_version": ""
+  },
+  "heading": {
+    "url": "https://w3c.github.io/aria/#heading",
+    "deprecated_since_version": ""
+  },
+  "image": {
+    "url": "https://w3c.github.io/aria/#image",
+    "deprecated_since_version": ""
+  },
+  "input": {
+    "url": "https://w3c.github.io/aria/#input",
+    "deprecated_since_version": ""
+  },
+  "insertion": {
+    "url": "https://w3c.github.io/aria/#insertion",
+    "deprecated_since_version": ""
+  },
+  "list": {
+    "url": "https://w3c.github.io/aria/#list",
+    "deprecated_since_version": ""
+  },
+  "listitem": {
+    "url": "https://w3c.github.io/aria/#listitem",
+    "deprecated_since_version": ""
+  },
+  "log": {
+    "url": "https://w3c.github.io/aria/#log",
+    "deprecated_since_version": ""
+  },
+  "main": {
+    "url": "https://w3c.github.io/aria/#main",
+    "deprecated_since_version": ""
+  },
+  "mark": {
+    "url": "https://w3c.github.io/aria/#mark",
+    "deprecated_since_version": ""
+  },
+  "math": {
+    "url": "https://w3c.github.io/aria/#math",
+    "deprecated_since_version": ""
+  },
+  "meter": {
+    "url": "https://w3c.github.io/aria/#meter",
+    "deprecated_since_version": ""
+  },
+  "navigation": {
+    "url": "https://w3c.github.io/aria/#navigation",
+    "deprecated_since_version": ""
+  },
+  "none": {
+    "url": "https://w3c.github.io/aria/#none",
+    "deprecated_since_version": ""
+  },
+  "note": {
+    "url": "https://w3c.github.io/aria/#note",
+    "deprecated_since_version": ""
+  },
+  "paragraph": {
+    "url": "https://w3c.github.io/aria/#paragraph",
+    "deprecated_since_version": ""
+  },
+  "progressbar": {
+    "url": "https://w3c.github.io/aria/#progressbar",
+    "deprecated_since_version": ""
+  },
+  "region": {
+    "url": "https://w3c.github.io/aria/#region",
+    "deprecated_since_version": ""
+  },
+  "row": {
+    "url": "https://w3c.github.io/aria/#row. https://w3c.github.io/aria/#row",
+    "deprecated_since_version": ". "
+  },
+  "rowgroup": {
+    "url": "https://w3c.github.io/aria/#rowgroup",
+    "deprecated_since_version": ""
+  },
+  "rowheader": {
+    "url": "https://w3c.github.io/aria/#rowheader",
+    "deprecated_since_version": ""
+  },
+  "scrollbar": {
+    "url": "https://w3c.github.io/aria/#scrollbar",
+    "deprecated_since_version": ""
+  },
+  "search": {
+    "url": "https://w3c.github.io/aria/#search",
+    "deprecated_since_version": ""
+  },
+  "separator": {
+    "url": "https://w3c.github.io/aria/#separator. https://w3c.github.io/aria/#separator",
+    "deprecated_since_version": ". "
+  },
+  "status": {
+    "url": "https://w3c.github.io/aria/#status",
+    "deprecated_since_version": ""
+  },
+  "strong": {
+    "url": "https://w3c.github.io/aria/#strong",
+    "deprecated_since_version": ""
+  },
+  "subscript": {
+    "url": "https://w3c.github.io/aria/#subscript",
+    "deprecated_since_version": ""
+  },
+  "suggestion": {
+    "url": "https://w3c.github.io/aria/#suggestion",
+    "deprecated_since_version": ""
+  },
+  "superscript": {
+    "url": "https://w3c.github.io/aria/#superscript",
+    "deprecated_since_version": ""
+  },
+  "tab": {
+    "url": "https://w3c.github.io/aria/#tab",
+    "deprecated_since_version": ""
+  },
+  "table": {
+    "url": "https://w3c.github.io/aria/#table",
+    "deprecated_since_version": ""
+  },
+  "term": {
+    "url": "https://w3c.github.io/aria/#term",
+    "deprecated_since_version": ""
+  },
+  "time": {
+    "url": "https://w3c.github.io/aria/#time",
+    "deprecated_since_version": ""
+  },
+  "toolbar": {
+    "url": "https://w3c.github.io/aria/#toolbar",
+    "deprecated_since_version": ""
+  },
+  "tooltip": {
+    "url": "https://w3c.github.io/aria/#tooltip",
+    "deprecated_since_version": ""
+  }
+}

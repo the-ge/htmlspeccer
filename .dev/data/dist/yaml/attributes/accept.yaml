@@ -5,3 +5,8 @@ value_type: string
 value_enum: []
 value_info: Set of comma-separated tokens* consisting of valid MIME type strings with no parameters or audio/*, video/*, or image/. *Incomplete description. See the full specification.
 separator: ','
+urls:
+- https://html.spec.whatwg.org/multipage/input.html#attr-input-accept
+- https://html.spec.whatwg.org/multipage/input.html#file-upload-state-(type=file)
+- https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#set-of-comma-separated-tokens
+- https://mimesniff.spec.whatwg.org/#valid-mime-type-with-no-parameters

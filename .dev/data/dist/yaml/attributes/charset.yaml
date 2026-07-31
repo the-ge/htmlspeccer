@@ -6,3 +6,6 @@ value_enum:
 - utf-8
 value_info: ''
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/semantics.html#attr-meta-charset
+- https://html.spec.whatwg.org/multipage/semantics.html#character-encoding-declaration

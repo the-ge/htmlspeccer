@@ -5,4 +5,10 @@ value_type: string
 value_enum: []
 value_info: Unordered set of unique space-separated tokens, ASCII case-insensitive, consisting of sizes. *Incomplete description. See the full specification.
 separator: ' '
+urls:
+- https://html.spec.whatwg.org/multipage/semantics.html#attr-link-sizes
+- https://html.spec.whatwg.org/multipage/semantics.html#attr-link-rel
+- https://html.spec.whatwg.org/multipage/links.html#rel-icon
+- https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#unordered-set-of-unique-space-separated-tokens
+- https://infra.spec.whatwg.org/#ascii-case-insensitive
 next: sizes(2)

@@ -6,3 +6,9 @@ value_type: string
 value_enum: []
 value_info: Valid navigable target name or keyword
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#attr-fs-formtarget
+- https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#attr-fs-formtarget
+- https://html.spec.whatwg.org/multipage/document-sequences.html#navigable
+- https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#form-submission-2
+- https://html.spec.whatwg.org/multipage/document-sequences.html#valid-navigable-target-name-or-keyword

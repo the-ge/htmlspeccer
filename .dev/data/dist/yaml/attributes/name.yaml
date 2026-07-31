@@ -11,4 +11,15 @@ value_type: string
 value_enum: []
 value_info: Text. *Incomplete description. See the full specification.
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#attr-fe-name
+- https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#attr-fe-name
+- https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#attr-fe-name
+- https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#attr-fe-name
+- https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#attr-fe-name
+- https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#attr-fe-name
+- https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#attr-fe-name
+- https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#form-submission-2
+- https://html.spec.whatwg.org/multipage/forms.html#dom-form-elements
+- https://html.spec.whatwg.org/multipage/dom.html#attribute-text
 next: name(2)

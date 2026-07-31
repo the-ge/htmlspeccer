@@ -8,3 +8,8 @@ value_enum:
 - sync
 value_info: ''
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/embedded-content.html#attr-img-decoding
+- https://html.spec.whatwg.org/multipage/images.html#attr-img-decoding-sync
+- https://html.spec.whatwg.org/multipage/images.html#attr-img-decoding-async
+- https://html.spec.whatwg.org/multipage/images.html#attr-img-decoding-auto

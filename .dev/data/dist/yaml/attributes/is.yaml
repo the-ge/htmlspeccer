@@ -4,3 +4,8 @@ value_type: string
 value_enum: []
 value_info: Valid custom element name of a defined customized built-in element
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/custom-elements.html#attr-is
+- https://html.spec.whatwg.org/multipage/custom-elements.html#customized-built-in-element
+- https://html.spec.whatwg.org/multipage/custom-elements.html#valid-custom-element-name
+- https://html.spec.whatwg.org/multipage/custom-elements.html#customized-built-in-element

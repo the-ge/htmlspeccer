@@ -6,3 +6,8 @@ value_type: int
 value_enum: []
 value_info: Valid non-negative integer
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/input.html#attr-input-maxlength
+- https://html.spec.whatwg.org/multipage/form-elements.html#attr-textarea-maxlength
+- https://infra.spec.whatwg.org/#string-length
+- https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#valid-non-negative-integer

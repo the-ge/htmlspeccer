@@ -6,3 +6,7 @@ value_type: string
 value_enum: []
 value_info: Valid source size list
 separator: ','
+urls:
+- https://html.spec.whatwg.org/multipage/embedded-content.html#attr-img-sizes
+- https://html.spec.whatwg.org/multipage/embedded-content.html#attr-source-sizes
+- https://html.spec.whatwg.org/multipage/images.html#valid-source-size-list

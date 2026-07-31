@@ -8,4 +8,9 @@ value_enum:
 - submit
 value_info: ''
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/form-elements.html#attr-button-type
+- https://html.spec.whatwg.org/multipage/form-elements.html#attr-button-type-submit
+- https://html.spec.whatwg.org/multipage/form-elements.html#attr-button-type-reset
+- https://html.spec.whatwg.org/multipage/form-elements.html#attr-button-type-button
 next: type(3)

@@ -4,3 +4,6 @@ value_type: string
 value_enum: []
 value_info: Text
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/dom.html#the-id-attribute
+- https://html.spec.whatwg.org/multipage/dom.html#attribute-text

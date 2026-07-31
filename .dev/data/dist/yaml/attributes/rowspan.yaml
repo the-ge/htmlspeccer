@@ -6,3 +6,7 @@ value_type: int
 value_enum: []
 value_info: Valid non-negative integer
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/tables.html#attr-tdth-rowspan
+- https://html.spec.whatwg.org/multipage/tables.html#attr-tdth-rowspan
+- https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#valid-non-negative-integer

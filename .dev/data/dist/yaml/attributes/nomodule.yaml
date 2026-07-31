@@ -5,3 +5,7 @@ value_type: bool
 value_enum: []
 value_info: Boolean attribute
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/scripting.html#attr-script-nomodule
+- https://html.spec.whatwg.org/multipage/webappapis.html#module-script
+- https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#boolean-attribute

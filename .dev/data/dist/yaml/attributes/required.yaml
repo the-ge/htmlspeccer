@@ -7,3 +7,9 @@ value_type: bool
 value_enum: []
 value_info: Boolean attribute
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/input.html#attr-input-required
+- https://html.spec.whatwg.org/multipage/form-elements.html#attr-select-required
+- https://html.spec.whatwg.org/multipage/form-elements.html#attr-textarea-required
+- https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#form-submission-2
+- https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#boolean-attribute

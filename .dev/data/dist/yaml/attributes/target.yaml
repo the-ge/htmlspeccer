@@ -6,4 +6,11 @@ value_type: string
 value_enum: []
 value_info: Valid navigable target name or keyword
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/links.html#attr-hyperlink-target
+- https://html.spec.whatwg.org/multipage/links.html#attr-hyperlink-target
+- https://html.spec.whatwg.org/multipage/document-sequences.html#navigable
+- https://html.spec.whatwg.org/multipage/links.html#hyperlink
+- https://html.spec.whatwg.org/multipage/browsing-the-web.html#navigate
+- https://html.spec.whatwg.org/multipage/document-sequences.html#valid-navigable-target-name-or-keyword
 next: target(2)

@@ -11,3 +11,12 @@ value_enum:
 - send
 value_info: ''
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/interaction.html#attr-enterkeyhint
+- https://html.spec.whatwg.org/multipage/interaction.html#attr-enterkeyhint-keyword-enter
+- https://html.spec.whatwg.org/multipage/interaction.html#attr-enterkeyhint-keyword-done
+- https://html.spec.whatwg.org/multipage/interaction.html#attr-enterkeyhint-keyword-go
+- https://html.spec.whatwg.org/multipage/interaction.html#attr-enterkeyhint-keyword-next
+- https://html.spec.whatwg.org/multipage/interaction.html#attr-enterkeyhint-keyword-previous
+- https://html.spec.whatwg.org/multipage/interaction.html#attr-enterkeyhint-keyword-search
+- https://html.spec.whatwg.org/multipage/interaction.html#attr-enterkeyhint-keyword-send

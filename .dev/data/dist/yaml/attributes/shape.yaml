@@ -9,3 +9,10 @@ value_enum:
 - rect
 value_info: ''
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/image-maps.html#attr-area-shape
+- https://html.spec.whatwg.org/multipage/image-maps.html#image-map
+- https://html.spec.whatwg.org/multipage/image-maps.html#attr-area-shape-keyword-circle
+- https://html.spec.whatwg.org/multipage/image-maps.html#attr-area-shape-keyword-default
+- https://html.spec.whatwg.org/multipage/image-maps.html#attr-area-shape-keyword-poly
+- https://html.spec.whatwg.org/multipage/image-maps.html#attr-area-shape-keyword-rect

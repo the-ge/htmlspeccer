@@ -7,3 +7,6 @@ value_enum:
 - named
 value_info: ''
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/scripting.html#attr-template-shadowrootslotassignment
+- https://dom.spec.whatwg.org/#dom-shadowroot-slot-assignment

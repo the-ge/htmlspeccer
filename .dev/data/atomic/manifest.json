@@ -1,4 +1,9 @@
 {
+  "aria_roles": {
+    "status": "ok",
+    "row_count": 61,
+    "delta": 0
+  },
   "attributes": {
     "status": "ok",
     "row_count": 181,

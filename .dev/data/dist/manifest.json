@@ -7,6 +7,7 @@
     "aria": "Wed, 29 Jul 2026 08:34:38 GMT"
   },
   "counts": {
+    "aria_roles": 61,
     "attributes": 181,
     "content_categories": 15,
     "global_attributes": 32,
@@ -15,6 +16,6 @@
     "event_handlers": 89
   },
   "generator_release": "0.7.3",
-  "generator_tag": "0.7.3-8-ge1ef7cf-dirty",
-  "generator_commit_id": "e1ef7cf7f42201df1d3d9af1533c49ae5d3c103d"
+  "generator_tag": "0.7.3-20-gb290d05-dirty",
+  "generator_commit_id": "b290d05b8270e54d59b9b68d9a3b72ad799d747e"
 }

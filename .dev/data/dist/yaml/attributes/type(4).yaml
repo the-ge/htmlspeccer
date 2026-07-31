@@ -5,4 +5,7 @@ value_type: string
 value_enum: []
 value_info: input type keyword
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/input.html#attr-input-type
+- https://html.spec.whatwg.org/multipage/input.html#attr-input-type
 next: type(5)

@@ -6,3 +6,7 @@ value_type: string
 value_enum: []
 value_info: Unordered set of unique space-separated tokens consisting of IDs. *Incomplete description. See the full specification.
 separator: ' '
+urls:
+- https://html.spec.whatwg.org/multipage/tables.html#attr-tdth-headers
+- https://html.spec.whatwg.org/multipage/tables.html#attr-tdth-headers
+- https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#unordered-set-of-unique-space-separated-tokens

@@ -5,3 +5,12 @@ value_type: string
 value_enum: []
 value_info: '"toggle-popover"; "show-popover"; "hide-popover"; "close"; "request-close"; "show-modal"; a custom command keyword'
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/form-elements.html#attr-button-command
+- https://html.spec.whatwg.org/multipage/form-elements.html#attr-button-command-toggle-popover
+- https://html.spec.whatwg.org/multipage/form-elements.html#attr-button-command-show-popover
+- https://html.spec.whatwg.org/multipage/form-elements.html#attr-button-command-hide-popover
+- https://html.spec.whatwg.org/multipage/form-elements.html#attr-button-command-close
+- https://html.spec.whatwg.org/multipage/form-elements.html#attr-button-command-request-close
+- https://html.spec.whatwg.org/multipage/form-elements.html#attr-button-command-show-modal
+- https://html.spec.whatwg.org/multipage/form-elements.html#attr-button-command-custom

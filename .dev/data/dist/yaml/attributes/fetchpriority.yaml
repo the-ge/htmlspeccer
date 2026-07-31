@@ -10,3 +10,12 @@ value_enum:
 - low
 value_info: ''
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/embedded-content.html#attr-img-fetchpriority
+- https://html.spec.whatwg.org/multipage/semantics.html#attr-link-fetchpriority
+- https://html.spec.whatwg.org/multipage/scripting.html#attr-script-fetchpriority
+- https://fetch.spec.whatwg.org/#request-priority
+- https://fetch.spec.whatwg.org/#concept-fetch
+- https://html.spec.whatwg.org/multipage/urls-and-fetching.html#attr-fetchpriority-auto
+- https://html.spec.whatwg.org/multipage/urls-and-fetching.html#attr-fetchpriority-high
+- https://html.spec.whatwg.org/multipage/urls-and-fetching.html#attr-fetchpriority-low

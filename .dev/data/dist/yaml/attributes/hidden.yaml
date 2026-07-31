@@ -7,3 +7,7 @@ value_enum:
 - until-found
 value_info: ''
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/interaction.html#attr-hidden
+- https://html.spec.whatwg.org/multipage/interaction.html#attr-hidden-until-found
+- https://html.spec.whatwg.org/multipage/interaction.html#attr-hidden

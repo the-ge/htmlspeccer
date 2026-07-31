@@ -7,3 +7,8 @@ value_type: bool
 value_enum: []
 value_info: Boolean attribute
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/media.html#attr-media-controls
+- https://html.spec.whatwg.org/multipage/media.html#attr-media-controls
+- https://html.spec.whatwg.org/multipage/embedded-content.html#attr-img-controls
+- https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#boolean-attribute

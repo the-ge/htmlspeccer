@@ -7,3 +7,7 @@ value_enum:
 - 'on'
 value_info: ''
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/interaction.html#attr-autocorrect
+- https://html.spec.whatwg.org/multipage/interaction.html#attr-autocorrect-on
+- https://html.spec.whatwg.org/multipage/interaction.html#attr-autocorrect-off

@@ -5,3 +5,15 @@ value_type: string
 value_enum: []
 value_info: Valid month string, valid date string, valid yearless date string, valid time string, valid local date and time string, valid time-zone offset string, valid global date and time string, valid week string, valid non-negative integer, or valid duration string
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/text-level-semantics.html#attr-time-datetime
+- https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#valid-month-string
+- https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#valid-date-string
+- https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#valid-yearless-date-string
+- https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#valid-time-string
+- https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#valid-local-date-and-time-string
+- https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#valid-time-zone-offset-string
+- https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#valid-global-date-and-time-string
+- https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#valid-week-string
+- https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#valid-non-negative-integer
+- https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#valid-duration-string

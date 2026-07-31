@@ -12,3 +12,11 @@ value_enum:
 - use-credentials
 value_info: ''
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/media.html#attr-media-crossorigin
+- https://html.spec.whatwg.org/multipage/embedded-content.html#attr-img-crossorigin
+- https://html.spec.whatwg.org/multipage/semantics.html#attr-link-crossorigin
+- https://html.spec.whatwg.org/multipage/scripting.html#attr-script-crossorigin
+- https://html.spec.whatwg.org/multipage/media.html#attr-media-crossorigin
+- https://html.spec.whatwg.org/multipage/urls-and-fetching.html#attr-crossorigin-anonymous-keyword
+- https://html.spec.whatwg.org/multipage/urls-and-fetching.html#attr-crossorigin-use-credentials-keyword

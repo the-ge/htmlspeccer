@@ -5,3 +5,15 @@ value_type: string
 value_enum: []
 value_info: Preload destination, for rel="preload"; module preload destination, for rel="modulepreload"
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/semantics.html#attr-link-as
+- https://html.spec.whatwg.org/multipage/semantics.html#attr-link-rel
+- https://html.spec.whatwg.org/multipage/links.html#link-type-preload
+- https://html.spec.whatwg.org/multipage/semantics.html#attr-link-rel
+- https://html.spec.whatwg.org/multipage/links.html#link-type-modulepreload
+- https://html.spec.whatwg.org/multipage/links.html#preload-destination
+- https://html.spec.whatwg.org/multipage/semantics.html#attr-link-rel
+- https://html.spec.whatwg.org/multipage/links.html#link-type-preload
+- https://html.spec.whatwg.org/multipage/links.html#module-preload-destination
+- https://html.spec.whatwg.org/multipage/semantics.html#attr-link-rel
+- https://html.spec.whatwg.org/multipage/links.html#link-type-modulepreload

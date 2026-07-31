@@ -7,3 +7,5 @@ value_enum:
 - open
 value_info: ''
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/scripting.html#attr-template-shadowrootmode

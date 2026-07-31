@@ -4,3 +4,7 @@ value_type: bool
 value_enum: []
 value_info: Boolean attribute
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/interaction.html#the-inert-attribute
+- https://html.spec.whatwg.org/multipage/interaction.html#inert
+- https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#boolean-attribute

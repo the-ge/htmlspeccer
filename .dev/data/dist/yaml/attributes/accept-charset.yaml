@@ -5,3 +5,7 @@ value_type: string
 value_enum: []
 value_info: ASCII case-insensitive match for "UTF-8"
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/forms.html#attr-form-accept-charset
+- https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#form-submission-2
+- https://infra.spec.whatwg.org/#ascii-case-insensitive

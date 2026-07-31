@@ -6,3 +6,7 @@ value_type: string
 value_enum: []
 value_info: Text. *Incomplete description. See the full specification.
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/input.html#attr-input-placeholder
+- https://html.spec.whatwg.org/multipage/form-elements.html#attr-textarea-placeholder
+- https://html.spec.whatwg.org/multipage/dom.html#attribute-text

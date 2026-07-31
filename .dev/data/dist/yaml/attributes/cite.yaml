@@ -8,3 +8,9 @@ value_type: string
 value_enum: []
 value_info: Valid URL potentially surrounded by spaces
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/grouping-content.html#attr-blockquote-cite
+- https://html.spec.whatwg.org/multipage/edits.html#attr-mod-cite
+- https://html.spec.whatwg.org/multipage/edits.html#attr-mod-cite
+- https://html.spec.whatwg.org/multipage/text-level-semantics.html#attr-q-cite
+- https://html.spec.whatwg.org/multipage/urls-and-fetching.html#valid-url-potentially-surrounded-by-spaces

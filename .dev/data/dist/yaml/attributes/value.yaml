@@ -6,4 +6,9 @@ value_type: string
 value_enum: []
 value_info: Text
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/form-elements.html#attr-button-value
+- https://html.spec.whatwg.org/multipage/form-elements.html#attr-option-value
+- https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#form-submission-2
+- https://html.spec.whatwg.org/multipage/dom.html#attribute-text
 next: value(2)

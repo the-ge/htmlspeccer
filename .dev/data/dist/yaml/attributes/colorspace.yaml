@@ -7,3 +7,7 @@ value_enum:
 - limited-srgb
 value_info: ''
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/input.html#attr-input-colorspace
+- https://html.spec.whatwg.org/multipage/input.html#attr-input-colorspace-limited-srgb
+- https://html.spec.whatwg.org/multipage/input.html#attr-input-colorspace-display-p3

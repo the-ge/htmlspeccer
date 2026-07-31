@@ -10,3 +10,10 @@ value_enum:
 - none
 value_info: ''
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/media.html#attr-media-preload
+- https://html.spec.whatwg.org/multipage/media.html#attr-media-preload
+- https://html.spec.whatwg.org/multipage/media.html#media-resource
+- https://html.spec.whatwg.org/multipage/media.html#attr-media-preload-none
+- https://html.spec.whatwg.org/multipage/media.html#attr-media-preload-metadata
+- https://html.spec.whatwg.org/multipage/media.html#attr-media-preload-auto

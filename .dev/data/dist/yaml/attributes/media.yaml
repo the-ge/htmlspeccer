@@ -8,3 +8,9 @@ value_type: string
 value_enum: []
 value_info: Valid media query list
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/semantics.html#attr-link-media
+- https://html.spec.whatwg.org/multipage/semantics.html#attr-meta-media
+- https://html.spec.whatwg.org/multipage/embedded-content.html#attr-source-media
+- https://html.spec.whatwg.org/multipage/semantics.html#attr-style-media
+- https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#valid-media-query-list

@@ -8,3 +8,10 @@ value_enum:
 - text/plain
 value_info: ''
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#attr-fs-enctype
+- https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#entry-list
+- https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#form-submission-2
+- https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#attr-fs-enctype-urlencoded
+- https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#attr-fs-enctype-formdata
+- https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#attr-fs-enctype-text

@@ -9,3 +9,9 @@ value_enum:
 - toggle
 value_info: ''
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/popover.html#attr-popovertargetaction
+- https://html.spec.whatwg.org/multipage/popover.html#attr-popovertargetaction
+- https://html.spec.whatwg.org/multipage/popover.html#attr-popovertargetaction-toggle
+- https://html.spec.whatwg.org/multipage/popover.html#attr-popovertargetaction-show
+- https://html.spec.whatwg.org/multipage/popover.html#attr-popovertargetaction-hide

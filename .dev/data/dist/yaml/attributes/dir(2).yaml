@@ -7,3 +7,8 @@ value_enum:
 - rtl
 value_info: ''
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/text-level-semantics.html#the-bdo-element
+- https://html.spec.whatwg.org/multipage/dom.html#the-directionality
+- https://html.spec.whatwg.org/multipage/dom.html#attr-dir-ltr
+- https://html.spec.whatwg.org/multipage/dom.html#attr-dir-rtl

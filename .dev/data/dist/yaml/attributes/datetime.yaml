@@ -6,4 +6,8 @@ value_type: datetime
 value_enum: []
 value_info: Valid date string with optional time
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/edits.html#attr-mod-datetime
+- https://html.spec.whatwg.org/multipage/edits.html#attr-mod-datetime
+- https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#valid-date-string-with-optional-time
 next: datetime(2)

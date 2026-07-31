@@ -10,3 +10,10 @@ value_enum:
 - x-ua-compatible
 value_info: ''
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/semantics.html#attr-meta-http-equiv
+- https://html.spec.whatwg.org/multipage/semantics.html#attr-meta-http-equiv-keyword-content-type
+- https://html.spec.whatwg.org/multipage/semantics.html#attr-meta-http-equiv-keyword-default-style
+- https://html.spec.whatwg.org/multipage/semantics.html#attr-meta-http-equiv-keyword-refresh
+- https://html.spec.whatwg.org/multipage/semantics.html#attr-meta-http-equiv-keyword-x-ua-compatible
+- https://html.spec.whatwg.org/multipage/semantics.html#attr-meta-http-equiv-keyword-content-security-policy

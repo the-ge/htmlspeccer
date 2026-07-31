@@ -12,3 +12,14 @@ value_type: int
 value_enum: []
 value_info: 'Valid non-negative integer. Special tag scope: source (in picture). *Incomplete description. See the full specification.'
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/canvas.html#attr-canvas-width
+- https://html.spec.whatwg.org/multipage/embedded-content-other.html#attr-dim-width
+- https://html.spec.whatwg.org/multipage/embedded-content-other.html#attr-dim-width
+- https://html.spec.whatwg.org/multipage/embedded-content-other.html#attr-dim-width
+- https://html.spec.whatwg.org/multipage/embedded-content-other.html#attr-dim-width
+- https://html.spec.whatwg.org/multipage/embedded-content-other.html#attr-dim-width
+- https://html.spec.whatwg.org/multipage/embedded-content-other.html#attr-dim-width
+- https://html.spec.whatwg.org/multipage/embedded-content.html#the-picture-element
+- https://html.spec.whatwg.org/multipage/embedded-content-other.html#attr-dim-width
+- https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#valid-non-negative-integer

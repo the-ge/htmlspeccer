@@ -5,3 +5,6 @@ value_type: float
 value_enum: []
 value_info: Valid floating-point number. *Incomplete description. See the full specification.
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/form-elements.html#attr-meter-min
+- https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#valid-floating-point-number

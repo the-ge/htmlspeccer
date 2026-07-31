@@ -8,3 +8,5 @@ value_enum:
 - 'true'
 value_info: ''
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/interaction.html#attr-contenteditable

@@ -4,3 +4,9 @@ value_type: string
 value_enum: []
 value_info: Unordered set of unique space-separated tokens consisting of valid absolute URLs, defined property names, or text. *Incomplete description. See the full specification.
 separator: ' '
+urls:
+- https://html.spec.whatwg.org/multipage/microdata.html#names:-the-itemprop-attribute
+- https://html.spec.whatwg.org/multipage/microdata.html#property-names
+- https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#unordered-set-of-unique-space-separated-tokens
+- https://url.spec.whatwg.org/#syntax-url-absolute
+- https://html.spec.whatwg.org/multipage/microdata.html#defined-property-name

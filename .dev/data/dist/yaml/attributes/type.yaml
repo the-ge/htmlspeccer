@@ -6,4 +6,8 @@ value_type: string
 value_enum: []
 value_info: Valid MIME type string
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/links.html#attr-hyperlink-type
+- https://html.spec.whatwg.org/multipage/semantics.html#attr-link-type
+- https://mimesniff.spec.whatwg.org/#valid-mime-type
 next: type(2)

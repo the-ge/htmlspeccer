@@ -27,3 +27,4 @@ value_enum:
 - week
 value_info: An input type e.g. "text", "number", or "week".
 separator: ''
+urls: []

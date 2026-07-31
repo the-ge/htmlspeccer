@@ -10,3 +10,13 @@ value_type: string
 value_enum: []
 value_info: Referrer policy
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/links.html#attr-hyperlink-referrerpolicy
+- https://html.spec.whatwg.org/multipage/links.html#attr-hyperlink-referrerpolicy
+- https://html.spec.whatwg.org/multipage/iframe-embed-object.html#attr-iframe-referrerpolicy
+- https://html.spec.whatwg.org/multipage/embedded-content.html#attr-img-referrerpolicy
+- https://html.spec.whatwg.org/multipage/semantics.html#attr-link-referrerpolicy
+- https://html.spec.whatwg.org/multipage/scripting.html#attr-script-referrerpolicy
+- https://w3c.github.io/webappsec-referrer-policy/#referrer-policy
+- https://fetch.spec.whatwg.org/#concept-fetch
+- https://w3c.github.io/webappsec-referrer-policy/#referrer-policy

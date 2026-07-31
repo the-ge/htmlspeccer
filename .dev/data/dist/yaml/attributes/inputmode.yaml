@@ -12,3 +12,13 @@ value_enum:
 - url
 value_info: ''
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/interaction.html#attr-inputmode
+- https://html.spec.whatwg.org/multipage/interaction.html#attr-inputmode-keyword-none
+- https://html.spec.whatwg.org/multipage/interaction.html#attr-inputmode-keyword-text
+- https://html.spec.whatwg.org/multipage/interaction.html#attr-inputmode-keyword-tel
+- https://html.spec.whatwg.org/multipage/interaction.html#attr-inputmode-keyword-email
+- https://html.spec.whatwg.org/multipage/interaction.html#attr-inputmode-keyword-url
+- https://html.spec.whatwg.org/multipage/interaction.html#attr-inputmode-keyword-numeric
+- https://html.spec.whatwg.org/multipage/interaction.html#attr-inputmode-keyword-decimal
+- https://html.spec.whatwg.org/multipage/interaction.html#attr-inputmode-keyword-search

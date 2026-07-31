@@ -10,3 +10,11 @@ value_enum:
 - words
 value_info: ''
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/interaction.html#attr-autocapitalize
+- https://html.spec.whatwg.org/multipage/interaction.html#attr-autocapitalize-on
+- https://html.spec.whatwg.org/multipage/interaction.html#attr-autocapitalize-off
+- https://html.spec.whatwg.org/multipage/interaction.html#attr-autocapitalize-none
+- https://html.spec.whatwg.org/multipage/interaction.html#attr-autocapitalize-sentences
+- https://html.spec.whatwg.org/multipage/interaction.html#attr-autocapitalize-words
+- https://html.spec.whatwg.org/multipage/interaction.html#attr-autocapitalize-characters

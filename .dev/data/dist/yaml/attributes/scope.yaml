@@ -9,3 +9,9 @@ value_enum:
 - rowgroup
 value_info: ''
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/tables.html#attr-th-scope
+- https://html.spec.whatwg.org/multipage/tables.html#attr-th-scope-row
+- https://html.spec.whatwg.org/multipage/tables.html#attr-th-scope-col
+- https://html.spec.whatwg.org/multipage/tables.html#attr-th-scope-rowgroup
+- https://html.spec.whatwg.org/multipage/tables.html#attr-th-scope-colgroup

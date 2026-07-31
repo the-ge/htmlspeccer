@@ -7,3 +7,8 @@ value_type: string
 value_enum: []
 value_info: Text. *Incomplete description. See the full specification.
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/image-maps.html#attr-area-alt
+- https://html.spec.whatwg.org/multipage/embedded-content.html#attr-img-alt
+- https://html.spec.whatwg.org/multipage/input.html#attr-input-alt
+- https://html.spec.whatwg.org/multipage/dom.html#attribute-text

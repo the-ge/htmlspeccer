@@ -5,3 +5,5 @@ value_type: string
 value_enum: []
 value_info: Valid BCP 47 language tag
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/media.html#attr-track-srclang

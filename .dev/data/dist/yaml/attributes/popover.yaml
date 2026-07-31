@@ -8,3 +8,9 @@ value_enum:
 - manual
 value_info: ''
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/popover.html#attr-popover
+- https://html.spec.whatwg.org/multipage/popover.html#attr-popover
+- https://html.spec.whatwg.org/multipage/popover.html#attr-popover-auto
+- https://html.spec.whatwg.org/multipage/popover.html#attr-popover-manual
+- https://html.spec.whatwg.org/multipage/popover.html#attr-popover-hint

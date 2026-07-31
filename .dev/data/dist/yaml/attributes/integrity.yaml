@@ -6,3 +6,8 @@ value_type: string
 value_enum: []
 value_info: Text
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/semantics.html#attr-link-integrity
+- https://html.spec.whatwg.org/multipage/scripting.html#attr-script-integrity
+- https://html.spec.whatwg.org/multipage/references.html#refsSRI
+- https://html.spec.whatwg.org/multipage/dom.html#attribute-text

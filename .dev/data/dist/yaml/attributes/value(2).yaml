@@ -5,4 +5,7 @@ value_type: string
 value_enum: []
 value_info: Text. *Incomplete description. See the full specification.
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/text-level-semantics.html#attr-data-value
+- https://html.spec.whatwg.org/multipage/dom.html#attribute-text
 next: value(3)

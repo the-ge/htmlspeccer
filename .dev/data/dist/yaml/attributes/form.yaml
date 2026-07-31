@@ -12,3 +12,14 @@ value_type: string
 value_enum: []
 value_info: ID. *Incomplete description. See the full specification.
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#attr-fae-form
+- https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#attr-fae-form
+- https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#attr-fae-form
+- https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#attr-fae-form
+- https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#attr-fae-form
+- https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#attr-fae-form
+- https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#attr-fae-form
+- https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#attr-fae-form
+- https://html.spec.whatwg.org/multipage/forms.html#the-form-element
+- https://dom.spec.whatwg.org/#concept-id

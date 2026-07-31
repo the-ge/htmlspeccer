@@ -7,3 +7,5 @@ value_enum:
 - 'yes'
 value_info: ''
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/dom.html#attr-translate

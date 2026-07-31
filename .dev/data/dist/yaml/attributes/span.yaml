@@ -6,3 +6,7 @@ value_type: int
 value_enum: []
 value_info: Valid non-negative integer greater than zero
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/tables.html#attr-col-span
+- https://html.spec.whatwg.org/multipage/tables.html#attr-colgroup-span
+- https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#valid-non-negative-integer

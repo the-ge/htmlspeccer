@@ -10,3 +10,10 @@ value_enum:
 - subtitles
 value_info: ''
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/media.html#attr-track-kind
+- https://html.spec.whatwg.org/multipage/media.html#attr-track-kind-keyword-subtitles
+- https://html.spec.whatwg.org/multipage/media.html#attr-track-kind-keyword-captions
+- https://html.spec.whatwg.org/multipage/media.html#attr-track-kind-keyword-descriptions
+- https://html.spec.whatwg.org/multipage/media.html#attr-track-kind-keyword-chapters
+- https://html.spec.whatwg.org/multipage/media.html#attr-track-kind-keyword-metadata

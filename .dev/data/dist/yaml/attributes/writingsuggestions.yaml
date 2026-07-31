@@ -7,3 +7,7 @@ value_enum:
 - 'true'
 value_info: ''
 separator: ''
+urls:
+- https://html.spec.whatwg.org/multipage/interaction.html#attr-writingsuggestions
+- https://html.spec.whatwg.org/multipage/interaction.html#attr-writingsuggestions-true
+- https://html.spec.whatwg.org/multipage/interaction.html#attr-writingsuggestions-false
