@@ -67,17 +67,17 @@ class ElementData:
 
 
 @dataclass(frozen=True, slots=True)
-class EventHandlerData:
-    name: str
-    applies_to: str = ''
-    urls: set[str] = field(default_factory=set)
-
-
-@dataclass(frozen=True, slots=True)
 class ElementKindData:
     name: str
     tags: set[str] = field(default_factory=set)
     info: str = ''
+
+
+@dataclass(frozen=True, slots=True)
+class EventHandlerData:
+    name: str
+    applies_to: str = ''
+    urls: set[str] = field(default_factory=set)
 
 
 @dataclass(frozen=True, slots=True)
