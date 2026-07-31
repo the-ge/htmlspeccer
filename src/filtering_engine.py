@@ -87,6 +87,14 @@ HTML_CELL_COUNT = {
     'input_types':        4,
 }
 
+# Base URL for relative spec links
+_SPEC_BASE_URL = 'https://html.spec.whatwg.org/multipage/'
+
+
+def _normalize_spec_url(href: str) -> str:
+    """Prefix relative spec URLs with the multipage base."""
+    return href if href.startswith('https://') else _SPEC_BASE_URL + href
+
 
 # ---- Per-section filters ----
 # Each function filters literal cell/anchor text out of the soup, stripped of
@@ -132,7 +140,7 @@ def filter_attributes(soup: BeautifulSoup) -> Iterator[AttributeTerseData]:
             logger.error('❌ Expected %s cells, got %s. Skipping row: %s', count, len(cells), row)
             continue
         attribute, elements, description, value = cells
-        urls = [('' if x['href'].strip().startswith('https://') else 'https://html.spec.whatwg.org/multipage/') + x['href'].strip() for x in row.find_all('a')]
+        urls = [_normalize_spec_url(x['href'].strip()) for x in row.find_all('a')]
         yield AttributeTerseData(
             attribute=attribute,
             elements=elements,
@@ -212,7 +220,7 @@ def filter_event_handlers(soup: BeautifulSoup) -> Iterator[EventHandlerTerseData
             logger.error('❌ Expected %s cells, got %s. Skipping row: %s', count, len(cells), row)
             continue
         attribute, elements, _, _ = cells
-        urls = [('' if x['href'].strip().startswith('https://') else 'https://html.spec.whatwg.org/multipage/') + x['href'].strip() for x in row.find_all('a')]
+        urls = [_normalize_spec_url(x['href'].strip()) for x in row.find_all('a')]
         yield EventHandlerTerseData(
             attribute=attribute,
             elements=elements,
