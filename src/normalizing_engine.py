@@ -122,7 +122,7 @@ ATTRIBUTE_SEPARATOR_IF_EQUALS = {
 }
 
 ATTRIBUTE_SEPARATOR_IF_CONTAINS = {
-    'space-separated tokens':                      ' ',
+    'space-separated tokens':                       ' ',
     'ordered set of unique space-separated tokens': ' ',
     'comma-separated list of':                      ',',
     'set of comma-separated tokens':                ',',
@@ -237,7 +237,7 @@ def _parse_attribute_info(elements_info: str, value_info: str) -> tuple[set[str]
             elements_notes.append(token)
         else:
             elements_set.add(tmp)
-    elements_notes = '' if elements_notes == [] else f'Special tag scope: {", ".join(elements_notes)}'
+    elements_notes = '' if not elements_notes else f'Special tag scope: {", ".join(elements_notes)}'
     return elements_set, elements_notes, value_type, value_info, is_complicated
 
 
