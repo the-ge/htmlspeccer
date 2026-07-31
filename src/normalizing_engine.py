@@ -4,7 +4,7 @@ import re
 import string
 import sys
 from collections.abc import Callable, Iterator
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
@@ -32,42 +32,42 @@ logger = logging.getLogger(__name__)
 @dataclass(frozen=True, slots=True)
 class AttributeData:
     name: str
-    tag_scope: set[str]
-    description: str
-    value_type: str
-    value_enum: set[str]
-    value_info: str
-    separator: str
+    tag_scope: set[str] = field(default_factory=set)
+    description: str = ''
+    value_type: str = 'string'
+    value_enum: set[str] = field(default_factory=set)
+    value_info: str = ''
+    separator: str = ''
 
 
 @dataclass(frozen=True, slots=True)
 class ContentCategoryData:
     name: str
-    elements: set[str]
-    elements_maybe: list[str]
-    exceptions: str
+    elements: set[str] = field(default_factory=set)
+    elements_maybe: list[str] = field(default_factory=list)
+    exceptions: str = ''
 
 
 @dataclass(frozen=True, slots=True)
 class ElementData:
     name: str
-    description: str
-    categories: set[str]
-    attributes: set[str]
-    children: set[str]
+    description: str = ''
+    categories: set[str] = field(default_factory=set)
+    attributes: set[str] = field(default_factory=set)
+    children: set[str] = field(default_factory=set)
 
 
 @dataclass(frozen=True, slots=True)
 class EventHandlerData:
     name: str
-    applies_to: str
+    applies_to: str = ''
 
 
 @dataclass(frozen=True, slots=True)
 class ElementKindData:
     name: str
-    tags: set[str]
-    info: str
+    tags: set[str] = field(default_factory=set)
+    info: str = ''
 
 
 # Match a list of one-or-more keywords such as `"foo"; "bar"; "the empty string"`
