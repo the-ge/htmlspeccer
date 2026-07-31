@@ -463,11 +463,11 @@ class Normalizer:
         return entry
 
     def _get_dictified(
-        self, page: str, section: str, cls: type, *, merge: bool = True, **parser_kwargs: set[str]
+        self, page: str, section: str, cls: type, *, merge: bool = True
     ) -> dict[str, Any]:
         def builder() -> dict[str, Any]:
             parser = getattr(sys.modules[__name__], f'parse_{section}')
-            entries = list(parse_section(self.terse_data_dir, page, section, cls, parser, **parser_kwargs))
+            entries = list(parse_section(self.terse_data_dir, page, section, cls, parser))
             self.emender.emend_normalizing_section(section, entries)
             return dictify(entries, merge=merge)
 
