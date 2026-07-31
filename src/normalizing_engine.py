@@ -30,6 +30,13 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True, slots=True)
+class AriaRoleData:
+    name: str
+    url: str = ''
+    deprecated_since_version: str = ''
+
+
+@dataclass(frozen=True, slots=True)
 class AttributeData:
     name: str
     tag_scope: set[str] = field(default_factory=set)
@@ -191,9 +198,13 @@ def split_splittables(text: str, context: str) -> str:
 # Each function takes the terse data rows for its section (read from TERSE_DATA_DIR by Normalizer).
 
 
-def parse_aria_roles(rows: Iterator[AriaRoleTerseData]) -> Iterator[str]:
+def parse_aria_roles(rows: Iterator[AriaRoleTerseData]) -> Iterator[AriaRoleData]:
     for row in rows:
-        yield row.name
+        yield AriaRoleData(
+            name=row.name,
+            url=row.url,
+            deprecated_since_version=row.deprecated_since_version,
+        )
 
 
 def _parse_attribute_info(elements_info: str, value_info: str) -> tuple[set, str, bool]:
@@ -433,6 +444,14 @@ class Normalizer:
 
     # ---- public builders ----
 
+    def get_aria_roles(self) -> dict[str, Any]:
+        """Build ARIA roles with caching and validation."""
+        return self._get_dictified(
+            'aria',
+            'aria_roles',
+            AriaRoleTerseData,
+        )
+
     def get_attributes(self) -> dict[str, Any]:
         """Build attributes with caching and validation."""
         return self._get_dictified(
@@ -497,6 +516,7 @@ class Normalizer:
     def get_all(self) -> dict[str, Any]:
         """Run all builders and return a dict of results."""
         results = {
+            'aria_roles': self.get_aria_roles(),
             'attributes': self.get_attributes(),
             'content_categories': self.get_content_categories(),
             'elements': self.get_elements(),

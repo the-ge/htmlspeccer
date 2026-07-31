@@ -8,12 +8,11 @@ def emend(section: str, data: list) -> bool:
     if section != 'attributes':
         return False
 
+    parsed = parse_section(TERSE_DATA_DIR, 'aria', 'aria_roles', AriaRoleTerseData, parse_aria_roles)
     data.append(AttributeData(
         name='role',
         description='ARIA semantic role',
-        value_enum=set(parse_section(
-            TERSE_DATA_DIR, 'aria', 'aria_roles', AriaRoleTerseData, parse_aria_roles,
-        )),
+        value_enum={role.name for role in parsed},
         separator=' ',
     ))
     return True
