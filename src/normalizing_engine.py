@@ -391,7 +391,6 @@ class Normalizer:
         self.terse_data_dir = terse_data_dir
         self.cache_dir = cache_dir
         self.emender = emender if emender is not None else Emender(domain='normalize')
-        self._global_attributes: dict[str, Any] | None = None
         self._manifest: dict[str, dict] = {}  # populated by _validate(), collected by get_all()
 
     # ---- internal helpers ----
@@ -525,16 +524,12 @@ class Normalizer:
         )
 
     def get_global_attributes(self) -> dict[str, Any]:
-        """Build global attributes with caching and validation.
-        Memoized on instance, get_elements() and get_all() both depend on this.
-        """
-        if self._global_attributes is None:
-            self._global_attributes = self._get_dictified(
-                'dom',
-                'global_attributes',
-                GlobalAttributeTerseData,
-            )
-        return self._global_attributes
+        """Build global attributes with caching and validation."""
+        return self._get_dictified(
+            'dom',
+            'global_attributes',
+            GlobalAttributeTerseData,
+        )
 
     def get_input_types(self) -> dict[str, Any]:
         """Build input types with caching and validation."""
