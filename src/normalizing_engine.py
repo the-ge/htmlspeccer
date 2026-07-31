@@ -435,11 +435,20 @@ class Normalizer:
 
     def get_attributes(self) -> dict[str, Any]:
         """Build attributes with caching and validation."""
-        return self._get_dictified('indices', 'attributes', AttributeTerseData, merge=False)
+        return self._get_dictified(
+            'indices',
+            'attributes',
+            AttributeTerseData,
+            merge=False,
+        )
 
     def get_content_categories(self) -> dict[str, Any]:
         """Build content categories with caching and validation."""
-        return self._get_dictified('indices', 'content_categories', ContentCategoryTerseData)
+        return self._get_dictified(
+            'indices',
+            'content_categories',
+            ContentCategoryTerseData,
+        )
 
     def get_elements(self) -> dict[str, Any]:
         """Build elements with caching and validation."""
@@ -452,11 +461,19 @@ class Normalizer:
 
     def get_element_kinds(self) -> dict[str, Any]:
         """Build element types with caching and validation."""
-        return self._get_dictified('syntax', 'element_kinds', ElementKindTerseData)
+        return self._get_dictified(
+            'syntax',
+            'element_kinds',
+            ElementKindTerseData,
+        )
 
     def get_event_handlers(self) -> dict[str, Any]:
         """Build event handlers with caching and validation."""
-        return self._get_dictified('indices', 'event_handlers', EventHandlerTerseData)
+        return self._get_dictified(
+            'indices',
+            'event_handlers',
+            EventHandlerTerseData,
+        )
 
     def get_global_attributes(self) -> set[str]:
         """Build or load cached global attributes. Memoized on instance, get_elements() and get_all() both depend on this."""
@@ -465,7 +482,11 @@ class Normalizer:
 
         def builder() -> set[str]:
             return parse_section(
-                self.terse_data_dir, 'dom', 'global_attributes', GlobalAttributeTerseData, parse_global_attributes
+                self.terse_data_dir,
+                'dom',
+                'global_attributes',
+                GlobalAttributeTerseData,
+                parse_global_attributes,
             )
 
         # _build_cached returns a set from builder(), but a list when falling back to the JSON cache
