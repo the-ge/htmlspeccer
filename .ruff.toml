@@ -1,5 +1,5 @@
 extend = "$RUFF_SHARED_CFGFILE"
-cache-dir = ".dev/cache/ruff"
+cache-dir = ".dev/tmp/ruff"
 
 [lint]
 ignore = [
