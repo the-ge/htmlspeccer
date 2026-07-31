@@ -353,14 +353,6 @@ class Normalizer:
 
     # ---- internal helpers ----
 
-    def _cache(self, key: str, count: int, result: dict | set) -> dict | set:
-        """Persist `result` for `key` unconditionally and log success.
-        Assumes `_validate()` already ran -- this method only persists.
-        """
-        self._save_cache(key, result)
-        logger.info('🏗️ Built and cached %s %s', count, key)
-        return result
-
     def _save_cache(self, key: str, data: dict | set) -> None:
         """Save a Python object to the cache directory as JSON."""
         self.cache_dir.mkdir(parents=True, exist_ok=True)
@@ -384,7 +376,9 @@ class Normalizer:
         try:
             result = builder()
             self._validate(key, len(result))
-            return self._cache(key, len(result), result)
+            self._save_cache(key, result)
+            logger.info('🏗️ Built and cached %s %s', len(result), key)
+            return result
         except RECOVERABLE_ERRORS as e:
             return self._log_parse_error_and_fallback(e, key)
 
