@@ -1,0 +1,3 @@
+value_type: A numerical value, with the extra semantic that the exact value is not important
+control_type: A slider control or similar
+url: https://html.spec.whatwg.org/dev/input.html#range-state-(type=range)

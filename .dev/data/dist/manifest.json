@@ -13,9 +13,10 @@
     "global_attributes": 32,
     "elements": 115,
     "element_kinds": 6,
-    "event_handlers": 89
+    "event_handlers": 89,
+    "input_types": 22
   },
   "generator_release": "0.7.3",
-  "generator_tag": "0.7.3-23-g52acc63-dirty",
-  "generator_commit_id": "52acc63094009f38de0587e1a6a646a8051b50da"
+  "generator_tag": "0.7.3-26-ge83f208-dirty",
+  "generator_commit_id": "e83f208b5e1f5a09e9046f2e6f44b8fa597a3ea3"
 }

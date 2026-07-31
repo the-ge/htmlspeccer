@@ -1,0 +1,3 @@
+value_type: Zero or more files each with a MIME type and optionally a filename
+control_type: A label and a button
+url: https://html.spec.whatwg.org/dev/input.html#file-upload-state-(type=file)

@@ -3071,7 +3071,29 @@
     ],
     "value_info": "An input type e.g. \"text\", \"number\", or \"week\".",
     "separator": "",
-    "urls": []
+    "urls": [
+      "https://html.spec.whatwg.org/dev/input.html#button-state-(type=button)",
+      "https://html.spec.whatwg.org/dev/input.html#checkbox-state-(type=checkbox)",
+      "https://html.spec.whatwg.org/dev/input.html#color-state-(type=color)",
+      "https://html.spec.whatwg.org/dev/input.html#date-state-(type=date)",
+      "https://html.spec.whatwg.org/dev/input.html#email-state-(type=email)",
+      "https://html.spec.whatwg.org/dev/input.html#file-upload-state-(type=file)",
+      "https://html.spec.whatwg.org/dev/input.html#hidden-state-(type=hidden)",
+      "https://html.spec.whatwg.org/dev/input.html#image-button-state-(type=image)",
+      "https://html.spec.whatwg.org/dev/input.html#local-date-and-time-state-(type=datetime-local)",
+      "https://html.spec.whatwg.org/dev/input.html#month-state-(type=month)",
+      "https://html.spec.whatwg.org/dev/input.html#number-state-(type=number)",
+      "https://html.spec.whatwg.org/dev/input.html#password-state-(type=password)",
+      "https://html.spec.whatwg.org/dev/input.html#radio-button-state-(type=radio)",
+      "https://html.spec.whatwg.org/dev/input.html#range-state-(type=range)",
+      "https://html.spec.whatwg.org/dev/input.html#reset-button-state-(type=reset)",
+      "https://html.spec.whatwg.org/dev/input.html#submit-button-state-(type=submit)",
+      "https://html.spec.whatwg.org/dev/input.html#telephone-state-(type=tel)",
+      "https://html.spec.whatwg.org/dev/input.html#text-(type=text)-state-and-search-state-(type=search)",
+      "https://html.spec.whatwg.org/dev/input.html#time-state-(type=time)",
+      "https://html.spec.whatwg.org/dev/input.html#url-state-(type=url)",
+      "https://html.spec.whatwg.org/dev/input.html#week-state-(type=week)"
+    ]
   },
   "usemap": {
     "tag_scope": [

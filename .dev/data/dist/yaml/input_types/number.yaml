@@ -1,0 +1,3 @@
+value_type: A numerical value
+control_type: A text control or spinner control
+url: https://html.spec.whatwg.org/dev/input.html#number-state-(type=number)

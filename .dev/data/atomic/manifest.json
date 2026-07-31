@@ -33,5 +33,10 @@
     "status": "ok",
     "row_count": 89,
     "delta": 0
+  },
+  "input_types": {
+    "status": "ok",
+    "row_count": 22,
+    "delta": 0
   }
 }

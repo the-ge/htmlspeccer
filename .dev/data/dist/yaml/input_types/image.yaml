@@ -1,0 +1,3 @@
+value_type: "A coordinate, relative to a particular image's size, with the extra semantic that it must\n     be the last value selected and initiates form submission"
+control_type: Either a clickable image, or a button
+url: https://html.spec.whatwg.org/dev/input.html#image-button-state-(type=image)
