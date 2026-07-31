@@ -22,10 +22,10 @@ jobs:
       - name: Install dependencies
         run: python3 -m pip install -r requirements.txt
 
-      - name: Restore .dev/data cache
+      - name: Restore .dev/tmp cache
         uses: actions/cache@v4
         with:
-          path: .dev/data
+          path: .dev/tmp
           key: htmlspec-data-${{ github.run_id }}
           restore-keys: htmlspec-data-
 
@@ -79,9 +79,9 @@ jobs:
           git tag "$next_tag"
           git push origin HEAD "$next_tag"
 
-      - name: Save .dev/data cache
+      - name: Save .dev/tmp cache
         if: always()
         uses: actions/cache/save@v4
         with:
-          path: .dev/data
+          path: .dev/tmp
           key: htmlspec-data-${{ github.run_id }}

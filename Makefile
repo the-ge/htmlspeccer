@@ -2,13 +2,13 @@
 
 default: filter normalize publish
 
-RAW_DATA_DIR           := .dev/data/raw/
-TERSE_DATA_DIR         := .dev/data/terse/
-ATOMIC_DATA_DIR        := .dev/data/atomic/
-ATOMIC_DATA_CACHE_DIR  := .dev/data/cache/
+RAW_DATA_DIR           := .dev/tmp/raw/
+TERSE_DATA_DIR         := .dev/tmp/terse/
+ATOMIC_DATA_DIR        := .dev/tmp/atomic/
+ATOMIC_DATA_CACHE_DIR  := .dev/tmp/cache/
 # Mirrors config.py: env var set -> <root>/data/ (root is a foreign checkout, e.g. htmlspec);
-# unset -> local .dev/data/dist/.
-DIST_DATA_DIR          := $(if $(DIST_DATA_DIR),$(DIST_DATA_DIR)/data/,.dev/data/dist/)
+# unset -> local .dev/tmp/dist/.
+DIST_DATA_DIR          := $(if $(DIST_DATA_DIR),$(DIST_DATA_DIR)/data/,.dev/tmp/dist/)
 DIST_CONTENT_HASH_FILE := $(ATOMIC_DATA_CACHE_DIR)dist_content.sha256
 
 DATA_DIRS := $(RAW_DATA_DIR) $(TERSE_DATA_DIR) $(ATOMIC_DATA_DIR) $(ATOMIC_DATA_CACHE_DIR) $(DIST_DATA_DIR)

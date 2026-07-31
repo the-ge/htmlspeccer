@@ -7,7 +7,7 @@ const path = require('node:path');
 
 const root = process.cwd();
 
-const rawDataDir = path.join(root, '.dev/data/raw');
+const rawDataDir = path.join(root, '.dev/tmp/raw');
 const readmePath = path.join(root, 'README.md');
 
 let readme = fs.readFileSync(readmePath, 'utf8');
