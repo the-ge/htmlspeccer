@@ -5,7 +5,7 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 # ---- Directories ----
-DATA_DIR = PROJECT_ROOT / '.dev/tmp'
+DATA_DIR = PROJECT_ROOT / '.dev/data'
 RAW_DATA_DIR = DATA_DIR / 'raw'  # raw spec HTML files
 TERSE_DATA_DIR = DATA_DIR / 'terse'  # NDJSON records, one file per (page, section)
 ATOMIC_DATA_CACHE_DIR = DATA_DIR / 'cache'  # normalize-stage fallback cache

@@ -3,7 +3,7 @@ name: Update README
 on:
   push:
     paths:
-      - ".dev/tmp/raw/*.time"
+      - ".dev/data/raw/*.time"
 
   workflow_dispatch:
 
