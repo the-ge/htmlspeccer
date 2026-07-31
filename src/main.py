@@ -44,11 +44,7 @@ def copy_licenses() -> None:
 def read_data_domains() -> dict[str, object]:
     """Load categories produced by the normalize stage from ATOMIC_DATA_DIR, using its manifest as the index."""
     manifest = json.loads(ATOMIC_DATA_MANIFEST.read_text(encoding='utf-8'))
-    results = {}
-    for category in manifest:
-        path = ATOMIC_DATA_DIR / f'{category}.json'
-        results[category] = json.loads(path.read_text(encoding='utf-8'))
-    return results
+    return {c: json.loads((ATOMIC_DATA_DIR / f'{c}.json').read_text(encoding='utf-8')) for c in manifest}
 
 
 def hash_compute(dirs: list[Path]) -> str:
