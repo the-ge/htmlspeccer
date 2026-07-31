@@ -54,6 +54,7 @@ class ContentCategoryData:
     elements: set[str] = field(default_factory=set)
     elements_maybe: list[str] = field(default_factory=list)
     exceptions: str = ''
+    url: str = ''
 
 
 @dataclass(frozen=True, slots=True)
@@ -81,9 +82,9 @@ class ElementKindData:
 @dataclass(frozen=True, slots=True)
 class InputTypeData:
     name: str
-    value_type: str
-    control_type: str
-    url: str
+    value_type: str = ''
+    control_type: str = ''
+    url: str = ''
 
 
 # Match a list of one-or-more keywords such as `"foo"; "bar"; "the empty string"`
@@ -315,6 +316,7 @@ def parse_content_categories(rows: Iterator[ContentCategoryTerseData]) -> Iterat
 
         yield ContentCategoryData(
             name=category,
+            url=row.url,
             elements=elements_set,
             elements_maybe=elements_maybe,
             exceptions=exceptions,
@@ -340,12 +342,19 @@ def parse_elements(rows: Iterator[ElementTerseData], global_attributes: set[str]
 
 def parse_element_kinds(rows: Iterator[ElementKindTerseData]) -> Iterator[ElementKindData]:
     for row in rows:
-        yield ElementKindData(name=slugify(row.name), tags=set(row.tags), info=row.info)
+        yield ElementKindData(
+            name=slugify(row.name),
+            tags=set(row.tags),
+            info=row.info,
+        )
 
 
 def parse_event_handlers(rows: Iterator[EventHandlerTerseData]) -> Iterator[EventHandlerData]:
     for row in rows:
-        yield EventHandlerData(name=row.attribute, applies_to=row.elements)
+        yield EventHandlerData(
+            name=row.attribute,
+            applies_to=row.elements,
+        )
 
 
 def parse_global_attributes(rows: Iterator[GlobalAttributeTerseData]) -> set[str]:
