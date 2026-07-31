@@ -9,3 +9,4 @@ elements:
 - title
 elements_maybe: []
 exceptions: ''
+url: https://html.spec.whatwg.org/multipage/dom.html#metadata-content-2

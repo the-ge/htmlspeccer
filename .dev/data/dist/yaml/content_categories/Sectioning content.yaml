@@ -5,3 +5,4 @@ elements:
 - section
 elements_maybe: []
 exceptions: ''
+url: https://html.spec.whatwg.org/multipage/dom.html#sectioning-content-2

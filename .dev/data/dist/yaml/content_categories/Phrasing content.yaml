@@ -59,3 +59,4 @@ elements_maybe:
 - link
 - meta
 exceptions: area (if it is a descendant of a  map element); link (if it is allowed in the body); meta (if the itemprop attribute is present)
+url: https://html.spec.whatwg.org/multipage/dom.html#phrasing-content-2

@@ -89,3 +89,4 @@ elements_maybe:
 - main
 - meta
 exceptions: area (if it is a descendant of a map element); link (if it is allowed in the body); main (if it is a hierarchically correct main element); meta (if the itemprop attribute is present)
+url: https://html.spec.whatwg.org/multipage/dom.html#flow-content-2

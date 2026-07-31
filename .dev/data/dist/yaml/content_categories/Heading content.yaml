@@ -8,3 +8,4 @@ elements:
 - hgroup
 elements_maybe: []
 exceptions: ''
+url: https://html.spec.whatwg.org/multipage/dom.html#heading-content-2

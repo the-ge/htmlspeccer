@@ -13,3 +13,4 @@ elements_maybe:
 - input
 - video
 exceptions: a (if the href attribute is present); audio (if the controls attribute is present); img (if the usemap or controls attribute is present); input (if the type attribute is not in the Hidden state); video (if the controls attribute is present)
+url: https://html.spec.whatwg.org/multipage/dom.html#interactive-content-2

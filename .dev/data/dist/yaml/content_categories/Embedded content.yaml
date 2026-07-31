@@ -11,3 +11,4 @@ elements:
 - video
 elements_maybe: []
 exceptions: ''
+url: https://html.spec.whatwg.org/multipage/dom.html#embedded-content-category

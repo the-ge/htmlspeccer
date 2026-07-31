@@ -76,3 +76,4 @@ elements_maybe:
 - ol
 - ul
 exceptions: audio (if the controls attribute is present); dl (if the element's children include at least one name-value group); input (if the type attribute is not in the Hidden state); menu (if the element's children include at least one li element); ol (if the element's children include at least one li element); ul (if the element's children include at least one li element); Text that is not inter-element whitespace
+url: https://html.spec.whatwg.org/multipage/dom.html#palpable-content-2
