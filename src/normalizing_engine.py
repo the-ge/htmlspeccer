@@ -70,6 +70,7 @@ class ElementData:
 class EventHandlerData:
     name: str
     applies_to: str = ''
+    urls: set[str] = field(default_factory=set)
 
 
 @dataclass(frozen=True, slots=True)
@@ -354,6 +355,7 @@ def parse_event_handlers(rows: Iterator[EventHandlerTerseData]) -> Iterator[Even
         yield EventHandlerData(
             name=row.attribute,
             applies_to=row.elements,
+            urls=row.urls,
         )
 
 

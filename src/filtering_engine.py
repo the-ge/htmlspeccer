@@ -60,6 +60,7 @@ class ElementKindTerseData:
 class EventHandlerTerseData:
     attribute: str
     elements: str
+    urls: list[str]
 
 
 @dataclass(frozen=True, slots=True)
@@ -170,7 +171,11 @@ def filter_elements(soup: BeautifulSoup) -> Iterator[ElementTerseData]:
             continue
         element, description, categories, _, children, attributes, _ = cells
         yield ElementTerseData(
-            element=element, description=description, categories=categories, children=children, attributes=attributes
+            element=element,
+            description=description,
+            categories=categories,
+            children=children,
+            attributes=attributes,
         )
 
 
@@ -207,7 +212,12 @@ def filter_event_handlers(soup: BeautifulSoup) -> Iterator[EventHandlerTerseData
             logger.error('❌ Expected %s cells, got %s. Skipping row: %s', count, len(cells), row)
             continue
         attribute, elements, _, _ = cells
-        yield EventHandlerTerseData(attribute=attribute, elements=elements)
+        urls = [('' if x['href'].strip().startswith('https://') else 'https://html.spec.whatwg.org/multipage/') + x['href'].strip() for x in row.find_all('a')]
+        yield EventHandlerTerseData(
+            attribute=attribute,
+            elements=elements,
+            urls=urls,
+        )
 
 
 def filter_global_attributes(soup: BeautifulSoup) -> Iterator[GlobalAttributeTerseData]:
