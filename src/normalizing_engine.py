@@ -218,7 +218,8 @@ def parse_aria_roles(rows: Iterator[AriaRoleTerseData]) -> Iterator[AriaRoleData
         )
 
 
-def _parse_attribute_info(elements_info: str, value_info: str) -> tuple[set, str, bool]:
+def _parse_attribute_info(elements_info: str, value_info: str) -> tuple[set[str], str, str, str, bool]:
+    """Return (tag_scope, tag_notes, value_type, value_info, is_complicated)."""
     is_complicated = value_info.endswith('*')
     if is_complicated:
         value_info = value_info[:-1]
