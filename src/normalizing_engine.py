@@ -506,7 +506,6 @@ class Normalizer:
             'indices',
             'elements',
             ElementTerseData,
-            global_attributes=self.get_global_attributes(),
         )
 
     def get_element_kinds(self) -> dict[str, Any]:
