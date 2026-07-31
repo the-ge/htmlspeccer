@@ -32,8 +32,8 @@ PAGE_SECTIONS = {
 
 # ---- Manifest ----
 RAW_DATA_MANIFEST = RAW_DATA_DIR / 'manifest.json'  # raw per-source fetch timestamps
-TERSE_DATA_MANIFEST = TERSE_DATA_DIR / 'manifest.json'  # per (page, section) extraction status
-ATOMIC_DATA_MANIFEST = ATOMIC_DATA_DIR / 'manifest.json'  # per-category normalization status
+TERSE_DATA_MANIFEST = TERSE_DATA_DIR / 'manifest.json'  # per (page, section) filtering status
+ATOMIC_DATA_MANIFEST = ATOMIC_DATA_DIR / 'manifest.json'  # per-category normalizing status
 DIST_DATA_MANIFEST = DIST_DATA_DIR / 'manifest.json'
 
 # ---- Logging ----

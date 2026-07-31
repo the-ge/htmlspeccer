@@ -16,7 +16,7 @@ logging.basicConfig(level=LOG_LEVEL, format='%(levelname)s: %(message)s')
 logger = logging.getLogger(__name__)
 
 
-def write_data_domains(results: dict) -> None:
+def write_atomic_data(results: dict) -> None:
     """Write each data domain result to ATOMIC_DATA_DIR as its own JSON file."""
     for category, data in results.items():
         path = ATOMIC_DATA_DIR / f'{category}.json'
@@ -32,7 +32,7 @@ def main() -> None:
 
     normalizer = Normalizer(terse_data_dir=TERSE_DATA_DIR, cache_dir=ATOMIC_DATA_CACHE_DIR)
     results, manifest = normalizer.get_all()
-    write_data_domains(results)
+    write_atomic_data(results)
     ATOMIC_DATA_MANIFEST.write_text(
         json.dumps(manifest, **DUMP_JSON_KWARGS),
         encoding='utf-8',

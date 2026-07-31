@@ -9,7 +9,7 @@ from config import (
     TERSE_DATA_DIR,
     TERSE_DATA_MANIFEST,
 )
-from filtering_engine import Extractor
+from filtering_engine import Sieve
 from util import short_path
 
 logging.basicConfig(level=LOG_LEVEL, format='%(levelname)s: %(message)s')
@@ -19,8 +19,8 @@ logger = logging.getLogger(__name__)
 def main() -> None:
     TERSE_DATA_DIR.mkdir(parents=True, exist_ok=True)
 
-    extractor = Extractor(raw_data_dir=RAW_DATA_DIR, terse_data_dir=TERSE_DATA_DIR)
-    sections = extractor.extract_all(PAGE_SECTIONS)
+    sieve = Sieve(raw_data_dir=RAW_DATA_DIR, terse_data_dir=TERSE_DATA_DIR)
+    sections = sieve.filter_all(PAGE_SECTIONS)
 
     TERSE_DATA_MANIFEST.write_text(
         json.dumps(sections, **DUMP_JSON_KWARGS),

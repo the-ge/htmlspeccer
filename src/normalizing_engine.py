@@ -394,7 +394,7 @@ class Normalizer:
     def _validate(self, key: str, count: int) -> dict:
         """Compare `count` against the previous cached run for `key` (if any) and decide pass/warn/raise. No fixed floor:
         a category may legitimately grow or shrink a little as the spec evolves, but a bigger jump either way is more
-        likely a broken extractor/parser than a real change upstream.
+        likely a broken filter/parser than a real change upstream.
 
         delta ==  0 or no previous run -> pass, silent
         abs(delta) == 1                -> pass, warn

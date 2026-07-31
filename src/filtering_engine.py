@@ -87,14 +87,14 @@ HTML_CELL_COUNT = {
 }
 
 
-# ---- Per-section extractors ----
-# Each function pulls literal cell/anchor text out of the soup, stripped of
+# ---- Per-section filters ----
+# Each function filters literal cell/anchor text out of the soup, stripped of
 # surrounding whitespace only. No splitting, typing, or spec-specific
 # interpretation happens here — that belongs to stage 2 (parser.py), which
 # consumes these same dataclasses from disk instead of a live soup.
 
 
-def extract_aria_roles(soup: BeautifulSoup) -> Iterator[AriaRoleTerseData]:
+def filter_aria_roles(soup: BeautifulSoup) -> Iterator[AriaRoleTerseData]:
     # https://w3c.github.io/aria/#widget
     # https://w3c.github.io/aria/#document_structure_roles
     # https://w3c.github.io/aria/#landmark_roles
@@ -121,7 +121,7 @@ def extract_aria_roles(soup: BeautifulSoup) -> Iterator[AriaRoleTerseData]:
             )
 
 
-def extract_attributes(soup: BeautifulSoup) -> Iterator[AttributeTerseData]:
+def filter_attributes(soup: BeautifulSoup) -> Iterator[AttributeTerseData]:
     # https://html.spec.whatwg.org/multipage/indices.html#attributes-3
     rows = soup.find('h3', {'id': 'attributes-3'}).find_next('tbody').find_all('tr')
     count = HTML_CELL_COUNT['attributes']
@@ -141,7 +141,7 @@ def extract_attributes(soup: BeautifulSoup) -> Iterator[AttributeTerseData]:
         )
 
 
-def extract_content_categories(soup: BeautifulSoup) -> Iterator[ContentCategoryTerseData]:
+def filter_content_categories(soup: BeautifulSoup) -> Iterator[ContentCategoryTerseData]:
     # https://html.spec.whatwg.org/multipage/indices.html#element-content-categories
     rows = soup.find('h3', {'id': 'element-content-categories'}).find_next('tbody').find_all('tr')
     count = HTML_CELL_COUNT['content_categories']
@@ -159,7 +159,7 @@ def extract_content_categories(soup: BeautifulSoup) -> Iterator[ContentCategoryT
         )
 
 
-def extract_elements(soup: BeautifulSoup) -> Iterator[ElementTerseData]:
+def filter_elements(soup: BeautifulSoup) -> Iterator[ElementTerseData]:
     # https://html.spec.whatwg.org/multipage/indices.html#elements-3
     rows = soup.find('h3', {'id': 'elements-3'}).find_next('tbody').find_all('tr')
     count = HTML_CELL_COUNT['elements']
@@ -174,7 +174,7 @@ def extract_elements(soup: BeautifulSoup) -> Iterator[ElementTerseData]:
         )
 
 
-def extract_element_kinds(soup: BeautifulSoup) -> Iterator[ElementKindTerseData]:
+def filter_element_kinds(soup: BeautifulSoup) -> Iterator[ElementKindTerseData]:
     # https://html.spec.whatwg.org/dev/syntax.html#elements-2
     rows = soup.find('h4', {'id': 'elements-2'}).find_next('dl').find_all(['dt', 'dd'], recursive=False)
     prev = None  # tag name of the last row seen: None, 'dt', or 'dd'
@@ -197,7 +197,7 @@ def extract_element_kinds(soup: BeautifulSoup) -> Iterator[ElementKindTerseData]
         logger.error('❌ Trailing <dt> with no following <dd>: %s', name)
 
 
-def extract_event_handlers(soup: BeautifulSoup) -> Iterator[EventHandlerTerseData]:
+def filter_event_handlers(soup: BeautifulSoup) -> Iterator[EventHandlerTerseData]:
     # https://html.spec.whatwg.org/multipage/indices.html#ix-event-handlers
     rows = soup.find('table', {'id': 'ix-event-handlers'}).find_next('tbody').find_all('tr')
     count = HTML_CELL_COUNT['event_handlers']
@@ -210,7 +210,7 @@ def extract_event_handlers(soup: BeautifulSoup) -> Iterator[EventHandlerTerseDat
         yield EventHandlerTerseData(attribute=attribute, elements=elements)
 
 
-def extract_global_attributes(soup: BeautifulSoup) -> Iterator[GlobalAttributeTerseData]:
+def filter_global_attributes(soup: BeautifulSoup) -> Iterator[GlobalAttributeTerseData]:
     # https://html.spec.whatwg.org/dev/dom.html#global-attributes
     anchors = soup.find('h4', {'id': 'global-attributes'}).find_next('ul', {'class': 'brief'}).find_all('a')
     for a in anchors:
@@ -220,7 +220,7 @@ def extract_global_attributes(soup: BeautifulSoup) -> Iterator[GlobalAttributeTe
         )
 
 
-def extract_input_types(soup: BeautifulSoup) -> Iterator[InputTypeTerseData]:
+def filter_input_types(soup: BeautifulSoup) -> Iterator[InputTypeTerseData]:
     # https://html.spec.whatwg.org/dev/input.html#attr-input-type-keywords
     rows = soup.find('table', {'id': 'attr-input-type-keywords'}).find_next('tbody').find_all('tr')
     count = HTML_CELL_COUNT['input_types']
@@ -239,20 +239,20 @@ def extract_input_types(soup: BeautifulSoup) -> Iterator[InputTypeTerseData]:
         )
 
 
-# section name -> extractor function; keys match config.PAGE_SECTIONS values
-EXTRACTORS = {
-    'aria_roles': extract_aria_roles,
-    'attributes': extract_attributes,
-    'content_categories': extract_content_categories,
-    'elements': extract_elements,
-    'element_kinds': extract_element_kinds,
-    'event_handlers': extract_event_handlers,
-    'global_attributes': extract_global_attributes,
-    'input_types': extract_input_types,
+# section name -> filter function; keys match config.PAGE_SECTIONS values
+FILTERS = {
+    'aria_roles': filter_aria_roles,
+    'attributes': filter_attributes,
+    'content_categories': filter_content_categories,
+    'elements': filter_elements,
+    'element_kinds': filter_element_kinds,
+    'event_handlers': filter_event_handlers,
+    'global_attributes': filter_global_attributes,
+    'input_types': filter_input_types,
 }
 
 
-class Extractor:
+class Sieve:
     """Stage 1: raw spec HTML -> faithful NDJSON records, one file per (page, section)."""
 
     def __init__(self, raw_data_dir: Path, terse_data_dir: Path) -> None:
@@ -266,7 +266,7 @@ class Extractor:
     def _ndjson_path(self, page: str, section: str) -> Path:
         return self.terse_data_dir / f'{page}.{section}.ndjson'
 
-    def extract_page(self, page: str, sections: tuple[str, ...]) -> dict[str, dict]:
+    def _filter_page_sections(self, page: str, sections: tuple[str, ...]) -> dict[str, dict]:
         """Extract sections belonging to one source page. Returns one manifest entry per (page, section)."""
         entries: dict[str, dict] = {}
         try:
@@ -280,9 +280,9 @@ class Extractor:
             path = self._ndjson_path(page, section)
 
             if soup is not None:
-                rows = list(EXTRACTORS[section](soup))
+                rows = list(FILTERS[section](soup))
                 if not rows:
-                    msg = 'No rows extracted for %s. Spec structure may have changed'
+                    msg = "No rows extracted for '%s'. Spec structure may have changed"
                     raise ValueError(msg, key)
                 count = write_ndjson(path, rows)
                 entries[key] = {
@@ -292,12 +292,11 @@ class Extractor:
                 logger.info('🧲 Extracted %s rows -> %s', count, path.name)
                 continue
 
-            # Extraction unavailable this run (missing page or a broken section) —
-            # fall back to whatever was written last time, so stage 2 always has
-            # *something* faithful to build from, even if it's stale.
+            # Filtering not available for this run (missing page or a broken section) — fall back to whatever was written
+            # last time, so stage 2 always has *something* faithful to build from, even if it's stale.
             if path.exists():
                 row_count = sum(1 for _ in path.open())
-                logger.info('🛟 Kept previous %s (%s rows, extraction unavailable this run)', path.name, row_count)
+                logger.info('🛟 Kept previous %s (%s rows, filtering not available for this run)', path.name, row_count)
                 entries[key] = {'status': 'fallback', 'row_count': row_count}
             else:
                 logger.error('❌ No terse data available for %s (no previous file to fall back to)', key)
@@ -305,8 +304,8 @@ class Extractor:
 
         return entries
 
-    def extract_all(self, page_sections: dict[str, tuple[str, ...]]) -> dict[str, dict]:
+    def filter_all(self, page_sections: dict[str, tuple[str, ...]]) -> dict[str, dict]:
         manifest_entries: dict[str, dict] = {}
         for page, sections in page_sections.items():
-            manifest_entries.update(self.extract_page(page, sections))
+            manifest_entries.update(self._filter_page_sections(page, sections))
         return manifest_entries
