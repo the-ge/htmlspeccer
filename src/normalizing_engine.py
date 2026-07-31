@@ -81,6 +81,12 @@ class EventHandlerData:
 
 
 @dataclass(frozen=True, slots=True)
+class GlobalAttributeData:
+    name: str
+    url: str = ''
+
+
+@dataclass(frozen=True, slots=True)
 class InputTypeData:
     name: str
     value_type: str = ''
@@ -132,7 +138,7 @@ ATTRIBUTE_SEPARATOR_IF_CONTAINS = {
 # ---- Generators for splitting spec strings ----
 
 
-def gen_attributes(attributes: str, global_attributes: set[str]) -> Iterator[str]:
+def gen_attributes(attributes: str, global_attributes: dict[str, Any]) -> Iterator[str]:
     for attribute in attributes.strip(string.whitespace + ';').split(';'):
         attr = attribute.strip('*').strip()
         if attr == 'globals':
@@ -325,7 +331,7 @@ def parse_content_categories(rows: Iterator[ContentCategoryTerseData]) -> Iterat
         )
 
 
-def parse_elements(rows: Iterator[ElementTerseData], global_attributes: set[str]) -> Iterator[ElementData]:
+def parse_elements(rows: Iterator[ElementTerseData], global_attributes: dict[str, Any]) -> Iterator[ElementData]:
     for row in rows:
         elements = gen_elements(row.element)
         categories = set(gen_content_categories(row.categories))
@@ -360,9 +366,11 @@ def parse_event_handlers(rows: Iterator[EventHandlerTerseData]) -> Iterator[Even
         )
 
 
-def parse_global_attributes(rows: Iterator[GlobalAttributeTerseData]) -> set[str]:
-    default = {'class', 'id', 'role', 'slot'}
-    return default.union({row.name for row in rows})
+def parse_global_attributes(rows: Iterator[GlobalAttributeTerseData]) -> Iterator[GlobalAttributeData]:
+    for name in ('class', 'id', 'role', 'slot'):
+        yield GlobalAttributeData(name=name)
+    for row in rows:
+        yield GlobalAttributeData(name=row.name, url=row.url)
 
 
 def parse_input_types(rows: Iterator[InputTypeTerseData]) -> Iterator[InputTypeData]:
@@ -387,7 +395,7 @@ class Normalizer:
         self.terse_data_dir = terse_data_dir
         self.cache_dir = cache_dir
         self.emender = emender if emender is not None else Emender(domain='normalize')
-        self._global_attributes: set[str] | None = None
+        self._global_attributes: dict[str, Any] | None = None
         self._manifest: dict[str, dict] = {}  # populated by _validate(), collected by get_all()
 
     # ---- internal helpers ----
@@ -522,23 +530,16 @@ class Normalizer:
             EventHandlerTerseData,
         )
 
-    def get_global_attributes(self) -> set[str]:
-        """Build or load cached global attributes. Memoized on instance, get_elements() and get_all() both depend on this."""
-        if self._global_attributes is not None:
-            return self._global_attributes
-
-        def builder() -> set[str]:
-            return parse_section(
-                self.terse_data_dir,
+    def get_global_attributes(self) -> dict[str, Any]:
+        """Build global attributes with caching and validation.
+        Memoized on instance, get_elements() and get_all() both depend on this.
+        """
+        if self._global_attributes is None:
+            self._global_attributes = self._get_dictified(
                 'dom',
                 'global_attributes',
                 GlobalAttributeTerseData,
-                parse_global_attributes,
             )
-
-        # _build_cached returns a set from builder(), but a list when falling back to the JSON cache
-        # (make_serializable turns sets into sorted lists) -- set() normalizes either case.
-        self._global_attributes = set(self._build_cached('global_attributes', builder))
         return self._global_attributes
 
     def get_input_types(self) -> dict[str, Any]:
