@@ -1,6 +1,6 @@
 .PHONY: default all clear install acquire filter normalize publish
 
-default: all
+default: filter normalize publish
 
 RAW_DATA_DIR           := .dev/data/raw/
 TERSE_DATA_DIR         := .dev/data/terse/
@@ -32,7 +32,7 @@ define confirm
 	@printf "$(GREEN)MAKE: ✅%s$(NC)\n" "$(1)"
 endef
 
-all: publish
+all: acquire filter normalize publish
 
 clear:
 	rm --force --recursive $(CLEARABLE_DATA_DIRS)
@@ -61,17 +61,14 @@ acquire: $(RAW_DATA_DIR)manifest.json | $(RAW_DATA_DIR)
 $(DIST_CONTENT_HASH_FILE): $(ATOMIC_DATA_DIR)manifest.json | $(ATOMIC_DATA_CACHE_DIR)
 	$(call say, 📦 Publishing $(DIST_DATA_DIR) files...)
 	@python3 src/main.py
-	$(call confirm, Publishing completed; updated end data manifest.)
 
 $(ATOMIC_DATA_DIR)manifest.json: $(TERSE_DATA_DIR)manifest.json
 	$(call say, 🧲 Converting terse data to atomic data under $(ATOMIC_DATA_DIR)...)
 	@python3 src/normalizing.py
-	$(call confirm, Normalization completed; updated atomic data manifest.)
 
 $(TERSE_DATA_DIR)manifest.json: $(RAW_DATA_DIR)manifest.json
-	$(call say, 🧲 Extracting raw HTML into faithful NDJSON records + manifest under $(TERSE_DATA_DIR)...)
+	$(call say, 🧲 Filtering raw HTML into faithful NDJSON records + manifest under $(TERSE_DATA_DIR)...)
 	@python3 src/filtering.py
-	$(call confirm, Extraction completed; updated terse data manifest.)
 
 $(DATA_DIRS): %/:
 	@mkdir -p $@
