@@ -45,6 +45,7 @@ class AttributeData:
     value_enum: set[str] = field(default_factory=set)
     value_info: str = ''
     separator: str = ''
+    urls: set[str] = field(default_factory=set)
 
 
 @dataclass(frozen=True, slots=True)
@@ -231,11 +232,12 @@ def _parse_attribute_info(elements_info: str, value_info: str) -> tuple[set, str
 
 def parse_attributes(rows: Iterator[AttributeTerseData]) -> Iterator[AttributeData]:
     for row in rows:
-        name, elements_info, description, value_info = (
+        name, elements_info, description, value_info, urls = (
             row.attribute,
             row.elements,
             row.description,
             row.value,
+            row.urls,
         )
 
         elements_info = split_splittables(elements_info, f'Attribute {row.attribute!r} tag scope')
@@ -285,6 +287,7 @@ def parse_attributes(rows: Iterator[AttributeTerseData]) -> Iterator[AttributeDa
             value_enum=value_enum,
             value_info=value_info,
             separator=separator,
+            urls=urls,
         )
 
 
