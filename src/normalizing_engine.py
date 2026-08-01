@@ -100,16 +100,16 @@ KEYWORDS_PATTERN = re.compile(r'^(?:"[a-zA-Z0-9/-]*"|the empty string)(?:; (?:"[
 # Match element exceptions like "element (if ...)"
 EXCEPTION_PATTERN = re.compile(r'([a-zA-Z0-9-]+) \(if [a-zA-Z0-9\' -]+\)')
 
+RECOVERABLE_ERRORS = (AttributeError, ValueError, FileNotFoundError)
+
 # Special cases: phrase -> list of yielded tokens (empty list yields nothing)
-SPECIAL_ELEMENTS = {
+ATTRIBUTE_TAGS_IF_EQUALS = {
     'autonomous custom elements': [],
     'HTML elements': [],
     'form-associated custom elements': ['custom'],
     'MathML math': ['math'],
     'SVG svg': ['svg'],
 }
-
-RECOVERABLE_ERRORS = (AttributeError, ValueError, FileNotFoundError)
 
 ATTRIBUTE_TYPE_IF_EQUALS = {
     'Boolean attribute':                    'bool',
@@ -138,56 +138,56 @@ ATTRIBUTE_SEPARATOR_IF_CONTAINS = {
 # ---- Generators for splitting spec strings ----
 
 
-def gen_attributes(attributes: str) -> Iterator[str]:
-    for attribute in attributes.strip(string.whitespace + ';').split(';'):
+def gen_attributes(input_str: str) -> Iterator[str]:
+    for attribute in input_str.strip(string.whitespace + ';').split(';'):
         yield attribute.strip('*').strip()
 
 
-def gen_content_categories(categories: str) -> Iterator[str]:
-    for category in categories.strip(string.whitespace + ';').split(';'):
+def gen_content_categories(input_str: str) -> Iterator[str]:
+    for category in input_str.strip(string.whitespace + ';').split(';'):
         cat = category.strip().strip('*')
         if cat != 'empty':
             yield cat
 
 
-def gen_elements(elements: str) -> Iterator[str]:
-    elements = elements.strip()
-    if not elements:
+def gen_elements(input_str: str) -> Iterator[str]:
+    input_str = input_str.strip()
+    if not input_str:
         return
 
     # 1) Handle known special phrases
-    if elements in SPECIAL_ELEMENTS:
-        yield from SPECIAL_ELEMENTS[elements]
+    if input_str in ATTRIBUTE_TAGS_IF_EQUALS:
+        yield from ATTRIBUTE_TAGS_IF_EQUALS[input_str]
         return
 
-    if ';' in elements:
-        for e in re.split(r'\s*;\s*', elements.strip(string.whitespace + ';')):
+    if ';' in input_str:
+        for e in re.split(r'\s*;\s*', input_str.strip(string.whitespace + ';')):
             yield from gen_elements(e.strip())
-    elif ',' in elements:
-        for e in re.split(r'\s*,\s*', elements.strip(string.whitespace + ',')):
+    elif ',' in input_str:
+        for e in re.split(r'\s*,\s*', input_str.strip(string.whitespace + ',')):
             yield from gen_elements(e)
     else:
-        yield elements
+        yield input_str
 
 
-def gen_element_exceptions(xs: str) -> Iterator[str]:
-    if not xs:
+def gen_element_exceptions(input_str: str) -> Iterator[str]:
+    if not input_str:
         return
-    parts = xs.split(';') if ';' in xs else [xs]
+    parts = input_str.split(';') if ';' in input_str else [input_str]
     for x in parts:
         matches = EXCEPTION_PATTERN.fullmatch(x.strip())
         if matches:
             yield matches.group(1)
 
 
-def gen_enum(keywords: str) -> Iterator[str]:
-    if KEYWORDS_PATTERN.fullmatch(keywords):
+def gen_enum(input_str: str) -> Iterator[str]:
+    if KEYWORDS_PATTERN.fullmatch(input_str):
 
         def process_keyword(keyword: str) -> str:
             keyword = keyword.strip()
             return '' if keyword == 'the empty string' else keyword.strip('"')
 
-        yield from map(process_keyword, keywords.split(';'))
+        yield from map(process_keyword, input_str.split(';'))
 
 
 _ADJACENT_TOKENS_PATTERN = re.compile(r'\b([a-zA-Z][a-zA-Z0-9-]*)\b[ \t]*\n[ \t]*\b([a-zA-Z][a-zA-Z0-9-]*)\b')
