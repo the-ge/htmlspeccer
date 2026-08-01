@@ -39,7 +39,7 @@ class AriaRoleData:
 @dataclass(frozen=True, slots=True)
 class AttributeData:
     name: str
-    tag_scope: set[str] = field(default_factory=set)
+    tags: set[str] = field(default_factory=set)
     description: str = ''
     value_type: str = 'string'
     value_enum: set[str] = field(default_factory=set)
@@ -221,7 +221,7 @@ def parse_aria_roles(rows: Iterator[AriaRoleTerseData]) -> Iterator[AriaRoleData
 
 
 def _parse_attribute_info(elements_info: str, value_info: str) -> tuple[set[str], str, str, str, bool]:
-    """Return (tag_scope, tag_notes, value_type, value_info, is_complicated)."""
+    """Return (tags, tag_notes, value_type, value_info, is_complicated)."""
     is_complicated = value_info.endswith('*')
     if is_complicated:
         value_info = value_info[:-1]
@@ -255,7 +255,7 @@ def parse_attributes(rows: Iterator[AttributeTerseData]) -> Iterator[AttributeDa
 
         elements_info = split_splittables(elements_info, f'Attribute {row.attribute!r} tag scope')
 
-        tag_scope, tag_notes, value_type, value_info, is_complicated = _parse_attribute_info(elements_info, value_info)
+        tags, tag_notes, value_type, value_info, is_complicated = _parse_attribute_info(elements_info, value_info)
 
         value_enum = set(gen_enum(value_type))
         if value_enum:
@@ -294,7 +294,7 @@ def parse_attributes(rows: Iterator[AttributeTerseData]) -> Iterator[AttributeDa
 
         yield AttributeData(
             name=name,
-            tag_scope=tag_scope,
+            tags=tags,
             description=description,
             value_type=value_type,
             value_enum=value_enum,

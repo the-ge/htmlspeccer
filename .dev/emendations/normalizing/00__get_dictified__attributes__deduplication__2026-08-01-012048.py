@@ -5,7 +5,7 @@ logger = logging.getLogger(__name__)
 
 
 def emend(section: str, data: list) -> bool:
-    """Log each occurrence of a duplicate attribute name (by description and tag_scope). No mutation yet."""
+    """Log each occurrence of a duplicate attribute name (by description and tags). No mutation yet."""
     if section != 'attributes':
         return False
 
@@ -21,8 +21,8 @@ def emend(section: str, data: list) -> bool:
         has_fired = True
         for i, entry in enumerate(entries, start=1):
             logger.info(
-                '🩹 Duplicate attribute %r (%d/%d): description=%r, tag_scope=%r',
-                name, i, total, entry.description, entry.tag_scope,
+                '🩹 Duplicate attribute %r (%d/%d): description=%r, tags=%r',
+                name, i, total, entry.description, entry.tags,
             )
 
     return has_fired
