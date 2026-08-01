@@ -1,6 +1,6 @@
 import logging
 import re
-from collections.abc import Iterator
+from collections.abc import Iterable, Iterator
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -96,6 +96,11 @@ def _normalize_spec_url(href: str) -> str:
     return href if href.startswith('https://') else _SPEC_BASE_URL + href
 
 
+def _unique(items: Iterable[str]) -> list[str]:
+    """Deduplicate items, preserving first-seen order."""
+    return list(dict.fromkeys(items))
+
+
 # ---- Per-section filters ----
 # Each function filters literal cell/anchor text out of the soup, stripped of
 # surrounding whitespace only. No splitting, typing, or spec-specific
@@ -140,7 +145,7 @@ def filter_attributes(soup: BeautifulSoup) -> Iterator[AttributeTerseData]:
             logger.error('❌ Expected %s cells, got %s. Skipping row: %s', count, len(cells), row)
             continue
         attribute, elements, description, value = cells
-        urls = [_normalize_spec_url(x['href'].strip()) for x in row.find_all('a')]
+        urls = _unique(_normalize_spec_url(x['href'].strip()) for x in row.find_all('a'))
         yield AttributeTerseData(
             attribute=attribute,
             elements=elements,
@@ -202,7 +207,7 @@ def filter_element_kinds(soup: BeautifulSoup) -> Iterator[ElementKindTerseData]:
             if prev != 'dt':
                 logger.error('❌ <dd> not preceded by a <dt>: %s', row)
                 continue
-            tags = [tag.get_text().strip() for tag in row.find_all('code')]
+            tags = _unique(tag.get_text().strip() for tag in row.find_all('code'))
             info = '' if tags else row.get_text().strip()
             prev = 'dd'
             yield ElementKindTerseData(name=name, tags=tags, info=info)
@@ -220,7 +225,7 @@ def filter_event_handlers(soup: BeautifulSoup) -> Iterator[EventHandlerTerseData
             logger.error('❌ Expected %s cells, got %s. Skipping row: %s', count, len(cells), row)
             continue
         attribute, elements, _, _ = cells
-        urls = [_normalize_spec_url(x['href'].strip()) for x in row.find_all('a')]
+        urls = _unique(_normalize_spec_url(x['href'].strip()) for x in row.find_all('a'))
         yield EventHandlerTerseData(
             attribute=attribute,
             elements=elements,
