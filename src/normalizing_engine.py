@@ -379,6 +379,19 @@ def parse_input_types(rows: Iterator[InputTypeTerseData]) -> Iterator[InputTypeD
         )
 
 
+# section name -> (page, terse dataclass); drives Normalizer.get(). Keys match config.PAGE_SECTIONS values.
+SECTION_SOURCES: dict[str, tuple[str, type]] = {
+    'aria_roles': ('aria', AriaRoleTerseData),
+    'attributes': ('indices', AttributeTerseData),
+    'content_categories': ('indices', ContentCategoryTerseData),
+    'elements': ('indices', ElementTerseData),
+    'element_kinds': ('syntax', ElementKindTerseData),
+    'event_handlers': ('indices', EventHandlerTerseData),
+    'global_attributes': ('dom', GlobalAttributeTerseData),
+    'input_types': ('input', InputTypeTerseData),
+}
+
+
 class Normalizer:
     """Normalizing stage engine: terse data NDJSON -> typed, merged entities, with validation and fallback cache."""
 
@@ -475,81 +488,12 @@ class Normalizer:
 
     # ---- public builders ----
 
-    def get_aria_roles(self) -> dict[str, Any]:
-        """Build ARIA roles with caching and validation."""
-        return self._get_dictified(
-            'aria',
-            'aria_roles',
-            AriaRoleTerseData,
-        )
-
-    def get_attributes(self) -> dict[str, Any]:
-        """Build attributes with caching and validation."""
-        return self._get_dictified(
-            'indices',
-            'attributes',
-            AttributeTerseData,
-        )
-
-    def get_content_categories(self) -> dict[str, Any]:
-        """Build content categories with caching and validation."""
-        return self._get_dictified(
-            'indices',
-            'content_categories',
-            ContentCategoryTerseData,
-        )
-
-    def get_elements(self) -> dict[str, Any]:
-        """Build elements with caching and validation."""
-        return self._get_dictified(
-            'indices',
-            'elements',
-            ElementTerseData,
-        )
-
-    def get_element_kinds(self) -> dict[str, Any]:
-        """Build element types with caching and validation."""
-        return self._get_dictified(
-            'syntax',
-            'element_kinds',
-            ElementKindTerseData,
-        )
-
-    def get_event_handlers(self) -> dict[str, Any]:
-        """Build event handlers with caching and validation."""
-        return self._get_dictified(
-            'indices',
-            'event_handlers',
-            EventHandlerTerseData,
-        )
-
-    def get_global_attributes(self) -> dict[str, Any]:
-        """Build global attributes with caching and validation."""
-        return self._get_dictified(
-            'dom',
-            'global_attributes',
-            GlobalAttributeTerseData,
-        )
-
-    def get_input_types(self) -> dict[str, Any]:
-        """Build input types with caching and validation."""
-        return self._get_dictified(
-            'input',
-            'input_types',
-            InputTypeTerseData,
-        )
+    def get_section_data(self, section: str) -> dict[str, Any]:
+        """Build the named section with caching and validation. `section` must be a key in SECTION_SOURCES."""
+        page, cls = SECTION_SOURCES[section]
+        return self._get_dictified(page, section, cls)
 
     def get_all(self) -> dict[str, Any]:
         """Run all builders and return a dict of results."""
-        results = {
-            'aria_roles': self.get_aria_roles(),
-            'attributes': self.get_attributes(),
-            'content_categories': self.get_content_categories(),
-            'elements': self.get_elements(),
-            'element_kinds': self.get_element_kinds(),
-            'event_handlers': self.get_event_handlers(),
-            'input_types': self.get_input_types(),
-            # Plain list, not the {name: {}} dict convention the other domains use.
-            'global_attributes': self.get_global_attributes(),
-        }
+        results = {section: self.get_section_data(section) for section in SECTION_SOURCES}
         return results, dict(self._manifest)
