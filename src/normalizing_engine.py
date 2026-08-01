@@ -403,7 +403,7 @@ class Normalizer:
     ) -> None:
         self.terse_data_dir = terse_data_dir
         self.cache_dir = cache_dir
-        self.emender = emender if emender is not None else Emender(domain='normalize')
+        self.emender = emender if emender is not None else Emender(domain='normalizing')
         self._manifest: dict[str, dict] = {}  # populated by _validate(), collected by get_all()
 
     # ---- internal helpers ----
