@@ -12,7 +12,7 @@ DIST_DATA_DIR          := $(if $(DIST_DATA_DIR),$(DIST_DATA_DIR)/data/,.dev/data
 DIST_CONTENT_HASH_FILE := $(ATOMIC_DATA_CACHE_DIR)dist_content.sha256
 
 DATA_DIRS := $(RAW_DATA_DIR) $(TERSE_DATA_DIR) $(ATOMIC_DATA_DIR) $(ATOMIC_DATA_CACHE_DIR) $(DIST_DATA_DIR)
-CLEARABLE_DATA_DIRS := $(RAW_DATA_DIR) $(TERSE_DATA_DIR) $(ATOMIC_DATA_DIR) $(ATOMIC_DATA_CACHE_DIR)
+DATA_DIRS_RM := $(TERSE_DATA_DIR) $(ATOMIC_DATA_DIR) $(ATOMIC_DATA_CACHE_DIR)
 
 specs      := indices.html dom.html input.html syntax.html
 spec_etags := $(addprefix $(RAW_DATA_DIR), $(specs:.html=.etag))
@@ -35,7 +35,7 @@ endef
 all: acquire filter normalize publish
 
 clear:
-	rm --force --recursive $(CLEARABLE_DATA_DIRS)
+	rm --force --recursive $(DATA_DIRS_RM)
 
 install:
 	python3 -m pip install -r requirements.txt
