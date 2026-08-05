@@ -14,7 +14,7 @@ def emend(section: str, data: list) -> bool:
         return False
 
     rows = parse_section(TERSE_DATA_DIR, 'dom', 'global_attributes', GlobalAttributeTerseData, parse_global_attributes)
-    global_attribute_names = dictify(list(rows), merge=True)
+    global_attribute_names = dictify(list(rows))
 
     has_fired = False
     for entry in data:

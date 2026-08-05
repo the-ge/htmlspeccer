@@ -11,7 +11,7 @@ T = TypeVar('T')
 JSONType: TypeAlias = bool | int | float | str | list['JSONType'] | dict[str, 'JSONType'] | None
 
 
-def dictify(xs: list[Any], *, merge: bool) -> dict[str, Any]:
+def dictify(xs: list[Any]) -> dict[str, Any]:
     """Convert a dataclass objects list/generator to a dict with unique keys as the the first field in each object."""
     result = {}
 
@@ -24,30 +24,18 @@ def dictify(xs: list[Any], *, merge: bool) -> dict[str, Any]:
         del r[key_field]  # remove the key field from the value dict
 
         if key in result:
-            # Existing entry
-            if merge:
-                # Merge each value with existing entry
-                t = result[key]
-                for subkey in t:
-                    if isinstance(t[subkey], str):
-                        t[subkey] += '. ' + r[subkey]
-                    elif isinstance(t[subkey], set):
-                        t[subkey] = t[subkey].union(r[subkey])
-                    elif isinstance(t[subkey], list):
-                        t[subkey].extend(r[subkey])
-                    else:
-                        msg = "Don't know how to merge type %s for key %s"
-                        raise NotImplementedError(msg, type(t[subkey]).__name__, subkey)
-            else:
-                # Create a linked-list
-                tail = key
-                count = 2
-                while result[tail].get('next'):
-                    tail = result[tail].get('next')
-                    count += 1
-                newkey = f'{key}({count})'
-                result[tail]['next'] = newkey
-                result[newkey] = r
+            # Merge each value with existing entry
+            t = result[key]
+            for subkey in t:
+                if isinstance(t[subkey], str):
+                    t[subkey] += '. ' + r[subkey]
+                elif isinstance(t[subkey], set):
+                    t[subkey] = t[subkey].union(r[subkey])
+                elif isinstance(t[subkey], list):
+                    t[subkey].extend(r[subkey])
+                else:
+                    msg = "Don't know how to merge type %s for key %s"
+                    raise NotImplementedError(msg, type(t[subkey]).__name__, subkey)
         else:
             result[key] = r
 

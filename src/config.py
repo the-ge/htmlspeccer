@@ -9,7 +9,7 @@ DATA_DIR = PROJECT_ROOT / '.dev/data'
 RAW_DATA_DIR = DATA_DIR / 'raw'  # raw spec HTML files
 TERSE_DATA_DIR = DATA_DIR / 'terse'  # NDJSON records, one file per (page, section)
 ATOMIC_DATA_CACHE_DIR = DATA_DIR / 'cache'  # normalize-stage fallback cache
-ATOMIC_DATA_DIR = DATA_DIR / 'atomic'  # typed+merged entities, one JSON file per category
+ATOMIC_DATA_DIR = DATA_DIR / 'atomic'  # typed entities, one JSON file per category
 EMENDATIONS_DIR = PROJECT_ROOT / '.dev/emendations'  # hand-authored emendation rules (plain Python)
 
 _dist_env = os.environ.get('DIST_DATA_DIR')

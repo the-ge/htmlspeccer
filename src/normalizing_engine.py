@@ -26,7 +26,8 @@ from util import dictify, make_serializable, parse_section, sort_top_level
 
 logger = logging.getLogger(__name__)
 
-# ---- Typed, merged entities (normalize-stage output shape) ----
+
+# ---- Typed entities (normalize-stage output shape) ----
 
 
 @dataclass(frozen=True, slots=True)
@@ -393,7 +394,7 @@ SECTION_SOURCES: dict[str, tuple[str, type]] = {
 
 
 class Normalizer:
-    """Normalizing stage engine: terse data NDJSON -> typed, merged entities, with validation and fallback cache."""
+    """Normalizing stage engine: terse data NDJSON -> typed entities, with validation and fallback cache."""
 
     def __init__(
         self,
@@ -476,13 +477,13 @@ class Normalizer:
         return entry
 
     def _get_dictified(
-        self, page: str, section: str, cls: type, *, merge: bool = True
+        self, page: str, section: str, cls: type
     ) -> dict[str, Any]:
         def builder() -> dict[str, Any]:
             parser = getattr(sys.modules[__name__], f'parse_{section}')
             entries = list(parse_section(self.terse_data_dir, page, section, cls, parser))
             self.emender.emend_normalizing_section(section, entries)
-            return dictify(entries, merge=merge)
+            return dictify(entries)
 
         return self._build_cached(section, builder)
 
