@@ -159,7 +159,7 @@ SEPARATOR_BY_SUBSTRING = {
 # ---- Generators for splitting spec strings ----
 
 
-def gen_attributes(input_str: str) -> Iterator[str]:
+def gen_attribute_names(input_str: str) -> Iterator[str]:
     for attribute in input_str.strip(string.whitespace + ';').split(';'):
         yield attribute.strip('*').strip()
 
@@ -201,7 +201,7 @@ def gen_tag_ifs(input_str: str) -> Iterator[str]:
             yield matches.group(1)
 
 
-def gen_enum(input_str: str) -> Iterator[str]:
+def gen_attribute_value_enums(input_str: str) -> Iterator[str]:
     if ATTRIBUTE_VALUE_PATTERN.fullmatch(input_str):
 
         def process_keyword(keyword: str) -> str:
@@ -297,7 +297,7 @@ def parse_attributes(rows: Iterator[AttributeTerseData]) -> Iterator[AttributeDa
         tag_notes, value_type, value_info, is_complicated = _parse_attribute_info(row.attribute, elements_info, value_info)
         tags = set(tag_notes)
 
-        value_enum = set(gen_enum(value_type))
+        value_enum = set(gen_attribute_value_enums(value_type))
         if value_enum:
             value_type, value_info, separator = 'enum', '', ''
         else:
@@ -401,7 +401,7 @@ def parse_elements(rows: Iterator[ElementTerseData]) -> Iterator[ElementData]:
     for row in rows:
         elements = gen_tags(row.element)
         categories = set(gen_content_categories(row.categories))
-        attributes = set(gen_attributes(row.attributes))
+        attributes = set(gen_attribute_names(row.attributes))
         children = set(gen_content_categories(row.children))
 
         for e in sorted(elements):
