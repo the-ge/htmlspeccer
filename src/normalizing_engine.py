@@ -96,31 +96,29 @@ class InputTypeData:
     url: str = ''
 
 
+RECOVERABLE_ERRORS = (AttributeError, ValueError, FileNotFoundError)
+
 # Match a list of one-or-more keywords such as `"foo"; "bar"; "the empty string"`
-ATTRIBUTE_VALUE_PATTERN = re.compile(r'^(?:"[a-zA-Z0-9/-]*"|the empty string)(?:; (?:"[a-zA-Z0-9/-]*"|the empty string))*$')
+ATTRIBUTE_VALUE_REGEX = re.compile(r'^(?:"[a-zA-Z0-9/-]*"|the empty string)(?:; (?:"[a-zA-Z0-9/-]*"|the empty string))*$')
 
 # Match element exceptions like "element (if ...)"
-TAG_IF_PATTERN = re.compile(r'([a-zA-Z0-9-]+) \(if [a-zA-Z0-9\' -]+\)')
+TAG_IF_REGEX = re.compile(r'([a-zA-Z0-9-]+) \(if [a-zA-Z0-9\' -]+\)')
 
-RECOVERABLE_ERRORS = (AttributeError, ValueError, FileNotFoundError)
+_SPLITTABLE_REGEX = re.compile(r'\b([a-zA-Z][a-zA-Z0-9-]*)\b[ \t]*\n[ \t]*\b([a-zA-Z][a-zA-Z0-9-]*)\b')
 
 # Sentinel used as the dict key (in place of `tag`) for attributes with no tag restriction.
 ALL_TAGS = 'all'
 
-# Fragment keyword to search for when splitting a shared URL list across a row's tags, in addition to
-# the tag's own name. Needed only where a URL fragment doesn't literally contain the tag name (e.g. `a`
-# and `area` share fragments under "hyperlink"; `audio`/`video` under "media"; `del`/`ins` under "mod").
-# Validated against indices.attributes.ndjson on 2026-08-06: every multi-tag row where a generic fragment's
-# real audience is a strict subset of the row's tags requires an entry here; rows where the fragment is
-# genuinely shared by every tag in the row need no entry (the no-match-shares-to-all-tags fallback covers
-# them). Matching is additive: a tag always still matches its own name, this only adds a second candidate.
-URL_BY_STRING = {
-    'a': 'hyperlink',
-    'area': 'hyperlink',
-    'audio': 'media',
-    'video': 'media',
-    'del': 'mod',
-    'ins': 'mod',
+SEPARATOR_BY_STRING = {
+    'Valid list of floating-point numbers': ',',
+    'Valid source size list':               ',',
+}
+
+SEPARATOR_BY_SUBSTRING = {
+    'space-separated tokens':                       ' ',
+    'ordered set of unique space-separated tokens': ' ',
+    'comma-separated list of':                      ',',
+    'set of comma-separated tokens':                ',',
 }
 
 # Special cases: phrase -> list of yielded tokens (empty list yields nothing)
@@ -143,16 +141,20 @@ TYPE_BY_PREFIX = {
     'Valid floating-point number': 'float',
 }
 
-SEPARATOR_BY_STRING = {
-    'Valid list of floating-point numbers': ',',
-    'Valid source size list':               ',',
-}
-
-SEPARATOR_BY_SUBSTRING = {
-    'space-separated tokens':                       ' ',
-    'ordered set of unique space-separated tokens': ' ',
-    'comma-separated list of':                      ',',
-    'set of comma-separated tokens':                ',',
+# Fragment keyword to search for when splitting a shared URL list across a row's tags, in addition to
+# the tag's own name. Needed only where a URL fragment doesn't literally contain the tag name (e.g. `a`
+# and `area` share fragments under "hyperlink"; `audio`/`video` under "media"; `del`/`ins` under "mod").
+# Validated against indices.attributes.ndjson on 2026-08-06: every multi-tag row where a generic fragment's
+# real audience is a strict subset of the row's tags requires an entry here; rows where the fragment is
+# genuinely shared by every tag in the row need no entry (the no-match-shares-to-all-tags fallback covers
+# them). Matching is additive: a tag always still matches its own name, this only adds a second candidate.
+URL_BY_STRING = {
+    'a': 'hyperlink',
+    'area': 'hyperlink',
+    'audio': 'media',
+    'video': 'media',
+    'del': 'mod',
+    'ins': 'mod',
 }
 
 
@@ -162,6 +164,16 @@ SEPARATOR_BY_SUBSTRING = {
 def gen_attribute_names(input_str: str) -> Iterator[str]:
     for attribute in input_str.strip(string.whitespace + ';').split(';'):
         yield attribute.strip('*').strip()
+
+
+def gen_attribute_value_enums(input_str: str) -> Iterator[str]:
+    if ATTRIBUTE_VALUE_REGEX.fullmatch(input_str):
+
+        def process_keyword(keyword: str) -> str:
+            keyword = keyword.strip()
+            return '' if keyword == 'the empty string' else keyword.strip('"')
+
+        yield from map(process_keyword, input_str.split(';'))
 
 
 def gen_content_categories(input_str: str) -> Iterator[str]:
@@ -196,22 +208,9 @@ def gen_tag_ifs(input_str: str) -> Iterator[str]:
         return
     parts = input_str.split(';') if ';' in input_str else [input_str]
     for x in parts:
-        matches = TAG_IF_PATTERN.fullmatch(x.strip())
+        matches = TAG_IF_REGEX.fullmatch(x.strip())
         if matches:
             yield matches.group(1)
-
-
-def gen_attribute_value_enums(input_str: str) -> Iterator[str]:
-    if ATTRIBUTE_VALUE_PATTERN.fullmatch(input_str):
-
-        def process_keyword(keyword: str) -> str:
-            keyword = keyword.strip()
-            return '' if keyword == 'the empty string' else keyword.strip('"')
-
-        yield from map(process_keyword, input_str.split(';'))
-
-
-_ADJACENT_TOKENS_PATTERN = re.compile(r'\b([a-zA-Z][a-zA-Z0-9-]*)\b[ \t]*\n[ \t]*\b([a-zA-Z][a-zA-Z0-9-]*)\b')
 
 
 def split_splittables(text: str, context: str) -> str:
@@ -225,7 +224,7 @@ def split_splittables(text: str, context: str) -> str:
         logger.warning("⚠️ %s: missing separator between '%s' and '%s'.", context, word_a, word_b)
         return f'{word_a};{word_b}'
 
-    return _ADJACENT_TOKENS_PATTERN.sub(repair, text)
+    return _SPLITTABLE_REGEX.sub(repair, text)
 
 
 # ---- Parsers for each section ----
