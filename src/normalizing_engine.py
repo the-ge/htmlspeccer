@@ -1,3 +1,4 @@
+import dataclasses
 import json
 import logging
 import re
@@ -40,7 +41,7 @@ class AriaRoleData:
 @dataclass(frozen=True, slots=True)
 class AttributeData:
     name: str
-    tags: set[str] = field(default_factory=set)
+    tag: str | None = None
     description: str = ''
     value_type: str = 'string'
     value_enum: set[str] = field(default_factory=set)
@@ -102,6 +103,25 @@ KEYWORDS_PATTERN = re.compile(r'^(?:"[a-zA-Z0-9/-]*"|the empty string)(?:; (?:"[
 EXCEPTION_PATTERN = re.compile(r'([a-zA-Z0-9-]+) \(if [a-zA-Z0-9\' -]+\)')
 
 RECOVERABLE_ERRORS = (AttributeError, ValueError, FileNotFoundError)
+
+# Sentinel used as the dict key (in place of `tag`) for attributes with no tag restriction.
+ALL_TAGS = 'all'
+
+# Fragment keyword to search for when splitting a shared URL list across a row's tags, in addition to
+# the tag's own name. Needed only where a URL fragment doesn't literally contain the tag name (e.g. `a`
+# and `area` share fragments under "hyperlink"; `audio`/`video` under "media"; `del`/`ins` under "mod").
+# Validated against indices.attributes.ndjson on 2026-08-06: every multi-tag row where a generic fragment's
+# real audience is a strict subset of the row's tags requires an entry here; rows where the fragment is
+# genuinely shared by every tag in the row need no entry (the no-match-shares-to-all-tags fallback covers
+# them). Matching is additive: a tag always still matches its own name, this only adds a second candidate.
+URL_BY_STRING = {
+    'a': 'hyperlink',
+    'area': 'hyperlink',
+    'audio': 'media',
+    'video': 'media',
+    'del': 'mod',
+    'ins': 'mod',
+}
 
 # Special cases: phrase -> list of yielded tokens (empty list yields nothing)
 ATTRIBUTE_TAGS_IF_EQUALS = {
@@ -221,27 +241,46 @@ def parse_aria_roles(rows: Iterator[AriaRoleTerseData]) -> Iterator[AriaRoleData
         )
 
 
-def _parse_attribute_info(elements_info: str, value_info: str) -> tuple[set[str], str, str, str, bool]:
-    """Return (tags, tag_notes, value_type, value_info, is_complicated)."""
+def _parse_attribute_info(elements_info: str, value_info: str) -> tuple[dict[str, str], str, str, bool]:
+    """Return (tag_notes, value_type, value_info, is_complicated). `tag_notes` maps each parsed tag to its
+    own scope note (empty string if none) -- only a tag with a `(if ...)`/`(in ...)` qualifier gets a note;
+    siblings from the same row don't inherit it. `is_complicated` reflects the trailing '*' on the value
+    description alone (shared across every tag split from this row, since it describes the value, not scope).
+    """
     is_complicated = value_info.endswith('*')
     if is_complicated:
         value_info = value_info[:-1]
     value_type = ' '.join(x.strip().strip('*') for x in value_info.split('\n')).strip()
     value_info = value_type
 
-    elements_set: set[str] = set()
-    elements_notes: list[str] = []
+    tag_notes: dict[str, str] = {}
     for token in gen_elements(elements_info):
         tmp = token.strip()
         idx = tmp.find('(')
         if idx != -1:
-            is_complicated = True
-            elements_set.add(tmp[:idx].strip())
-            elements_notes.append(token)
-        else:
-            elements_set.add(tmp)
-    elements_notes = '' if not elements_notes else f'Special tag scope: {", ".join(elements_notes)}'
-    return elements_set, elements_notes, value_type, value_info, is_complicated
+            tag = tmp[:idx].strip()
+            tag_notes[tag] = f'Special tag scope: {token}'
+        elif tmp not in tag_notes:
+            tag_notes[tmp] = ''
+    return tag_notes, value_type, value_info, is_complicated
+
+
+def _split_urls_by_tag(urls: list[str], tags: set[str]) -> dict[str, list[str]]:
+    """Partition a row's shared URL list across its tags. A URL goes to every tag whose keyword (its own
+    name, plus an URL_BY_STRING override if one exists) appears as an exact segment of the URL's
+    fragment (the part after '#'). A URL matching no tag's keyword is shared by every tag in the row.
+    """
+    keywords = {tag: {tag, URL_BY_STRING[tag]} if tag in URL_BY_STRING else {tag} for tag in tags}
+    result: dict[str, list[str]] = {tag: [] for tag in tags}
+    for url in urls:
+        fragment = url.split('#', 1)[-1] if '#' in url else ''
+        segments = set(re.split(r'[^a-z0-9]+', fragment.lower()))
+        matched = {tag for tag, kws in keywords.items() if kws & segments}
+        if len(matched) > 1:
+            logger.warning('⚠️ URL %r matches multiple tag keywords %r; keeping for all matches.', url, sorted(matched))
+        for tag in matched or tags:
+            result[tag].append(url)
+    return result
 
 
 def parse_attributes(rows: Iterator[AttributeTerseData]) -> Iterator[AttributeData]:
@@ -256,7 +295,8 @@ def parse_attributes(rows: Iterator[AttributeTerseData]) -> Iterator[AttributeDa
 
         elements_info = split_splittables(elements_info, f'Attribute {row.attribute!r} tag scope')
 
-        tags, tag_notes, value_type, value_info, is_complicated = _parse_attribute_info(elements_info, value_info)
+        tag_notes, value_type, value_info, is_complicated = _parse_attribute_info(elements_info, value_info)
+        tags = set(tag_notes)
 
         value_enum = set(gen_enum(value_type))
         if value_enum:
@@ -283,26 +323,56 @@ def parse_attributes(rows: Iterator[AttributeTerseData]) -> Iterator[AttributeDa
 
             value_type, separator = t, s
 
-        value_info = '. '.join([
-            v
-            for v in [
-                value_info,
-                tag_notes,
-                '*Incomplete description. See the full specification.' if is_complicated else '',
-            ]
-            if v
-        ])
+        def build_value_info(note: str, *, is_complicated: bool = is_complicated) -> str:
+            missing_info_hint = '*The actual rules are more complicated than indicated. See the full specification.' if is_complicated or note else ''
+            return '. '.join(v for v in [note, missing_info_hint] if v)  # @todo replace string with boolean
 
-        yield AttributeData(
-            name=name,
-            tags=tags,
-            description=description,
-            value_type=value_type,
-            value_enum=value_enum,
-            value_info=value_info,
-            separator=separator,
-            urls=urls,
-        )
+        if not tags:
+            # No tag restriction (e.g. 'HTML elements'): single entry, no URL split needed.
+            yield AttributeData(
+                name=name,
+                tag=None,
+                description=description,
+                value_type=value_type,
+                value_enum=value_enum,
+                value_info=build_value_info(''),
+                separator=separator,
+                urls=set(urls),
+            )
+            continue
+
+        urls_by_tag = _split_urls_by_tag(urls, tags)
+        for tag in sorted(tags):
+            yield AttributeData(
+                name=name,
+                tag=tag,
+                description=description,
+                value_type=value_type,
+                value_enum=value_enum,
+                value_info=build_value_info(tag_notes[tag]),
+                separator=separator,
+                urls=set(urls_by_tag[tag]),
+            )
+
+
+def dictify_attributes(xs: list[AttributeData]) -> dict[str, dict[str, Any]]:
+    """Convert a list of AttributeData into a dict keyed by name, then by tag (ALL_TAGS for `tag is None`).
+    Raises ValueError on a genuine (name, tag) collision, since that indicates a parsing bug rather than
+    legitimate data -- unlike dictify(), there's no merge path here.
+    """
+    result: dict[str, dict[str, Any]] = {}
+    for x in xs:
+        r = dataclasses.asdict(x)
+        del r['name']
+        del r['tag']
+        tag_key = x.tag if x.tag is not None else ALL_TAGS
+        by_tag = result.setdefault(x.name, {})
+        if tag_key in by_tag:
+            logger.warning('⚠️ Duplicate (name, tag) pair: (%r, %r)', x.name, tag_key)
+            #msg = f'Duplicate (name, tag) pair: ({x.name!r}, {tag_key!r})'
+            #raise ValueError(msg)
+        by_tag[tag_key] = r
+    return result
 
 
 def parse_content_categories(rows: Iterator[ContentCategoryTerseData]) -> Iterator[ContentCategoryData]:
@@ -477,13 +547,13 @@ class Normalizer:
         return entry
 
     def _get_dictified(
-        self, page: str, section: str, cls: type
+        self, page: str, section: str, cls: type, dictifier: Callable[[list], dict[str, Any]] = dictify
     ) -> dict[str, Any]:
         def builder() -> dict[str, Any]:
             parser = getattr(sys.modules[__name__], f'parse_{section}')
             entries = list(parse_section(self.terse_data_dir, page, section, cls, parser))
             self.emender.emend_normalizing_section(section, entries)
-            return dictify(entries)
+            return dictifier(entries)
 
         return self._build_cached(section, builder)
 
@@ -492,7 +562,8 @@ class Normalizer:
     def get_section_data(self, section: str) -> dict[str, Any]:
         """Build the named section with caching and validation. `section` must be a key in SECTION_SOURCES."""
         page, cls = SECTION_SOURCES[section]
-        return self._get_dictified(page, section, cls)
+        dictifier = dictify_attributes if section == 'attributes' else dictify
+        return self._get_dictified(page, section, cls, dictifier)
 
     def get_all(self) -> dict[str, Any]:
         """Run all builders and return a dict of results."""
