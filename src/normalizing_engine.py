@@ -97,10 +97,10 @@ class InputTypeData:
 
 
 # Match a list of one-or-more keywords such as `"foo"; "bar"; "the empty string"`
-KEYWORDS_PATTERN = re.compile(r'^(?:"[a-zA-Z0-9/-]*"|the empty string)(?:; (?:"[a-zA-Z0-9/-]*"|the empty string))*$')
+ATTRIBUTE_VALUE_PATTERN = re.compile(r'^(?:"[a-zA-Z0-9/-]*"|the empty string)(?:; (?:"[a-zA-Z0-9/-]*"|the empty string))*$')
 
 # Match element exceptions like "element (if ...)"
-EXCEPTION_PATTERN = re.compile(r'([a-zA-Z0-9-]+) \(if [a-zA-Z0-9\' -]+\)')
+TAG_IF_PATTERN = re.compile(r'([a-zA-Z0-9-]+) \(if [a-zA-Z0-9\' -]+\)')
 
 RECOVERABLE_ERRORS = (AttributeError, ValueError, FileNotFoundError)
 
@@ -124,7 +124,7 @@ URL_BY_STRING = {
 }
 
 # Special cases: phrase -> list of yielded tokens (empty list yields nothing)
-ATTRIBUTE_TAGS_IF_EQUALS = {
+TAGS_BY_STRING = {
     'autonomous custom elements': [],
     'HTML elements': [],
     'form-associated custom elements': ['custom'],
@@ -132,23 +132,23 @@ ATTRIBUTE_TAGS_IF_EQUALS = {
     'SVG svg': ['svg'],
 }
 
-ATTRIBUTE_TYPE_IF_EQUALS = {
+TYPE_BY_STRING = {
     'Boolean attribute':                    'bool',
     'Valid integer':                        'int',
     'Valid date string with optional time': 'datetime',
 }
 
-ATTRIBUTE_TYPE_IF_STARTSWITH = {
+TYPE_BY_PREFIX = {
     'Valid non-negative integer':  'int',
     'Valid floating-point number': 'float',
 }
 
-ATTRIBUTE_SEPARATOR_IF_EQUALS = {
+SEPARATOR_BY_STRING = {
     'Valid list of floating-point numbers': ',',
     'Valid source size list':               ',',
 }
 
-ATTRIBUTE_SEPARATOR_IF_CONTAINS = {
+SEPARATOR_BY_SUBSTRING = {
     'space-separated tokens':                       ' ',
     'ordered set of unique space-separated tokens': ' ',
     'comma-separated list of':                      ',',
@@ -171,38 +171,38 @@ def gen_content_categories(input_str: str) -> Iterator[str]:
             yield cat
 
 
-def gen_elements(input_str: str) -> Iterator[str]:
+def gen_tags(input_str: str) -> Iterator[str]:
     input_str = input_str.strip()
     if not input_str:
         return
 
     # 1) Handle known special phrases
-    if input_str in ATTRIBUTE_TAGS_IF_EQUALS:
-        yield from ATTRIBUTE_TAGS_IF_EQUALS[input_str]
+    if input_str in TAGS_BY_STRING:
+        yield from TAGS_BY_STRING[input_str]
         return
 
     if ';' in input_str:
         for e in re.split(r'\s*;\s*', input_str.strip(string.whitespace + ';')):
-            yield from gen_elements(e.strip())
+            yield from gen_tags(e.strip())
     elif ',' in input_str:
         for e in re.split(r'\s*,\s*', input_str.strip(string.whitespace + ',')):
-            yield from gen_elements(e)
+            yield from gen_tags(e)
     else:
         yield input_str
 
 
-def gen_element_exceptions(input_str: str) -> Iterator[str]:
+def gen_tag_ifs(input_str: str) -> Iterator[str]:
     if not input_str:
         return
     parts = input_str.split(';') if ';' in input_str else [input_str]
     for x in parts:
-        matches = EXCEPTION_PATTERN.fullmatch(x.strip())
+        matches = TAG_IF_PATTERN.fullmatch(x.strip())
         if matches:
             yield matches.group(1)
 
 
 def gen_enum(input_str: str) -> Iterator[str]:
-    if KEYWORDS_PATTERN.fullmatch(input_str):
+    if ATTRIBUTE_VALUE_PATTERN.fullmatch(input_str):
 
         def process_keyword(keyword: str) -> str:
             keyword = keyword.strip()
@@ -254,7 +254,7 @@ def _parse_attribute_info(elements_info: str, value_info: str) -> tuple[dict[str
     value_info = value_type
 
     tag_notes: dict[str, str] = {}
-    for token in gen_elements(elements_info):
+    for token in gen_tags(elements_info):
         tmp = token.strip()
         idx = tmp.find('(')
         if idx != -1:
@@ -302,19 +302,19 @@ def parse_attributes(rows: Iterator[AttributeTerseData]) -> Iterator[AttributeDa
         if value_enum:
             value_type, value_info, separator = 'enum', '', ''
         else:
-            t = ATTRIBUTE_TYPE_IF_EQUALS.get(value_type)
+            t = TYPE_BY_STRING.get(value_type)
             if t is None:
-                for prefix, mapped_type in ATTRIBUTE_TYPE_IF_STARTSWITH.items():
+                for prefix, mapped_type in TYPE_BY_PREFIX.items():
                     if value_type.startswith(prefix):
                         t = mapped_type
                         break
                 else:
                     t = 'string'
 
-            s = ATTRIBUTE_SEPARATOR_IF_EQUALS.get(value_type)
+            s = SEPARATOR_BY_STRING.get(value_type)
             if s is None:
                 value_type_lower = value_type.lower()
-                for substring, sep in ATTRIBUTE_SEPARATOR_IF_CONTAINS.items():
+                for substring, sep in SEPARATOR_BY_SUBSTRING.items():
                     if substring in value_type_lower:
                         s = sep
                         break
@@ -386,8 +386,8 @@ def parse_content_categories(rows: Iterator[ContentCategoryTerseData]) -> Iterat
             exceptions += '; The tabindex attribute can also make any element into interactive content.'
         category = category.rstrip('*').strip()
 
-        elements_set = set(gen_elements(row.elements))
-        elements_maybe = list(gen_element_exceptions(exceptions))
+        elements_set = set(gen_tags(row.elements))
+        elements_maybe = list(gen_tag_ifs(exceptions))
 
         yield ContentCategoryData(
             name=category,
@@ -400,7 +400,7 @@ def parse_content_categories(rows: Iterator[ContentCategoryTerseData]) -> Iterat
 
 def parse_elements(rows: Iterator[ElementTerseData]) -> Iterator[ElementData]:
     for row in rows:
-        elements = gen_elements(row.element)
+        elements = gen_tags(row.element)
         categories = set(gen_content_categories(row.categories))
         attributes = set(gen_attributes(row.attributes))
         children = set(gen_content_categories(row.children))
