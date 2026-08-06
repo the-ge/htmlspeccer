@@ -11,7 +11,7 @@ def emend(section: str, data: list) -> bool:
     parsed = list(parse_section(TERSE_DATA_DIR, 'input', 'input_types', InputTypeTerseData, parse_input_types))
     data.append(AttributeData(
         name='type',
-        tags={'input'},
+        tag='input',
         description='Type of form control',
         value_enum={x.name for x in parsed},
         value_info='An input type e.g. "text", "number", or "week".',

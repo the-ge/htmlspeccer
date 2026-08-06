@@ -21,8 +21,8 @@ def emend(section: str, data: list) -> bool:
         has_fired = True
         for i, entry in enumerate(entries, start=1):
             logger.info(
-                '🩹 Duplicate attribute %r (%d/%d): description=%r, tags=%r',
-                name, i, total, entry.description, entry.tags,
+                '🩹 Duplicate attribute %r (%d/%d): description=%r, tag=%r',
+                name, i, total, entry.description, entry.tag,
             )
 
     return has_fired
