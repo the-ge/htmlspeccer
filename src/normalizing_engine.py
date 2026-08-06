@@ -241,12 +241,13 @@ def parse_aria_roles(rows: Iterator[AriaRoleTerseData]) -> Iterator[AriaRoleData
         )
 
 
-def _parse_attribute_info(elements_info: str, value_info: str) -> tuple[dict[str, str], str, str, bool]:
+def _parse_attribute_info(name: str, elements_info: str, value_info: str) -> tuple[dict[str, str], str, str, bool]:
     """Return (tag_notes, value_type, value_info, is_complicated). `tag_notes` maps each parsed tag to its
     own scope note (empty string if none) -- only a tag with a `(if ...)`/`(in ...)` qualifier gets a note;
     siblings from the same row don't inherit it. `is_complicated` reflects the trailing '*' on the value
     description alone (shared across every tag split from this row, since it describes the value, not scope).
     """
+    elements_info = split_splittables(elements_info, f'Attribute {name!r} element(s)')
     is_complicated = value_info.endswith('*')
     if is_complicated:
         value_info = value_info[:-1]
@@ -293,9 +294,7 @@ def parse_attributes(rows: Iterator[AttributeTerseData]) -> Iterator[AttributeDa
             row.urls,
         )
 
-        elements_info = split_splittables(elements_info, f'Attribute {row.attribute!r} tag scope')
-
-        tag_notes, value_type, value_info, is_complicated = _parse_attribute_info(elements_info, value_info)
+        tag_notes, value_type, value_info, is_complicated = _parse_attribute_info(row.attribute, elements_info, value_info)
         tags = set(tag_notes)
 
         value_enum = set(gen_enum(value_type))
