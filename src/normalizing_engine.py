@@ -367,8 +367,6 @@ def dictify_attributes(xs: list[AttributeData]) -> dict[str, dict[str, Any]]:
         by_tag = result.setdefault(x.name, {})
         if tag_key in by_tag:
             logger.warning('⚠️ Duplicate (name, tag) pair: (%r, %r)', x.name, tag_key)
-            #msg = f'Duplicate (name, tag) pair: ({x.name!r}, {tag_key!r})'
-            #raise ValueError(msg)
         by_tag[tag_key] = r
     return result
 
