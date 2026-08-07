@@ -46,6 +46,7 @@ class AttributeData:
     value_type: str = 'string'
     value_enum: set[str] = field(default_factory=set)
     value_info: str = ''
+    is_more_value_info_required: bool = False
     separator: str = ''
     urls: set[str] = field(default_factory=set)
 
@@ -246,14 +247,13 @@ def _parse_attribute(row: AttributeTerseData) -> Iterator[AttributeData]:
     Splits the input data's `elements` text into tags via gen_tags(), tracking a per-tag scope note
     (`tag_notes`) for tags with a `(if ...)`/`(in ...)` qualifier -- siblings from the same input data
     don't inherit that note. Parses the value description into value_type/value_enum/separator,
-    and sets value_info_note when the value description carries a trailing '*' (shared across
-    every tag split from this input data, since it describes the value, not scope).
+    and sets `is_more_value_info_required` when the value description carries a trailing '*'
+    (shared across every tag split from this input data, since it describes the value, not scope).
 
     Yields:
         - if the input data has no tag restriction: a single tagless AttributeData;
         - otherwise splits the input data's shared URL list across tags and yields one AttributeData per tag.
     """
-    value_info_note = ''
     name, elements_info, description, value_info, urls = (
         row.attribute,
         row.elements,
@@ -263,10 +263,9 @@ def _parse_attribute(row: AttributeTerseData) -> Iterator[AttributeData]:
     )
 
     elements_info = split_splittables(elements_info, f'Attribute {name!r} element(s)')
-    is_complicated = value_info.endswith('*')
-    if is_complicated:
+    is_more_value_info_required = value_info.endswith('*')
+    if is_more_value_info_required:
         value_info = value_info[:-1]
-        value_info_note = '. [!] Online documentation needed for completeness.'
     value_type = ' '.join(x.strip().strip('*') for x in value_info.split('\n')).strip()
     value_info = value_type
 
@@ -279,7 +278,6 @@ def _parse_attribute(row: AttributeTerseData) -> Iterator[AttributeData]:
             tag_notes[tag] = f'Special tag scope: {token}'
         elif tmp not in tag_notes:
             tag_notes[tmp] = ''
-        continue
     tags = set(tag_notes)
 
     value_enum = set(gen_attribute_value_enums(value_type))
@@ -296,7 +294,8 @@ def _parse_attribute(row: AttributeTerseData) -> Iterator[AttributeData]:
             description=description,
             value_type=value_type,
             value_enum=value_enum,
-            value_info=value_info + value_info_note,
+            value_info=value_info,
+            is_more_value_info_required=is_more_value_info_required,
             separator=separator,
             urls=set(urls),
         )
@@ -309,7 +308,8 @@ def _parse_attribute(row: AttributeTerseData) -> Iterator[AttributeData]:
             description=description,
             value_type=value_type,
             value_enum=value_enum,
-            value_info=value_info + value_info_note,
+            value_info=value_info,
+            is_more_value_info_required=is_more_value_info_required,
             separator=separator,
             urls=set(urls[tag]),
         )
