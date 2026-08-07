@@ -283,6 +283,29 @@ def _parse_attribute_urls(urls: list[str], tags: set[str]) -> dict[str, list[str
     return result
 
 
+def _parse_attribute_value(value_type_str: str) -> tuple[str, str]:
+    value_type = TYPE_BY_STRING.get(value_type_str)
+    if value_type is None:
+        for prefix, mapped_type in TYPE_BY_PREFIX.items():
+            if value_type_str.startswith(prefix):
+                value_type = mapped_type
+                break
+        else:
+            value_type = 'string'
+
+    value_separator = SEPARATOR_BY_STRING.get(value_type_str)
+    if value_separator is None:
+        value_type_lower = value_type_str.lower()
+        for substring, sep in SEPARATOR_BY_SUBSTRING.items():
+            if substring in value_type_lower:
+                value_separator = sep
+                break
+    if value_separator is None:
+        value_separator = ''
+
+    return value_type, value_separator
+
+
 def parse_attributes(rows: Iterator[AttributeTerseData]) -> Iterator[AttributeData]:
     for row in rows:
         name, elements_info, description, value_info, urls = (
@@ -300,26 +323,7 @@ def parse_attributes(rows: Iterator[AttributeTerseData]) -> Iterator[AttributeDa
         if value_enum:
             value_type, value_info, separator = 'enum', '', ''
         else:
-            t = TYPE_BY_STRING.get(value_type)
-            if t is None:
-                for prefix, mapped_type in TYPE_BY_PREFIX.items():
-                    if value_type.startswith(prefix):
-                        t = mapped_type
-                        break
-                else:
-                    t = 'string'
-
-            s = SEPARATOR_BY_STRING.get(value_type)
-            if s is None:
-                value_type_lower = value_type.lower()
-                for substring, sep in SEPARATOR_BY_SUBSTRING.items():
-                    if substring in value_type_lower:
-                        s = sep
-                        break
-            if s is None:
-                s = ''
-
-            value_type, separator = t, s
+            value_type, separator = _parse_attribute_value(value_type)
 
         def build_value_info(note: str, *, is_complicated: bool = is_complicated) -> str:
             missing_info_hint = '*The actual rules are more complicated than indicated. See the full specification.' if is_complicated or note else ''
