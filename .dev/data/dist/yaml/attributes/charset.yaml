@@ -1,11 +1,11 @@
-tag_scope:
-- meta
-description: Character encoding declaration
-value_type: enum
-value_enum:
-- utf-8
-value_info: ''
-separator: ''
-urls:
-- https://html.spec.whatwg.org/multipage/semantics.html#attr-meta-charset
-- https://html.spec.whatwg.org/multipage/semantics.html#character-encoding-declaration
+meta:
+  description: Character encoding declaration
+  value_type: enum
+  value_enum:
+  - utf-8
+  value_info: ''
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/semantics.html#attr-meta-charset
+  - https://html.spec.whatwg.org/multipage/semantics.html#character-encoding-declaration

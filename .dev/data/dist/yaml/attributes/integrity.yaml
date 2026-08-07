@@ -1,13 +1,22 @@
-tag_scope:
-- link
-- script
-description: Integrity metadata used in Subresource Integrity checks [SRI]
-value_type: string
-value_enum: []
-value_info: Text
-separator: ''
-urls:
-- https://html.spec.whatwg.org/multipage/semantics.html#attr-link-integrity
-- https://html.spec.whatwg.org/multipage/scripting.html#attr-script-integrity
-- https://html.spec.whatwg.org/multipage/references.html#refsSRI
-- https://html.spec.whatwg.org/multipage/dom.html#attribute-text
+link:
+  description: Integrity metadata used in Subresource Integrity checks [SRI]
+  value_type: string
+  value_enum: []
+  value_info: Text
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/dom.html#attribute-text
+  - https://html.spec.whatwg.org/multipage/references.html#refsSRI
+  - https://html.spec.whatwg.org/multipage/semantics.html#attr-link-integrity
+script:
+  description: Integrity metadata used in Subresource Integrity checks [SRI]
+  value_type: string
+  value_enum: []
+  value_info: Text
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/dom.html#attribute-text
+  - https://html.spec.whatwg.org/multipage/references.html#refsSRI
+  - https://html.spec.whatwg.org/multipage/scripting.html#attr-script-integrity

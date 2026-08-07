@@ -1,11 +1,11 @@
-tag_scope:
-- area
-description: Coordinates for the shape to be created in an image map
-value_type: string
-value_enum: []
-value_info: Valid list of floating-point numbers. *Incomplete description. See the full specification.
-separator: ','
-urls:
-- https://html.spec.whatwg.org/multipage/image-maps.html#attr-area-coords
-- https://html.spec.whatwg.org/multipage/image-maps.html#image-map
-- https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#valid-list-of-floating-point-numbers
+area:
+  description: Coordinates for the shape to be created in an image map
+  value_type: string
+  value_enum: []
+  value_info: Valid list of floating-point numbers
+  is_more_value_info_required: true
+  separator: ','
+  urls:
+  - https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#valid-list-of-floating-point-numbers
+  - https://html.spec.whatwg.org/multipage/image-maps.html#attr-area-coords
+  - https://html.spec.whatwg.org/multipage/image-maps.html#image-map

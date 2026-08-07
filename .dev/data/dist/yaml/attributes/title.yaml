@@ -1,10 +1,62 @@
-tag_scope: []
-description: Advisory information for the element
-value_type: string
-value_enum: []
-value_info: Text
-separator: ''
-urls:
-- https://html.spec.whatwg.org/multipage/dom.html#attr-title
-- https://html.spec.whatwg.org/multipage/dom.html#attribute-text
-next: title(2)
+all:
+  description: Advisory information for the element
+  value_type: string
+  value_enum: []
+  value_info: Text
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/dom.html#attr-title
+  - https://html.spec.whatwg.org/multipage/dom.html#attribute-text
+abbr:
+  description: Full term or expansion of abbreviation
+  value_type: string
+  value_enum: []
+  value_info: Text
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/dom.html#attribute-text
+  - https://html.spec.whatwg.org/multipage/text-level-semantics.html#attr-abbr-title
+dfn:
+  description: Full term or expansion of abbreviation
+  value_type: string
+  value_enum: []
+  value_info: Text
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/dom.html#attribute-text
+  - https://html.spec.whatwg.org/multipage/text-level-semantics.html#attr-dfn-title
+input:
+  description: Description of pattern (when used with pattern attribute)
+  value_type: string
+  value_enum: []
+  value_info: Text
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/dom.html#attribute-text
+  - https://html.spec.whatwg.org/multipage/input.html#attr-input-pattern
+  - https://html.spec.whatwg.org/multipage/input.html#attr-input-title
+link:
+  description: Title of the link
+  value_type: string
+  value_enum: []
+  value_info: Text
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/dom.html#attribute-text
+  - https://html.spec.whatwg.org/multipage/semantics.html#attr-link-title
+style:
+  description: CSS style sheet set name
+  value_type: string
+  value_enum: []
+  value_info: Text
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://drafts.csswg.org/cssom/#css-style-sheet-set-name
+  - https://html.spec.whatwg.org/multipage/dom.html#attribute-text
+  - https://html.spec.whatwg.org/multipage/semantics.html#attr-style-title

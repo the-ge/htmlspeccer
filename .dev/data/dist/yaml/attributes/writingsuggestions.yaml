@@ -1,13 +1,14 @@
-tag_scope: []
-description: Whether the element can offer writing suggestions or not.
-value_type: enum
-value_enum:
-- ''
-- 'false'
-- 'true'
-value_info: ''
-separator: ''
-urls:
-- https://html.spec.whatwg.org/multipage/interaction.html#attr-writingsuggestions
-- https://html.spec.whatwg.org/multipage/interaction.html#attr-writingsuggestions-true
-- https://html.spec.whatwg.org/multipage/interaction.html#attr-writingsuggestions-false
+all:
+  description: Whether the element can offer writing suggestions or not.
+  value_type: enum
+  value_enum:
+  - ''
+  - 'false'
+  - 'true'
+  value_info: ''
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/interaction.html#attr-writingsuggestions
+  - https://html.spec.whatwg.org/multipage/interaction.html#attr-writingsuggestions-false
+  - https://html.spec.whatwg.org/multipage/interaction.html#attr-writingsuggestions-true

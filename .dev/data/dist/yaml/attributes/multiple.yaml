@@ -1,12 +1,20 @@
-tag_scope:
-- input
-- select
-description: Whether to allow multiple values
-value_type: bool
-value_enum: []
-value_info: Boolean attribute
-separator: ''
-urls:
-- https://html.spec.whatwg.org/multipage/input.html#attr-input-multiple
-- https://html.spec.whatwg.org/multipage/form-elements.html#attr-select-multiple
-- https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#boolean-attribute
+input:
+  description: Whether to allow multiple values
+  value_type: bool
+  value_enum: []
+  value_info: Boolean attribute
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#boolean-attribute
+  - https://html.spec.whatwg.org/multipage/input.html#attr-input-multiple
+select:
+  description: Whether to allow multiple values
+  value_type: bool
+  value_enum: []
+  value_info: Boolean attribute
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#boolean-attribute
+  - https://html.spec.whatwg.org/multipage/form-elements.html#attr-select-multiple

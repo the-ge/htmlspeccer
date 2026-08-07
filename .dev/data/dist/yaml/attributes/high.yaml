@@ -1,10 +1,10 @@
-tag_scope:
-- meter
-description: Low limit of high range
-value_type: float
-value_enum: []
-value_info: Valid floating-point number. *Incomplete description. See the full specification.
-separator: ''
-urls:
-- https://html.spec.whatwg.org/multipage/form-elements.html#attr-meter-high
-- https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#valid-floating-point-number
+meter:
+  description: Low limit of high range
+  value_type: float
+  value_enum: []
+  value_info: Valid floating-point number
+  is_more_value_info_required: true
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#valid-floating-point-number
+  - https://html.spec.whatwg.org/multipage/form-elements.html#attr-meter-high

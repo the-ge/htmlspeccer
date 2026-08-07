@@ -1,15 +1,15 @@
-tag_scope:
-- img
-description: Decoding hint to use when processing this image for presentation
-value_type: enum
-value_enum:
-- async
-- auto
-- sync
-value_info: ''
-separator: ''
-urls:
-- https://html.spec.whatwg.org/multipage/embedded-content.html#attr-img-decoding
-- https://html.spec.whatwg.org/multipage/images.html#attr-img-decoding-sync
-- https://html.spec.whatwg.org/multipage/images.html#attr-img-decoding-async
-- https://html.spec.whatwg.org/multipage/images.html#attr-img-decoding-auto
+img:
+  description: Decoding hint to use when processing this image for presentation
+  value_type: enum
+  value_enum:
+  - async
+  - auto
+  - sync
+  value_info: ''
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/embedded-content.html#attr-img-decoding
+  - https://html.spec.whatwg.org/multipage/images.html#attr-img-decoding-async
+  - https://html.spec.whatwg.org/multipage/images.html#attr-img-decoding-auto
+  - https://html.spec.whatwg.org/multipage/images.html#attr-img-decoding-sync

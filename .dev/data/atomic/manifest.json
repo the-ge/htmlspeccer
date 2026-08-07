@@ -6,17 +6,12 @@
   },
   "attributes": {
     "status": "ok",
-    "row_count": 181,
+    "row_count": 145,
     "delta": 0
   },
   "content_categories": {
     "status": "ok",
     "row_count": 15,
-    "delta": 0
-  },
-  "global_attributes": {
-    "status": "ok",
-    "row_count": 32,
     "delta": 0
   },
   "elements": {
@@ -32,6 +27,11 @@
   "event_handlers": {
     "status": "ok",
     "row_count": 89,
+    "delta": 0
+  },
+  "global_attributes": {
+    "status": "ok",
+    "row_count": 32,
     "delta": 0
   },
   "input_types": {

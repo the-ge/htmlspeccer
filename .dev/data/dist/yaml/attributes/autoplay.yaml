@@ -1,13 +1,22 @@
-tag_scope:
-- audio
-- video
-description: Hint that the media resource can be started automatically when the page is loaded
-value_type: bool
-value_enum: []
-value_info: Boolean attribute
-separator: ''
-urls:
-- https://html.spec.whatwg.org/multipage/media.html#attr-media-autoplay
-- https://html.spec.whatwg.org/multipage/media.html#attr-media-autoplay
-- https://html.spec.whatwg.org/multipage/media.html#media-resource
-- https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#boolean-attribute
+audio:
+  description: Hint that the media resource can be started automatically when the page is loaded
+  value_type: bool
+  value_enum: []
+  value_info: Boolean attribute
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#boolean-attribute
+  - https://html.spec.whatwg.org/multipage/media.html#attr-media-autoplay
+  - https://html.spec.whatwg.org/multipage/media.html#media-resource
+video:
+  description: Hint that the media resource can be started automatically when the page is loaded
+  value_type: bool
+  value_enum: []
+  value_info: Boolean attribute
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#boolean-attribute
+  - https://html.spec.whatwg.org/multipage/media.html#attr-media-autoplay
+  - https://html.spec.whatwg.org/multipage/media.html#media-resource

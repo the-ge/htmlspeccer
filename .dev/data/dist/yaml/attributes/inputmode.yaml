@@ -1,24 +1,25 @@
-tag_scope: []
-description: Hint for selecting an input modality
-value_type: enum
-value_enum:
-- decimal
-- email
-- none
-- numeric
-- search
-- tel
-- text
-- url
-value_info: ''
-separator: ''
-urls:
-- https://html.spec.whatwg.org/multipage/interaction.html#attr-inputmode
-- https://html.spec.whatwg.org/multipage/interaction.html#attr-inputmode-keyword-none
-- https://html.spec.whatwg.org/multipage/interaction.html#attr-inputmode-keyword-text
-- https://html.spec.whatwg.org/multipage/interaction.html#attr-inputmode-keyword-tel
-- https://html.spec.whatwg.org/multipage/interaction.html#attr-inputmode-keyword-email
-- https://html.spec.whatwg.org/multipage/interaction.html#attr-inputmode-keyword-url
-- https://html.spec.whatwg.org/multipage/interaction.html#attr-inputmode-keyword-numeric
-- https://html.spec.whatwg.org/multipage/interaction.html#attr-inputmode-keyword-decimal
-- https://html.spec.whatwg.org/multipage/interaction.html#attr-inputmode-keyword-search
+all:
+  description: Hint for selecting an input modality
+  value_type: enum
+  value_enum:
+  - decimal
+  - email
+  - none
+  - numeric
+  - search
+  - tel
+  - text
+  - url
+  value_info: ''
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/interaction.html#attr-inputmode
+  - https://html.spec.whatwg.org/multipage/interaction.html#attr-inputmode-keyword-decimal
+  - https://html.spec.whatwg.org/multipage/interaction.html#attr-inputmode-keyword-email
+  - https://html.spec.whatwg.org/multipage/interaction.html#attr-inputmode-keyword-none
+  - https://html.spec.whatwg.org/multipage/interaction.html#attr-inputmode-keyword-numeric
+  - https://html.spec.whatwg.org/multipage/interaction.html#attr-inputmode-keyword-search
+  - https://html.spec.whatwg.org/multipage/interaction.html#attr-inputmode-keyword-tel
+  - https://html.spec.whatwg.org/multipage/interaction.html#attr-inputmode-keyword-text
+  - https://html.spec.whatwg.org/multipage/interaction.html#attr-inputmode-keyword-url

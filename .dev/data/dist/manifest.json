@@ -4,19 +4,19 @@
     "dom": "Mon, 20 Jul 2026 08:01:44 GMT",
     "input": "Mon, 20 Jul 2026 08:01:44 GMT",
     "syntax": "Mon, 20 Jul 2026 08:01:45 GMT",
-    "aria": "Wed, 29 Jul 2026 08:34:38 GMT"
+    "aria": "Wed, 05 Aug 2026 10:09:42 GMT"
   },
   "counts": {
     "aria_roles": 61,
-    "attributes": 181,
+    "attributes": 145,
     "content_categories": 15,
-    "global_attributes": 32,
     "elements": 115,
     "element_kinds": 6,
     "event_handlers": 89,
+    "global_attributes": 32,
     "input_types": 22
   },
   "generator_release": "0.7.3",
-  "generator_tag": "0.7.3-37-g0dce65a-dirty",
-  "generator_commit_id": "0dce65aac6f5955c30373369fe5cdfd593726032"
+  "generator_tag": "0.7.3-75-g952b4ef-dirty",
+  "generator_commit_id": "952b4ef3b6744415af0064cb375e41e4058bdf7d"
 }

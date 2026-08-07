@@ -1,10 +1,11 @@
-tag_scope: []
-description: Whether the element is draggable
-value_type: enum
-value_enum:
-- 'false'
-- 'true'
-value_info: ''
-separator: ''
-urls:
-- https://html.spec.whatwg.org/multipage/dnd.html#attr-draggable
+all:
+  description: Whether the element is draggable
+  value_type: enum
+  value_enum:
+  - 'false'
+  - 'true'
+  value_info: ''
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/dnd.html#attr-draggable

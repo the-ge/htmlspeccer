@@ -1,16 +1,40 @@
-tag_scope:
-- link
-- meta
-- source
-- style
-description: Applicable media
-value_type: string
-value_enum: []
-value_info: Valid media query list
-separator: ''
-urls:
-- https://html.spec.whatwg.org/multipage/semantics.html#attr-link-media
-- https://html.spec.whatwg.org/multipage/semantics.html#attr-meta-media
-- https://html.spec.whatwg.org/multipage/embedded-content.html#attr-source-media
-- https://html.spec.whatwg.org/multipage/semantics.html#attr-style-media
-- https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#valid-media-query-list
+link:
+  description: Applicable media
+  value_type: string
+  value_enum: []
+  value_info: Valid media query list
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#valid-media-query-list
+  - https://html.spec.whatwg.org/multipage/semantics.html#attr-link-media
+meta:
+  description: Applicable media
+  value_type: string
+  value_enum: []
+  value_info: Valid media query list
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#valid-media-query-list
+  - https://html.spec.whatwg.org/multipage/semantics.html#attr-meta-media
+source:
+  description: Applicable media
+  value_type: string
+  value_enum: []
+  value_info: Valid media query list
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#valid-media-query-list
+  - https://html.spec.whatwg.org/multipage/embedded-content.html#attr-source-media
+style:
+  description: Applicable media
+  value_type: string
+  value_enum: []
+  value_info: Valid media query list
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#valid-media-query-list
+  - https://html.spec.whatwg.org/multipage/semantics.html#attr-style-media

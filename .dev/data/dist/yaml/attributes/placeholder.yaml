@@ -1,12 +1,20 @@
-tag_scope:
-- input
-- textarea
-description: User-visible label to be placed within the form control
-value_type: string
-value_enum: []
-value_info: Text. *Incomplete description. See the full specification.
-separator: ''
-urls:
-- https://html.spec.whatwg.org/multipage/input.html#attr-input-placeholder
-- https://html.spec.whatwg.org/multipage/form-elements.html#attr-textarea-placeholder
-- https://html.spec.whatwg.org/multipage/dom.html#attribute-text
+input:
+  description: User-visible label to be placed within the form control
+  value_type: string
+  value_enum: []
+  value_info: Text
+  is_more_value_info_required: true
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/dom.html#attribute-text
+  - https://html.spec.whatwg.org/multipage/input.html#attr-input-placeholder
+textarea:
+  description: User-visible label to be placed within the form control
+  value_type: string
+  value_enum: []
+  value_info: Text
+  is_more_value_info_required: true
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/dom.html#attribute-text
+  - https://html.spec.whatwg.org/multipage/form-elements.html#attr-textarea-placeholder

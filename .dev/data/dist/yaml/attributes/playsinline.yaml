@@ -1,10 +1,10 @@
-tag_scope:
-- video
-description: Encourage the user agent to display video content within the element's playback area
-value_type: bool
-value_enum: []
-value_info: Boolean attribute
-separator: ''
-urls:
-- https://html.spec.whatwg.org/multipage/media.html#attr-video-playsinline
-- https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#boolean-attribute
+video:
+  description: Encourage the user agent to display video content within the element's playback area
+  value_type: bool
+  value_enum: []
+  value_info: Boolean attribute
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#boolean-attribute
+  - https://html.spec.whatwg.org/multipage/media.html#attr-video-playsinline

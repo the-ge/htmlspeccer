@@ -1,19 +1,19 @@
-tag_scope:
-- meta
-description: Pragma directive
-value_type: enum
-value_enum:
-- content-security-policy
-- content-type
-- default-style
-- refresh
-- x-ua-compatible
-value_info: ''
-separator: ''
-urls:
-- https://html.spec.whatwg.org/multipage/semantics.html#attr-meta-http-equiv
-- https://html.spec.whatwg.org/multipage/semantics.html#attr-meta-http-equiv-keyword-content-type
-- https://html.spec.whatwg.org/multipage/semantics.html#attr-meta-http-equiv-keyword-default-style
-- https://html.spec.whatwg.org/multipage/semantics.html#attr-meta-http-equiv-keyword-refresh
-- https://html.spec.whatwg.org/multipage/semantics.html#attr-meta-http-equiv-keyword-x-ua-compatible
-- https://html.spec.whatwg.org/multipage/semantics.html#attr-meta-http-equiv-keyword-content-security-policy
+meta:
+  description: Pragma directive
+  value_type: enum
+  value_enum:
+  - content-security-policy
+  - content-type
+  - default-style
+  - refresh
+  - x-ua-compatible
+  value_info: ''
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/semantics.html#attr-meta-http-equiv
+  - https://html.spec.whatwg.org/multipage/semantics.html#attr-meta-http-equiv-keyword-content-security-policy
+  - https://html.spec.whatwg.org/multipage/semantics.html#attr-meta-http-equiv-keyword-content-type
+  - https://html.spec.whatwg.org/multipage/semantics.html#attr-meta-http-equiv-keyword-default-style
+  - https://html.spec.whatwg.org/multipage/semantics.html#attr-meta-http-equiv-keyword-refresh
+  - https://html.spec.whatwg.org/multipage/semantics.html#attr-meta-http-equiv-keyword-x-ua-compatible

@@ -1,12 +1,12 @@
-tag_scope:
-- iframe
-description: Permissions policy to be applied to the iframe's contents
-value_type: string
-value_enum: []
-value_info: Serialized permissions policy
-separator: ''
-urls:
-- https://html.spec.whatwg.org/multipage/iframe-embed-object.html#attr-iframe-allow
-- https://w3c.github.io/webappsec-feature-policy/#permissions-policy
-- https://html.spec.whatwg.org/multipage/iframe-embed-object.html#the-iframe-element
-- https://w3c.github.io/webappsec-feature-policy/#serialized-permissions-policy
+iframe:
+  description: Permissions policy to be applied to the iframe's contents
+  value_type: string
+  value_enum: []
+  value_info: Serialized permissions policy
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/iframe-embed-object.html#attr-iframe-allow
+  - https://html.spec.whatwg.org/multipage/iframe-embed-object.html#the-iframe-element
+  - https://w3c.github.io/webappsec-feature-policy/#permissions-policy
+  - https://w3c.github.io/webappsec-feature-policy/#serialized-permissions-policy

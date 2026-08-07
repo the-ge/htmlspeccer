@@ -1,25 +1,89 @@
-tag_scope:
-- canvas
-- embed
-- iframe
-- img
-- input
-- object
-- source
-- video
-description: Vertical dimension
-value_type: int
-value_enum: []
-value_info: 'Valid non-negative integer. Special tag scope: source (in picture). *Incomplete description. See the full specification.'
-separator: ''
-urls:
-- https://html.spec.whatwg.org/multipage/canvas.html#attr-canvas-height
-- https://html.spec.whatwg.org/multipage/embedded-content-other.html#attr-dim-height
-- https://html.spec.whatwg.org/multipage/embedded-content-other.html#attr-dim-height
-- https://html.spec.whatwg.org/multipage/embedded-content-other.html#attr-dim-height
-- https://html.spec.whatwg.org/multipage/embedded-content-other.html#attr-dim-height
-- https://html.spec.whatwg.org/multipage/embedded-content-other.html#attr-dim-height
-- https://html.spec.whatwg.org/multipage/embedded-content-other.html#attr-dim-height
-- https://html.spec.whatwg.org/multipage/embedded-content.html#the-picture-element
-- https://html.spec.whatwg.org/multipage/embedded-content-other.html#attr-dim-height
-- https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#valid-non-negative-integer
+canvas:
+  description: Vertical dimension
+  value_type: int
+  value_enum: []
+  value_info: Valid non-negative integer
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/canvas.html#attr-canvas-height
+  - https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#valid-non-negative-integer
+  - https://html.spec.whatwg.org/multipage/embedded-content-other.html#attr-dim-height
+  - https://html.spec.whatwg.org/multipage/embedded-content.html#the-picture-element
+embed:
+  description: Vertical dimension
+  value_type: int
+  value_enum: []
+  value_info: Valid non-negative integer
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#valid-non-negative-integer
+  - https://html.spec.whatwg.org/multipage/embedded-content-other.html#attr-dim-height
+  - https://html.spec.whatwg.org/multipage/embedded-content.html#the-picture-element
+iframe:
+  description: Vertical dimension
+  value_type: int
+  value_enum: []
+  value_info: Valid non-negative integer
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#valid-non-negative-integer
+  - https://html.spec.whatwg.org/multipage/embedded-content-other.html#attr-dim-height
+  - https://html.spec.whatwg.org/multipage/embedded-content.html#the-picture-element
+img:
+  description: Vertical dimension
+  value_type: int
+  value_enum: []
+  value_info: Valid non-negative integer
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#valid-non-negative-integer
+  - https://html.spec.whatwg.org/multipage/embedded-content-other.html#attr-dim-height
+  - https://html.spec.whatwg.org/multipage/embedded-content.html#the-picture-element
+input:
+  description: Vertical dimension
+  value_type: int
+  value_enum: []
+  value_info: Valid non-negative integer
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#valid-non-negative-integer
+  - https://html.spec.whatwg.org/multipage/embedded-content-other.html#attr-dim-height
+  - https://html.spec.whatwg.org/multipage/embedded-content.html#the-picture-element
+object:
+  description: Vertical dimension
+  value_type: int
+  value_enum: []
+  value_info: Valid non-negative integer
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#valid-non-negative-integer
+  - https://html.spec.whatwg.org/multipage/embedded-content-other.html#attr-dim-height
+  - https://html.spec.whatwg.org/multipage/embedded-content.html#the-picture-element
+source:
+  description: Vertical dimension
+  value_type: int
+  value_enum: []
+  value_info: Valid non-negative integer
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#valid-non-negative-integer
+  - https://html.spec.whatwg.org/multipage/embedded-content-other.html#attr-dim-height
+  - https://html.spec.whatwg.org/multipage/embedded-content.html#the-picture-element
+video:
+  description: Vertical dimension
+  value_type: int
+  value_enum: []
+  value_info: Valid non-negative integer
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#valid-non-negative-integer
+  - https://html.spec.whatwg.org/multipage/embedded-content-other.html#attr-dim-height
+  - https://html.spec.whatwg.org/multipage/embedded-content.html#the-picture-element

@@ -1,10 +1,10 @@
-tag_scope:
-- object
-description: Address of the resource
-value_type: string
-value_enum: []
-value_info: Valid non-empty URL potentially surrounded by spaces
-separator: ''
-urls:
-- https://html.spec.whatwg.org/multipage/iframe-embed-object.html#attr-object-data
-- https://html.spec.whatwg.org/multipage/urls-and-fetching.html#valid-non-empty-url-potentially-surrounded-by-spaces
+object:
+  description: Address of the resource
+  value_type: string
+  value_enum: []
+  value_info: Valid non-empty URL potentially surrounded by spaces
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/iframe-embed-object.html#attr-object-data
+  - https://html.spec.whatwg.org/multipage/urls-and-fetching.html#valid-non-empty-url-potentially-surrounded-by-spaces

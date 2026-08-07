@@ -1,13 +1,14 @@
-tag_scope: []
-description: Recommended autocorrection behavior (for supported input methods)
-value_type: enum
-value_enum:
-- ''
-- 'off'
-- 'on'
-value_info: ''
-separator: ''
-urls:
-- https://html.spec.whatwg.org/multipage/interaction.html#attr-autocorrect
-- https://html.spec.whatwg.org/multipage/interaction.html#attr-autocorrect-on
-- https://html.spec.whatwg.org/multipage/interaction.html#attr-autocorrect-off
+all:
+  description: Recommended autocorrection behavior (for supported input methods)
+  value_type: enum
+  value_enum:
+  - ''
+  - 'off'
+  - 'on'
+  value_info: ''
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/interaction.html#attr-autocorrect
+  - https://html.spec.whatwg.org/multipage/interaction.html#attr-autocorrect-off
+  - https://html.spec.whatwg.org/multipage/interaction.html#attr-autocorrect-on

@@ -1,10 +1,10 @@
-tag_scope:
-- option
-description: Whether the option is selected by default
-value_type: bool
-value_enum: []
-value_info: Boolean attribute
-separator: ''
-urls:
-- https://html.spec.whatwg.org/multipage/form-elements.html#attr-option-selected
-- https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#boolean-attribute
+option:
+  description: Whether the option is selected by default
+  value_type: bool
+  value_enum: []
+  value_info: Boolean attribute
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#boolean-attribute
+  - https://html.spec.whatwg.org/multipage/form-elements.html#attr-option-selected

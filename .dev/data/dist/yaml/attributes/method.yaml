@@ -1,16 +1,16 @@
-tag_scope:
-- form
-description: Variant to use for form submission
-value_type: enum
-value_enum:
-- dialog
-- get
-- post
-value_info: ''
-separator: ''
-urls:
-- https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#attr-fs-method
-- https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#form-submission-2
-- https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#attr-fs-method-get-keyword
-- https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#attr-fs-method-post-keyword
-- https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#attr-fs-method-dialog-keyword
+form:
+  description: Variant to use for form submission
+  value_type: enum
+  value_enum:
+  - dialog
+  - get
+  - post
+  value_info: ''
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#attr-fs-method
+  - https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#attr-fs-method-dialog-keyword
+  - https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#attr-fs-method-get-keyword
+  - https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#attr-fs-method-post-keyword
+  - https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#form-submission-2

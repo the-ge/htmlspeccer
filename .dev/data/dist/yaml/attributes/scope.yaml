@@ -1,17 +1,17 @@
-tag_scope:
-- th
-description: Specifies which cells the header cell applies to
-value_type: enum
-value_enum:
-- col
-- colgroup
-- row
-- rowgroup
-value_info: ''
-separator: ''
-urls:
-- https://html.spec.whatwg.org/multipage/tables.html#attr-th-scope
-- https://html.spec.whatwg.org/multipage/tables.html#attr-th-scope-row
-- https://html.spec.whatwg.org/multipage/tables.html#attr-th-scope-col
-- https://html.spec.whatwg.org/multipage/tables.html#attr-th-scope-rowgroup
-- https://html.spec.whatwg.org/multipage/tables.html#attr-th-scope-colgroup
+th:
+  description: Specifies which cells the header cell applies to
+  value_type: enum
+  value_enum:
+  - col
+  - colgroup
+  - row
+  - rowgroup
+  value_info: ''
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/tables.html#attr-th-scope
+  - https://html.spec.whatwg.org/multipage/tables.html#attr-th-scope-col
+  - https://html.spec.whatwg.org/multipage/tables.html#attr-th-scope-colgroup
+  - https://html.spec.whatwg.org/multipage/tables.html#attr-th-scope-row
+  - https://html.spec.whatwg.org/multipage/tables.html#attr-th-scope-rowgroup

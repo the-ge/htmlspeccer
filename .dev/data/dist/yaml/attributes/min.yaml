@@ -1,10 +1,19 @@
-tag_scope:
-- input
-description: Minimum value
-value_type: string
-value_enum: []
-value_info: Varies. *Incomplete description. See the full specification.
-separator: ''
-urls:
-- https://html.spec.whatwg.org/multipage/input.html#attr-input-min
-next: min(2)
+input:
+  description: Minimum value
+  value_type: string
+  value_enum: []
+  value_info: Varies
+  is_more_value_info_required: true
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/input.html#attr-input-min
+meter:
+  description: Lower bound of range
+  value_type: float
+  value_enum: []
+  value_info: Valid floating-point number
+  is_more_value_info_required: true
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#valid-floating-point-number
+  - https://html.spec.whatwg.org/multipage/form-elements.html#attr-meter-min

@@ -2,38 +2,6 @@ description: Footer for a page or section
 categories:
 - flow
 - palpable
-attributes:
-- accesskey
-- autocapitalize
-- autocorrect
-- autofocus
-- class
-- contenteditable
-- dir
-- draggable
-- enterkeyhint
-- headingoffset
-- headingreset
-- hidden
-- id
-- inert
-- inputmode
-- is
-- itemid
-- itemprop
-- itemref
-- itemscope
-- itemtype
-- lang
-- nonce
-- popover
-- role
-- slot
-- spellcheck
-- style
-- tabindex
-- title
-- translate
-- writingsuggestions
+attributes: []
 children:
 - flow

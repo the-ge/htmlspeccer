@@ -1,11 +1,11 @@
-tag_scope:
-- template
-description: Enables streaming declarative shadow roots
-value_type: enum
-value_enum:
-- closed
-- open
-value_info: ''
-separator: ''
-urls:
-- https://html.spec.whatwg.org/multipage/scripting.html#attr-template-shadowrootmode
+template:
+  description: Enables streaming declarative shadow roots
+  value_type: enum
+  value_enum:
+  - closed
+  - open
+  value_info: ''
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/scripting.html#attr-template-shadowrootmode

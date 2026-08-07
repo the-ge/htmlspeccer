@@ -1,16 +1,16 @@
-tag_scope: []
-description: Makes the element a popover element
-value_type: enum
-value_enum:
-- ''
-- auto
-- hint
-- manual
-value_info: ''
-separator: ''
-urls:
-- https://html.spec.whatwg.org/multipage/popover.html#attr-popover
-- https://html.spec.whatwg.org/multipage/popover.html#attr-popover
-- https://html.spec.whatwg.org/multipage/popover.html#attr-popover-auto
-- https://html.spec.whatwg.org/multipage/popover.html#attr-popover-manual
-- https://html.spec.whatwg.org/multipage/popover.html#attr-popover-hint
+all:
+  description: Makes the element a popover element
+  value_type: enum
+  value_enum:
+  - ''
+  - auto
+  - hint
+  - manual
+  value_info: ''
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/popover.html#attr-popover
+  - https://html.spec.whatwg.org/multipage/popover.html#attr-popover-auto
+  - https://html.spec.whatwg.org/multipage/popover.html#attr-popover-hint
+  - https://html.spec.whatwg.org/multipage/popover.html#attr-popover-manual

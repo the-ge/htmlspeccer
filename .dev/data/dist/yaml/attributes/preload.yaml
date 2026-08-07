@@ -1,19 +1,34 @@
-tag_scope:
-- audio
-- video
-description: Hints how much buffering the media resource will likely need
-value_type: enum
-value_enum:
-- ''
-- auto
-- metadata
-- none
-value_info: ''
-separator: ''
-urls:
-- https://html.spec.whatwg.org/multipage/media.html#attr-media-preload
-- https://html.spec.whatwg.org/multipage/media.html#attr-media-preload
-- https://html.spec.whatwg.org/multipage/media.html#media-resource
-- https://html.spec.whatwg.org/multipage/media.html#attr-media-preload-none
-- https://html.spec.whatwg.org/multipage/media.html#attr-media-preload-metadata
-- https://html.spec.whatwg.org/multipage/media.html#attr-media-preload-auto
+audio:
+  description: Hints how much buffering the media resource will likely need
+  value_type: enum
+  value_enum:
+  - ''
+  - auto
+  - metadata
+  - none
+  value_info: ''
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/media.html#attr-media-preload
+  - https://html.spec.whatwg.org/multipage/media.html#attr-media-preload-auto
+  - https://html.spec.whatwg.org/multipage/media.html#attr-media-preload-metadata
+  - https://html.spec.whatwg.org/multipage/media.html#attr-media-preload-none
+  - https://html.spec.whatwg.org/multipage/media.html#media-resource
+video:
+  description: Hints how much buffering the media resource will likely need
+  value_type: enum
+  value_enum:
+  - ''
+  - auto
+  - metadata
+  - none
+  value_info: ''
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/media.html#attr-media-preload
+  - https://html.spec.whatwg.org/multipage/media.html#attr-media-preload-auto
+  - https://html.spec.whatwg.org/multipage/media.html#attr-media-preload-metadata
+  - https://html.spec.whatwg.org/multipage/media.html#attr-media-preload-none
+  - https://html.spec.whatwg.org/multipage/media.html#media-resource

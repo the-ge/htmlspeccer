@@ -1,11 +1,11 @@
-tag_scope:
-- iframe
-description: A document to render in the iframe
-value_type: string
-value_enum: []
-value_info: The source of an iframe srcdoc document. *Incomplete description. See the full specification.
-separator: ''
-urls:
-- https://html.spec.whatwg.org/multipage/iframe-embed-object.html#attr-iframe-srcdoc
-- https://html.spec.whatwg.org/multipage/iframe-embed-object.html#the-iframe-element
-- https://html.spec.whatwg.org/multipage/iframe-embed-object.html#an-iframe-srcdoc-document
+iframe:
+  description: A document to render in the iframe
+  value_type: string
+  value_enum: []
+  value_info: The source of an iframe srcdoc document
+  is_more_value_info_required: true
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/iframe-embed-object.html#an-iframe-srcdoc-document
+  - https://html.spec.whatwg.org/multipage/iframe-embed-object.html#attr-iframe-srcdoc
+  - https://html.spec.whatwg.org/multipage/iframe-embed-object.html#the-iframe-element

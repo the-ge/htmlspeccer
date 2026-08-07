@@ -1,12 +1,13 @@
-tag_scope: []
-description: Whether the element is editable
-value_type: enum
-value_enum:
-- ''
-- 'false'
-- plaintext-only
-- 'true'
-value_info: ''
-separator: ''
-urls:
-- https://html.spec.whatwg.org/multipage/interaction.html#attr-contenteditable
+all:
+  description: Whether the element is editable
+  value_type: enum
+  value_enum:
+  - ''
+  - 'false'
+  - plaintext-only
+  - 'true'
+  value_info: ''
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/interaction.html#attr-contenteditable

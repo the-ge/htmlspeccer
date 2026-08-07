@@ -1,17 +1,30 @@
-tag_scope:
-- button
-- input
-description: Indicates whether a targeted popover element is to be toggled, shown, or hidden
-value_type: enum
-value_enum:
-- hide
-- show
-- toggle
-value_info: ''
-separator: ''
-urls:
-- https://html.spec.whatwg.org/multipage/popover.html#attr-popovertargetaction
-- https://html.spec.whatwg.org/multipage/popover.html#attr-popovertargetaction
-- https://html.spec.whatwg.org/multipage/popover.html#attr-popovertargetaction-toggle
-- https://html.spec.whatwg.org/multipage/popover.html#attr-popovertargetaction-show
-- https://html.spec.whatwg.org/multipage/popover.html#attr-popovertargetaction-hide
+button:
+  description: Indicates whether a targeted popover element is to be toggled, shown, or hidden
+  value_type: enum
+  value_enum:
+  - hide
+  - show
+  - toggle
+  value_info: ''
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/popover.html#attr-popovertargetaction
+  - https://html.spec.whatwg.org/multipage/popover.html#attr-popovertargetaction-hide
+  - https://html.spec.whatwg.org/multipage/popover.html#attr-popovertargetaction-show
+  - https://html.spec.whatwg.org/multipage/popover.html#attr-popovertargetaction-toggle
+input:
+  description: Indicates whether a targeted popover element is to be toggled, shown, or hidden
+  value_type: enum
+  value_enum:
+  - hide
+  - show
+  - toggle
+  value_info: ''
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/popover.html#attr-popovertargetaction
+  - https://html.spec.whatwg.org/multipage/popover.html#attr-popovertargetaction-hide
+  - https://html.spec.whatwg.org/multipage/popover.html#attr-popovertargetaction-show
+  - https://html.spec.whatwg.org/multipage/popover.html#attr-popovertargetaction-toggle

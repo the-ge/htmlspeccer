@@ -2,39 +2,7 @@ description: Group of columns in a table
 categories:
 - none
 attributes:
-- accesskey
-- autocapitalize
-- autocorrect
-- autofocus
-- class
-- contenteditable
-- dir
-- draggable
-- enterkeyhint
-- headingoffset
-- headingreset
-- hidden
-- id
-- inert
-- inputmode
-- is
-- itemid
-- itemprop
-- itemref
-- itemscope
-- itemtype
-- lang
-- nonce
-- popover
-- role
-- slot
 - span
-- spellcheck
-- style
-- tabindex
-- title
-- translate
-- writingsuggestions
 children:
 - col
 - template

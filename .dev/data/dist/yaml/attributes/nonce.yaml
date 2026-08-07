@@ -1,10 +1,11 @@
-tag_scope: []
-description: Cryptographic nonce used in Content Security Policy checks [CSP]
-value_type: string
-value_enum: []
-value_info: Text
-separator: ''
-urls:
-- https://html.spec.whatwg.org/multipage/urls-and-fetching.html#attr-nonce
-- https://html.spec.whatwg.org/multipage/references.html#refsCSP
-- https://html.spec.whatwg.org/multipage/dom.html#attribute-text
+all:
+  description: Cryptographic nonce used in Content Security Policy checks [CSP]
+  value_type: string
+  value_enum: []
+  value_info: Text
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/dom.html#attribute-text
+  - https://html.spec.whatwg.org/multipage/references.html#refsCSP
+  - https://html.spec.whatwg.org/multipage/urls-and-fetching.html#attr-nonce

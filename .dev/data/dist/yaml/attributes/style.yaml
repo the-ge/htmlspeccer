@@ -1,8 +1,9 @@
-tag_scope: []
-description: Presentational and formatting instructions
-value_type: string
-value_enum: []
-value_info: CSS declarations. *Incomplete description. See the full specification.
-separator: ''
-urls:
-- https://html.spec.whatwg.org/multipage/dom.html#attr-style
+all:
+  description: Presentational and formatting instructions
+  value_type: string
+  value_enum: []
+  value_info: CSS declarations
+  is_more_value_info_required: true
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/dom.html#attr-style

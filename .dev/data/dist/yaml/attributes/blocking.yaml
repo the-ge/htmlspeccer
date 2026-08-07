@@ -1,15 +1,33 @@
-tag_scope:
-- link
-- script
-- style
-description: Whether the element is potentially render-blocking
-value_type: string
-value_enum: []
-value_info: Unordered set of unique space-separated tokens. *Incomplete description. See the full specification.
-separator: ' '
-urls:
-- https://html.spec.whatwg.org/multipage/semantics.html#attr-link-blocking
-- https://html.spec.whatwg.org/multipage/scripting.html#attr-script-blocking
-- https://html.spec.whatwg.org/multipage/semantics.html#attr-style-blocking
-- https://html.spec.whatwg.org/multipage/urls-and-fetching.html#potentially-render-blocking
-- https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#unordered-set-of-unique-space-separated-tokens
+link:
+  description: Whether the element is potentially render-blocking
+  value_type: string
+  value_enum: []
+  value_info: Unordered set of unique space-separated tokens
+  is_more_value_info_required: true
+  separator: ' '
+  urls:
+  - https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#unordered-set-of-unique-space-separated-tokens
+  - https://html.spec.whatwg.org/multipage/semantics.html#attr-link-blocking
+  - https://html.spec.whatwg.org/multipage/urls-and-fetching.html#potentially-render-blocking
+script:
+  description: Whether the element is potentially render-blocking
+  value_type: string
+  value_enum: []
+  value_info: Unordered set of unique space-separated tokens
+  is_more_value_info_required: true
+  separator: ' '
+  urls:
+  - https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#unordered-set-of-unique-space-separated-tokens
+  - https://html.spec.whatwg.org/multipage/scripting.html#attr-script-blocking
+  - https://html.spec.whatwg.org/multipage/urls-and-fetching.html#potentially-render-blocking
+style:
+  description: Whether the element is potentially render-blocking
+  value_type: string
+  value_enum: []
+  value_info: Unordered set of unique space-separated tokens
+  is_more_value_info_required: true
+  separator: ' '
+  urls:
+  - https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#unordered-set-of-unique-space-separated-tokens
+  - https://html.spec.whatwg.org/multipage/semantics.html#attr-style-blocking
+  - https://html.spec.whatwg.org/multipage/urls-and-fetching.html#potentially-render-blocking

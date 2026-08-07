@@ -1,11 +1,12 @@
-tag_scope: []
-description: Item types of a microdata item
-value_type: string
-value_enum: []
-value_info: Unordered set of unique space-separated tokens consisting of valid absolute URLs. *Incomplete description. See the full specification.
-separator: ' '
-urls:
-- https://html.spec.whatwg.org/multipage/microdata.html#attr-itemtype
-- https://html.spec.whatwg.org/multipage/microdata.html#item-types
-- https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#unordered-set-of-unique-space-separated-tokens
-- https://url.spec.whatwg.org/#syntax-url-absolute
+all:
+  description: Item types of a microdata item
+  value_type: string
+  value_enum: []
+  value_info: Unordered set of unique space-separated tokens consisting of valid absolute URLs
+  is_more_value_info_required: true
+  separator: ' '
+  urls:
+  - https://html.spec.whatwg.org/multipage/common-microsyntaxes.html#unordered-set-of-unique-space-separated-tokens
+  - https://html.spec.whatwg.org/multipage/microdata.html#attr-itemtype
+  - https://html.spec.whatwg.org/multipage/microdata.html#item-types
+  - https://url.spec.whatwg.org/#syntax-url-absolute

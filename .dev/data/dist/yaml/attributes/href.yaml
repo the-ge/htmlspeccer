@@ -1,14 +1,44 @@
-tag_scope:
-- a
-- area
-description: Address of the hyperlink
-value_type: string
-value_enum: []
-value_info: Valid URL potentially surrounded by spaces
-separator: ''
-urls:
-- https://html.spec.whatwg.org/multipage/links.html#attr-hyperlink-href
-- https://html.spec.whatwg.org/multipage/links.html#attr-hyperlink-href
-- https://html.spec.whatwg.org/multipage/links.html#hyperlink
-- https://html.spec.whatwg.org/multipage/urls-and-fetching.html#valid-url-potentially-surrounded-by-spaces
-next: href(2)
+a:
+  description: Address of the hyperlink
+  value_type: string
+  value_enum: []
+  value_info: Valid URL potentially surrounded by spaces
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/links.html#attr-hyperlink-href
+  - https://html.spec.whatwg.org/multipage/links.html#hyperlink
+  - https://html.spec.whatwg.org/multipage/urls-and-fetching.html#valid-url-potentially-surrounded-by-spaces
+area:
+  description: Address of the hyperlink
+  value_type: string
+  value_enum: []
+  value_info: Valid URL potentially surrounded by spaces
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/links.html#attr-hyperlink-href
+  - https://html.spec.whatwg.org/multipage/links.html#hyperlink
+  - https://html.spec.whatwg.org/multipage/urls-and-fetching.html#valid-url-potentially-surrounded-by-spaces
+link:
+  description: Address of the hyperlink
+  value_type: string
+  value_enum: []
+  value_info: Valid non-empty URL potentially surrounded by spaces
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/links.html#hyperlink
+  - https://html.spec.whatwg.org/multipage/semantics.html#attr-link-href
+  - https://html.spec.whatwg.org/multipage/urls-and-fetching.html#valid-non-empty-url-potentially-surrounded-by-spaces
+base:
+  description: Document base URL
+  value_type: string
+  value_enum: []
+  value_info: Valid URL potentially surrounded by spaces
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/semantics.html#attr-base-href
+  - https://html.spec.whatwg.org/multipage/urls-and-fetching.html#document-base-url
+  - https://html.spec.whatwg.org/multipage/urls-and-fetching.html#valid-url-potentially-surrounded-by-spaces

@@ -1,28 +1,92 @@
-tag_scope:
-- audio
-- embed
-- iframe
-- img
-- input
-- script
-- source
-- track
-- video
-description: Address of the resource
-value_type: string
-value_enum: []
-value_info: 'Valid non-empty URL potentially surrounded by spaces. Special tag scope: source (in video or audio). *Incomplete description. See the full specification.'
-separator: ''
-urls:
-- https://html.spec.whatwg.org/multipage/media.html#attr-media-src
-- https://html.spec.whatwg.org/multipage/iframe-embed-object.html#attr-embed-src
-- https://html.spec.whatwg.org/multipage/iframe-embed-object.html#attr-iframe-src
-- https://html.spec.whatwg.org/multipage/embedded-content.html#attr-img-src
-- https://html.spec.whatwg.org/multipage/input.html#attr-input-src
-- https://html.spec.whatwg.org/multipage/scripting.html#attr-script-src
-- https://html.spec.whatwg.org/multipage/embedded-content.html#attr-source-src
-- https://html.spec.whatwg.org/multipage/media.html#the-video-element
-- https://html.spec.whatwg.org/multipage/media.html#the-audio-element
-- https://html.spec.whatwg.org/multipage/media.html#attr-track-src
-- https://html.spec.whatwg.org/multipage/media.html#attr-media-src
-- https://html.spec.whatwg.org/multipage/urls-and-fetching.html#valid-non-empty-url-potentially-surrounded-by-spaces
+audio:
+  description: Address of the resource
+  value_type: string
+  value_enum: []
+  value_info: Valid non-empty URL potentially surrounded by spaces
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/media.html#attr-media-src
+  - https://html.spec.whatwg.org/multipage/media.html#the-audio-element
+  - https://html.spec.whatwg.org/multipage/urls-and-fetching.html#valid-non-empty-url-potentially-surrounded-by-spaces
+embed:
+  description: Address of the resource
+  value_type: string
+  value_enum: []
+  value_info: Valid non-empty URL potentially surrounded by spaces
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/iframe-embed-object.html#attr-embed-src
+  - https://html.spec.whatwg.org/multipage/urls-and-fetching.html#valid-non-empty-url-potentially-surrounded-by-spaces
+iframe:
+  description: Address of the resource
+  value_type: string
+  value_enum: []
+  value_info: Valid non-empty URL potentially surrounded by spaces
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/iframe-embed-object.html#attr-iframe-src
+  - https://html.spec.whatwg.org/multipage/urls-and-fetching.html#valid-non-empty-url-potentially-surrounded-by-spaces
+img:
+  description: Address of the resource
+  value_type: string
+  value_enum: []
+  value_info: Valid non-empty URL potentially surrounded by spaces
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/embedded-content.html#attr-img-src
+  - https://html.spec.whatwg.org/multipage/urls-and-fetching.html#valid-non-empty-url-potentially-surrounded-by-spaces
+input:
+  description: Address of the resource
+  value_type: string
+  value_enum: []
+  value_info: Valid non-empty URL potentially surrounded by spaces
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/input.html#attr-input-src
+  - https://html.spec.whatwg.org/multipage/urls-and-fetching.html#valid-non-empty-url-potentially-surrounded-by-spaces
+script:
+  description: Address of the resource
+  value_type: string
+  value_enum: []
+  value_info: Valid non-empty URL potentially surrounded by spaces
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/scripting.html#attr-script-src
+  - https://html.spec.whatwg.org/multipage/urls-and-fetching.html#valid-non-empty-url-potentially-surrounded-by-spaces
+source:
+  description: Address of the resource
+  value_type: string
+  value_enum: []
+  value_info: Valid non-empty URL potentially surrounded by spaces
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/embedded-content.html#attr-source-src
+  - https://html.spec.whatwg.org/multipage/urls-and-fetching.html#valid-non-empty-url-potentially-surrounded-by-spaces
+track:
+  description: Address of the resource
+  value_type: string
+  value_enum: []
+  value_info: Valid non-empty URL potentially surrounded by spaces
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/media.html#attr-track-src
+  - https://html.spec.whatwg.org/multipage/urls-and-fetching.html#valid-non-empty-url-potentially-surrounded-by-spaces
+video:
+  description: Address of the resource
+  value_type: string
+  value_enum: []
+  value_info: Valid non-empty URL potentially surrounded by spaces
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/media.html#attr-media-src
+  - https://html.spec.whatwg.org/multipage/media.html#the-video-element
+  - https://html.spec.whatwg.org/multipage/urls-and-fetching.html#valid-non-empty-url-potentially-surrounded-by-spaces

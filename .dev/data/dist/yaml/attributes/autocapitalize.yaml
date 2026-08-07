@@ -1,20 +1,21 @@
-tag_scope: []
-description: Recommended autocapitalization behavior (for supported input methods)
-value_type: enum
-value_enum:
-- characters
-- none
-- 'off'
-- 'on'
-- sentences
-- words
-value_info: ''
-separator: ''
-urls:
-- https://html.spec.whatwg.org/multipage/interaction.html#attr-autocapitalize
-- https://html.spec.whatwg.org/multipage/interaction.html#attr-autocapitalize-on
-- https://html.spec.whatwg.org/multipage/interaction.html#attr-autocapitalize-off
-- https://html.spec.whatwg.org/multipage/interaction.html#attr-autocapitalize-none
-- https://html.spec.whatwg.org/multipage/interaction.html#attr-autocapitalize-sentences
-- https://html.spec.whatwg.org/multipage/interaction.html#attr-autocapitalize-words
-- https://html.spec.whatwg.org/multipage/interaction.html#attr-autocapitalize-characters
+all:
+  description: Recommended autocapitalization behavior (for supported input methods)
+  value_type: enum
+  value_enum:
+  - characters
+  - none
+  - 'off'
+  - 'on'
+  - sentences
+  - words
+  value_info: ''
+  is_more_value_info_required: false
+  separator: ''
+  urls:
+  - https://html.spec.whatwg.org/multipage/interaction.html#attr-autocapitalize
+  - https://html.spec.whatwg.org/multipage/interaction.html#attr-autocapitalize-characters
+  - https://html.spec.whatwg.org/multipage/interaction.html#attr-autocapitalize-none
+  - https://html.spec.whatwg.org/multipage/interaction.html#attr-autocapitalize-off
+  - https://html.spec.whatwg.org/multipage/interaction.html#attr-autocapitalize-on
+  - https://html.spec.whatwg.org/multipage/interaction.html#attr-autocapitalize-sentences
+  - https://html.spec.whatwg.org/multipage/interaction.html#attr-autocapitalize-words
