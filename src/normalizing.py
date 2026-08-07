@@ -265,7 +265,7 @@ def _parse_attribute_info(name: str, elements_info: str, value_info: str) -> tup
     return tag_notes, value_type, value_info, is_complicated
 
 
-def _split_urls_by_tag(urls: list[str], tags: set[str]) -> dict[str, list[str]]:
+def _parse_attribute_urls(urls: list[str], tags: set[str]) -> dict[str, list[str]]:
     """Partition a row's shared URL list across its tags. A URL goes to every tag whose keyword (its own
     name, plus an URL_BY_STRING override if one exists) appears as an exact segment of the URL's
     fragment (the part after '#'). A URL matching no tag's keyword is shared by every tag in the row.
@@ -339,7 +339,7 @@ def parse_attributes(rows: Iterator[AttributeTerseData]) -> Iterator[AttributeDa
             )
             continue
 
-        urls_by_tag = _split_urls_by_tag(urls, tags)
+        urls = _parse_attribute_urls(urls, tags)
         for tag in sorted(tags):
             yield AttributeData(
                 name=name,
@@ -349,7 +349,7 @@ def parse_attributes(rows: Iterator[AttributeTerseData]) -> Iterator[AttributeDa
                 value_enum=value_enum,
                 value_info=build_value_info(tag_notes[tag]),
                 separator=separator,
-                urls=set(urls_by_tag[tag]),
+                urls=set(urls[tag]),
             )
 
 
