@@ -44,7 +44,7 @@ ignore = [
 ]
 
 [lint.per-file-ignores]
-"**/.dev/emendations/normalize/*.py" = [
+"**/.dev/emendations/*/*.py" = [
 	"invalid-module-name",        # N999
 	"implicit-namespace-package", # INP001
 ]
