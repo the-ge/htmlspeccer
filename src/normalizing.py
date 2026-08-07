@@ -240,12 +240,27 @@ def parse_aria_roles(rows: Iterator[AriaRoleTerseData]) -> Iterator[AriaRoleData
         )
 
 
-def _parse_attribute_info(name: str, elements_info: str, value_info: str) -> tuple[dict[str, str], str, str, bool]:
-    """Return (tag_notes, value_type, value_info, is_complicated). `tag_notes` maps each parsed tag to its
-    own scope note (empty string if none) -- only a tag with a `(if ...)`/`(in ...)` qualifier gets a note;
-    siblings from the same row don't inherit it. `is_complicated` reflects the trailing '*' on the value
-    description alone (shared across every tag split from this row, since it describes the value, not scope).
+def _parse_attribute(row: AttributeTerseData) -> Iterator[AttributeData]:
+    """Parse one attribute terse data into one or more AttributeData entries, split by tag.
+
+    Splits the input data's `elements` text into tags via gen_tags(), tracking a per-tag scope note
+    (`tag_notes`) for tags with a `(if ...)`/`(in ...)` qualifier -- siblings from the same input data
+    don't inherit that note. Parses the value description into value_type/value_enum/separator,
+    and sets value_info_note when the value description carries a trailing '*' (shared across
+    every tag split from this input data, since it describes the value, not scope).
+
+    Yields:
+        - if the input data has no tag restriction: a single tagless AttributeData;
+        - otherwise splits the input data's shared URL list across tags and yields one AttributeData per tag.
     """
+    name, elements_info, description, value_info, urls = (
+        row.attribute,
+        row.elements,
+        row.description,
+        row.value,
+        row.urls,
+    )
+
     elements_info = split_splittables(elements_info, f'Attribute {name!r} element(s)')
     is_complicated = value_info.endswith('*')
     if is_complicated:
@@ -262,7 +277,42 @@ def _parse_attribute_info(name: str, elements_info: str, value_info: str) -> tup
             tag_notes[tag] = f'Special tag scope: {token}'
         elif tmp not in tag_notes:
             tag_notes[tmp] = ''
-    return tag_notes, value_type, value_info, is_complicated
+
+        tags = set(tag_notes)
+        value_info_note = '. [!] Online documentation needed for completeness.' if is_complicated else ''
+
+        value_enum = set(gen_attribute_value_enums(value_type))
+        if value_enum:
+            value_type, value_info, separator = 'enum', '', ''
+        else:
+            value_type, separator = _parse_attribute_value(value_type)
+
+        if not tags:
+            # No tag restriction (e.g. 'HTML elements'): single entry, no URL split needed.
+            yield AttributeData(
+                name=name,
+                tag=None,
+                description=description,
+                value_type=value_type,
+                value_enum=value_enum,
+                value_info=value_info + value_info_note,
+                separator=separator,
+                urls=set(urls),
+            )
+            continue
+
+        urls = _parse_attribute_urls(urls, tags)
+        for tag in sorted(tags):
+            yield AttributeData(
+                name=name,
+                tag=tag,
+                description=description,
+                value_type=value_type,
+                value_enum=value_enum,
+                value_info=value_info + value_info_note,
+                separator=separator,
+                urls=set(urls[tag]),
+            )
 
 
 def _parse_attribute_urls(urls: list[str], tags: set[str]) -> dict[str, list[str]]:
@@ -308,53 +358,7 @@ def _parse_attribute_value(value_type_str: str) -> tuple[str, str]:
 
 def parse_attributes(rows: Iterator[AttributeTerseData]) -> Iterator[AttributeData]:
     for row in rows:
-        name, elements_info, description, value_info, urls = (
-            row.attribute,
-            row.elements,
-            row.description,
-            row.value,
-            row.urls,
-        )
-
-        tag_notes, value_type, value_info, is_complicated = _parse_attribute_info(row.attribute, elements_info, value_info)
-        tags = set(tag_notes)
-
-        value_enum = set(gen_attribute_value_enums(value_type))
-        if value_enum:
-            value_type, value_info, separator = 'enum', '', ''
-        else:
-            value_type, separator = _parse_attribute_value(value_type)
-
-        def build_value_info(note: str, *, is_complicated: bool = is_complicated) -> str:
-            missing_info_hint = '*The actual rules are more complicated than indicated. See the full specification.' if is_complicated or note else ''
-            return '. '.join(v for v in [note, missing_info_hint] if v)  # @todo replace string with boolean
-
-        if not tags:
-            # No tag restriction (e.g. 'HTML elements'): single entry, no URL split needed.
-            yield AttributeData(
-                name=name,
-                tag=None,
-                description=description,
-                value_type=value_type,
-                value_enum=value_enum,
-                value_info=build_value_info(''),
-                separator=separator,
-                urls=set(urls),
-            )
-            continue
-
-        urls = _parse_attribute_urls(urls, tags)
-        for tag in sorted(tags):
-            yield AttributeData(
-                name=name,
-                tag=tag,
-                description=description,
-                value_type=value_type,
-                value_enum=value_enum,
-                value_info=build_value_info(tag_notes[tag]),
-                separator=separator,
-                urls=set(urls[tag]),
-            )
+        yield from _parse_attribute(row)
 
 
 def dictify_attributes(xs: list[AttributeData]) -> dict[str, dict[str, Any]]:
