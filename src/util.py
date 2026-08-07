@@ -11,6 +11,10 @@ T = TypeVar('T')
 JSONType: TypeAlias = bool | int | float | str | list['JSONType'] | dict[str, 'JSONType'] | None
 
 
+# Base URL for relative spec links
+_SPEC_BASE_URL = 'https://html.spec.whatwg.org/multipage/'
+
+
 def dictify(xs: list[Any]) -> dict[str, Any]:
     """Convert a dataclass objects list/generator to a dict with unique keys as the the first field in each object."""
     result = {}
@@ -90,3 +94,13 @@ def short_path(path: Path) -> str:
         return str(path.relative_to(PROJECT_ROOT))
     except ValueError:
         return str(path)
+
+
+def deduplicate(items: Iterable[str]) -> list[str]:
+    """Deduplicate items, preserving first-seen order."""
+    return list(dict.fromkeys(items))
+
+
+def normalize_url(url: str) -> str:
+    """Prefix relative spec URLs with the multipage base."""
+    return url if url.startswith('https://') else _SPEC_BASE_URL + url
