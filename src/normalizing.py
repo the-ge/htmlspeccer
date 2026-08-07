@@ -361,20 +361,20 @@ def parse_attributes(rows: Iterator[AttributeTerseData]) -> Iterator[AttributeDa
         yield from _parse_attribute(row)
 
 
-def dictify_attributes(xs: list[AttributeData]) -> dict[str, dict[str, Any]]:
+def dictify_attributes(attribute_list: list[AttributeData]) -> dict[str, dict[str, Any]]:
     """Convert a list of AttributeData into a dict keyed by name, then by tag (ALL_TAGS for `tag is None`).
     Raises ValueError on a genuine (name, tag) collision, since that indicates a parsing bug rather than
     legitimate data -- unlike dictify(), there's no merge path here.
     """
     result: dict[str, dict[str, Any]] = {}
-    for x in xs:
-        r = dataclasses.asdict(x)
+    for attribute in attribute_list:
+        r = dataclasses.asdict(attribute)
         del r['name']
         del r['tag']
-        tag_key = x.tag if x.tag is not None else ALL_TAGS
-        by_tag = result.setdefault(x.name, {})
+        tag_key = ALL_TAGS if attribute.tag is None else attribute.tag
+        by_tag = result.setdefault(attribute.name, {})
         if tag_key in by_tag:
-            logger.warning('⚠️ Duplicate (name, tag) pair: (%r, %r)', x.name, tag_key)
+            logger.warning('⚠️ Duplicate name+tag pair: (%r, %r)', attribute.name, tag_key)
         by_tag[tag_key] = r
     return result
 
