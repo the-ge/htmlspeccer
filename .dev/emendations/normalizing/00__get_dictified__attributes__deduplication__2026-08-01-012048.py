@@ -15,7 +15,7 @@ def emend(section: str, data: list) -> bool:
 
     has_fired = False
     for name, entries in by_name.items():
-        if len(entries) < 2:
+        if len(entries) <= 1:
             continue
         total = len(entries)
         has_fired = True
