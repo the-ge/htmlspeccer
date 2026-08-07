@@ -1,8 +1,8 @@
 import logging
 
 from config import TERSE_DATA_DIR
-from filtering_engine import GlobalAttributeTerseData
-from normalizing_engine import parse_global_attributes
+from filtering import GlobalAttributeTerseData
+from normalizing import parse_global_attributes
 from util import dictify, parse_section
 
 logger = logging.getLogger(__name__)

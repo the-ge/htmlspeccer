@@ -64,11 +64,11 @@ $(DIST_CONTENT_HASH_FILE): $(ATOMIC_DATA_DIR)manifest.json | $(ATOMIC_DATA_CACHE
 
 $(ATOMIC_DATA_DIR)manifest.json: $(TERSE_DATA_DIR)manifest.json
 	$(call say, 🧲 Converting terse data to atomic data under $(ATOMIC_DATA_DIR)...)
-	@python3 src/normalizing.py
+	@python3 src/normalize.py
 
 $(TERSE_DATA_DIR)manifest.json: $(RAW_DATA_DIR)manifest.json
 	$(call say, 🧲 Filtering raw HTML into faithful NDJSON records + manifest under $(TERSE_DATA_DIR)...)
-	@python3 src/filtering.py
+	@python3 src/filter.py
 
 $(DATA_DIRS): %/:
 	@mkdir -p $@

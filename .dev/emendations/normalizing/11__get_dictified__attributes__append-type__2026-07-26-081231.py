@@ -1,6 +1,6 @@
 from config import TERSE_DATA_DIR
-from filtering_engine import InputTypeTerseData
-from normalizing_engine import AttributeData, parse_input_types
+from filtering import InputTypeTerseData
+from normalizing import AttributeData, parse_input_types
 from util import parse_section
 
 

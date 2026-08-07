@@ -1,6 +1,6 @@
 from config import TERSE_DATA_DIR
-from filtering_engine import AriaRoleTerseData
-from normalizing_engine import AttributeData, parse_aria_roles
+from filtering import AriaRoleTerseData
+from normalizing import AttributeData, parse_aria_roles
 from util import parse_section
 
 
