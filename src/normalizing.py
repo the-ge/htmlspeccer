@@ -253,6 +253,7 @@ def _parse_attribute(row: AttributeTerseData) -> Iterator[AttributeData]:
         - if the input data has no tag restriction: a single tagless AttributeData;
         - otherwise splits the input data's shared URL list across tags and yields one AttributeData per tag.
     """
+    value_info_note = ''
     name, elements_info, description, value_info, urls = (
         row.attribute,
         row.elements,
@@ -265,6 +266,7 @@ def _parse_attribute(row: AttributeTerseData) -> Iterator[AttributeData]:
     is_complicated = value_info.endswith('*')
     if is_complicated:
         value_info = value_info[:-1]
+        value_info_note = '. [!] Online documentation needed for completeness.'
     value_type = ' '.join(x.strip().strip('*') for x in value_info.split('\n')).strip()
     value_info = value_type
 
@@ -277,42 +279,40 @@ def _parse_attribute(row: AttributeTerseData) -> Iterator[AttributeData]:
             tag_notes[tag] = f'Special tag scope: {token}'
         elif tmp not in tag_notes:
             tag_notes[tmp] = ''
+        continue
+    tags = set(tag_notes)
 
-        tags = set(tag_notes)
-        value_info_note = '. [!] Online documentation needed for completeness.' if is_complicated else ''
+    value_enum = set(gen_attribute_value_enums(value_type))
+    if value_enum:
+        value_type, value_info, separator = 'enum', '', ''
+    else:
+        value_type, separator = _parse_attribute_value(value_type)
 
-        value_enum = set(gen_attribute_value_enums(value_type))
-        if value_enum:
-            value_type, value_info, separator = 'enum', '', ''
-        else:
-            value_type, separator = _parse_attribute_value(value_type)
+    if not tags:
+        # No tag restriction (e.g. 'HTML elements'): single entry, no URL split needed.
+        yield AttributeData(
+            name=name,
+            tag=None,
+            description=description,
+            value_type=value_type,
+            value_enum=value_enum,
+            value_info=value_info + value_info_note,
+            separator=separator,
+            urls=set(urls),
+        )
 
-        if not tags:
-            # No tag restriction (e.g. 'HTML elements'): single entry, no URL split needed.
-            yield AttributeData(
-                name=name,
-                tag=None,
-                description=description,
-                value_type=value_type,
-                value_enum=value_enum,
-                value_info=value_info + value_info_note,
-                separator=separator,
-                urls=set(urls),
-            )
-            continue
-
-        urls = _parse_attribute_urls(urls, tags)
-        for tag in sorted(tags):
-            yield AttributeData(
-                name=name,
-                tag=tag,
-                description=description,
-                value_type=value_type,
-                value_enum=value_enum,
-                value_info=value_info + value_info_note,
-                separator=separator,
-                urls=set(urls[tag]),
-            )
+    urls = _parse_attribute_urls(urls, tags)
+    for tag in sorted(tags):
+        yield AttributeData(
+            name=name,
+            tag=tag,
+            description=description,
+            value_type=value_type,
+            value_enum=value_enum,
+            value_info=value_info + value_info_note,
+            separator=separator,
+            urls=set(urls[tag]),
+        )
 
 
 def _parse_attribute_urls(urls: list[str], tags: set[str]) -> dict[str, list[str]]:
