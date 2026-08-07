@@ -407,6 +407,7 @@ def parse_elements(rows: Iterator[ElementTerseData]) -> Iterator[ElementData]:
         elements = gen_tags(row.element)
         categories = set(gen_content_categories(row.categories))
         attributes = set(gen_attribute_names(row.attributes))
+        attributes.discard('globals')
         children = set(gen_content_categories(row.children))
 
         for e in sorted(elements):
