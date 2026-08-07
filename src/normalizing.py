@@ -327,7 +327,7 @@ def _parse_attribute_urls(urls: list[str], tags: set[str]) -> dict[str, list[str
         segments = set(re.split(r'[^a-z0-9]+', fragment.lower()))
         matched = {tag for tag, kws in keywords.items() if kws & segments}
         if len(matched) > 1:
-            logger.warning('⚠️ URL %r matches multiple tag keywords %r; keeping for all matches.', url, sorted(matched))
+            logger.info(' • URL matches multiple tags %r; adding it to all matches (%r).', sorted(matched), url)
         for tag in matched or tags:
             result[tag].append(url)
     return result
