@@ -36,6 +36,5 @@ class Emender:
 
     def emend_normalizing_section(self, section: str, data: list) -> None:
         """Mutate `entries` in place."""
-        for name, emend in self._emendations:
-            if emend(section, data):
-                logger.info('🩹 Applied emendation %r.', name)
+        for _, emend in self._emendations:
+            emend(section, data)
