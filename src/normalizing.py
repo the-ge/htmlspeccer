@@ -215,9 +215,13 @@ def gen_tag_ifs(input_str: str) -> Iterator[str]:
 
 
 def split_splittables(text: str, context: str) -> str:
-    """Detect and repair words missing a separator in the whitespace. Returns the words in a semicolon-separated string.
+    """Detect and repair words missing a separator in the whitespace.
+
     First issue of this kind: `controls` "Element(s)" cell has no semicolon between 'video' and 'img' <code> elements in
     https://html.spec.whatwg.org/multipage/indices.html#attributes-3:attr-media-controls (still active on 2026-07-22).
+
+    Returns:
+        words in a semicolon-separated string
     """
 
     def repair(match: re.Match) -> str:
@@ -331,9 +335,14 @@ def _parse_attribute_cells(
 
 
 def _parse_attribute_urls(urls: list[str], tags: set[str]) -> dict[str, list[str]]:
-    """Partition a row's shared URL list across its tags. A URL goes to every tag whose keyword (its own
-    name, plus an URL_BY_STRING override if one exists) appears as an exact segment of the URL's
-    fragment (the part after '#'). A URL matching no tag's keyword is shared by every tag in the row.
+    """Partition a row's shared URL list across its tags.
+
+    A URL goes to every tag whose keyword (its own name, plus an URL_BY_STRING override if one exists)
+    appears as an exact segment of the URL's fragment (the part after '#').
+    A URL matching no tag's keyword is shared by every tag in the row.
+
+    Returns:
+        Dict of URL lists, indexed by tag
     """
     keywords = {tag: {tag, URL_BY_STRING[tag]} if tag in URL_BY_STRING else {tag} for tag in tags}
     result: dict[str, list[str]] = {tag: [] for tag in tags}
@@ -504,7 +513,7 @@ def parse_input_types(soup: BeautifulSoup) -> Iterator[InputTypeData]:
         if len(cells) != count:
             logger.error('❌ Expected %s cells, got %s. Skipping row: %s', count, len(cells), row)
             continue
-        keyword, state, data_type, control_type = cells
+        keyword, _, data_type, control_type = cells
         yield InputTypeData(
             name=keyword,
             value_type=data_type,
@@ -515,8 +524,9 @@ def parse_input_types(soup: BeautifulSoup) -> Iterator[InputTypeData]:
 
 def dictify_attributes(attribute_list: list[AttributeData]) -> dict[str, dict[str, Any]]:
     """Convert a list of AttributeData into a dict keyed by name, then by tag (ALL_TAGS for `tag is None`).
-    Raises ValueError on a genuine (name, tag) collision, since that indicates a parsing bug rather than
-    legitimate data -- unlike dictify(), there's no merge path here.
+
+    Returns:
+        JSON-serializable dict of HTML attribute data
     """
     result: dict[str, dict[str, Any]] = {}
     for attribute in attribute_list:
@@ -526,6 +536,7 @@ def dictify_attributes(attribute_list: list[AttributeData]) -> dict[str, dict[st
         tag_key = ALL_TAGS if attribute.tag is None else attribute.tag
         by_tag = result.setdefault(attribute.name, {})
         if tag_key in by_tag:
+            # (name, tag) collision (indicates a parsing bug rather than legitimate data)
             logger.warning('⚠️ Duplicate name+tag pair: (%r, %r)', attribute.name, tag_key)
         by_tag[tag_key] = r
     return result
@@ -564,8 +575,11 @@ class Normalizer:
     # ---- internal helpers ----
 
     def _load_soup(self, page: str) -> BeautifulSoup | None:
-        """Load and cache the soup for `page` (shared across every section of that page); return None
-        (and log) if the raw HTML is missing or unreadable.
+        """Load and cache the soup for `page` (shared across every section of that page).
+
+        Returns:
+            - A BeautifulSoup object or
+            - None if the raw HTML is missing or unreadable (also logs)
         """
         if page not in self._soup_cache:
             try:
@@ -586,27 +600,41 @@ class Normalizer:
         )
 
     def _load_cache_raw(self, key: str) -> list | None:
-        """Load the raw (still plain-dict) cached entries for `key`; return None if missing."""
+        """Load the raw (still plain-dict) cached entries for `key`; return None if missing.
+
+        Returns:
+            The cached list of dicts or None if not found in cache
+        """
         path = self.cache_dir / f'{key}.json'
         if not path.exists():
             return None
         return json.loads(path.read_text(encoding='utf-8'))
 
     def _load_cache(self, key: str, cls: type) -> list | None:
-        """Load the cached entries for `key`, reconstructed as `cls` instances; return None if missing."""
+        """Load the cached entries for `key`, reconstructed as `cls` instances.
+
+        Returns:
+            The cached list of dataclass objects or None if not found in cache
+        """
         raw = self._load_cache_raw(key)
         return None if raw is None else [dict_to_dataclass(cls, d) for d in raw]
 
     def _validate(self, key: str, count: int) -> dict:
-        """Compare `count` against the previous cached run for `key` (if any) and decide pass/warn/raise. No fixed floor:
-        a category may legitimately grow or shrink a little as the spec evolves, but a bigger jump either way is more
-        likely a broken extraction/parse than a real change upstream.
+        """Compare `count` against the previous cached run for `key` (if any) and decide pass/warn/raise.
+
+        No fixed floor: a category may legitimately grow or shrink a little as the spec evolves,
+        but a bigger jump either way is more likely a broken extraction/parse than a real change upstream.
+        Stores the manifest entry.
 
         delta ==  0 or no previous run -> pass, silent
         abs(delta) == 1                -> pass, warn
         abs(delta) >= 2                -> raise
 
-        Stores and returns the manifest entry for `key`: {status, row_count} plus delta.
+        Returns:
+            The manifest entry for `key`: {status, row_count} plus delta
+
+        Raises:
+            ValueError: if the category count increases od decreases by 2 or more
         """
         delta_warn = 1
         delta_fatal = 2
@@ -625,7 +653,11 @@ class Normalizer:
         return entry
 
     def _build_cached(self, key: str, cls: type, builder: Callable[[], list]) -> list:
-        """Run `builder`, validate and cache its result under `key`; on a recoverable error, fall back to the cache."""
+        """Run `builder`, validate and cache its result under `key`; on a recoverable error, fall back to the cache.
+
+        Returns:
+            List of data JSON objects
+        """
         try:
             result = builder()
             self._validate(key, len(result))
@@ -670,7 +702,11 @@ class Normalizer:
     # ---- public builders ----
 
     def get_all(self) -> tuple[dict[str, list], dict]:
-        """Run all section builders. Returns {section: [entities]} and the {'input', 'output'} manifest."""
+        """Run all section builders.
+
+        Returns:
+            {section: [entities]} and the {'input', 'output'} manifest
+        """
         results = {section: self._get_section_entries(section) for section in SECTION_SOURCES}
         manifest = {'input': dict(self._input_manifest), 'output': dict(self._output_manifest)}
         return results, manifest

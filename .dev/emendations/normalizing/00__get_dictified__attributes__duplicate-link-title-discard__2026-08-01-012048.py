@@ -8,6 +8,9 @@ def emend(section: str, data: list) -> bool:
 
     Issue location: https://html.spec.whatwg.org/multipage/indices.html#attributes-3:attr-link-title.
     Explanation: the next row also containing a `link` tag for the `title` attribute will be dropped.
+
+    Returns:
+        True if any duplicates were discarded or False if not
     """
     if section != 'attributes':
         return False

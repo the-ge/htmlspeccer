@@ -1,8 +1,9 @@
 import dataclasses
 import logging
 
-from config import TERSE_DATA_DIR
 from filtering import InputTypeTerseData
+
+from config import TERSE_DATA_DIR
 from normalizing import parse_input_types
 from util import parse_section
 
@@ -12,9 +13,12 @@ logger = logging.getLogger(__name__)
 def emend(section: str, data: list) -> bool:
     """Add input type values into the existing type/input entry enum; absorbs the former append-type emendation.
 
-    Issue location: https://html.spec.whatwg.org/multipage/indices.html#attributes-3:attr-input-type.
+    Source:      https://html.spec.whatwg.org/multipage/indices.html#attributes-3:attr-input-type.
     Explanation: data will be updated with `enum` value type and enum values from
                  https://html.spec.whatwg.org/dev/input.html#attr-input-type-keywords.
+
+    Returns:
+        True if the input type values were added or False if not
     """
     if section != 'attributes':
         return False

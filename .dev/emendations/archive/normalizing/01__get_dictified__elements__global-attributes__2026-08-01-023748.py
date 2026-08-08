@@ -1,7 +1,8 @@
 import logging
 
-from config import TERSE_DATA_DIR
 from filtering import GlobalAttributeTerseData
+
+from config import TERSE_DATA_DIR
 from normalizing import parse_global_attributes
 from util import dictify, parse_section
 
@@ -9,7 +10,11 @@ logger = logging.getLogger(__name__)
 
 
 def emend(section: str, data: list) -> bool:
-    """Expand the synthetic 'globals' token into real global attribute names on each element's attributes set."""
+    """Expand the synthetic 'globals' token into real global attribute names on each element's attributes set.
+
+    Returns:
+        True if any expanding occured or False if not
+    """
     if section != 'elements':
         return False
 

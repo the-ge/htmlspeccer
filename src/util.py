@@ -16,7 +16,11 @@ _SPEC_BASE_URL = 'https://html.spec.whatwg.org/multipage/'
 
 
 def dictify(xs: list[Any]) -> dict[str, Any]:
-    """Convert a dataclass objects list/generator to a dict with unique keys as the the first field in each object."""
+    """Convert a dataclass objects list/generator to a dict with unique keys as the the first field in each object.
+
+    Returns:
+        Dict with unique keys
+    """
     result = {}
 
     for x in xs:
@@ -47,12 +51,20 @@ def dictify(xs: list[Any]) -> dict[str, Any]:
 
 
 def sort_top_level(d: dict) -> dict:
-    """Return a new dict with only the top-level keys sorted; inner key order is left untouched."""
+    """Sort the input dict by the top-level keys (inner key order is left untouched).
+
+    Returns:
+        New dict with the top-level keys sorted
+    """
     return dict(sorted(d.items()))
 
 
 def make_serializable(obj: object) -> JSONType:
-    """Recursively convert sets, lists, and dicts into a JSON serializable form."""
+    """Recursively convert sets, lists, and dicts into a JSON-serializable form.
+
+    Returns:
+        JSON-serializable form of the input object
+    """
     if isinstance(obj, set):
         return sorted(make_serializable(v) for v in obj)
     if isinstance(obj, list):
@@ -63,12 +75,20 @@ def make_serializable(obj: object) -> JSONType:
 
 
 def dataclass_to_dict(obj: Any) -> dict:
-    """Convert a dataclass instance to a JSON-serializable dict (set fields become sorted lists)."""
+    """Convert a dataclass instance to a JSON-serializable dict (set fields become sorted lists).
+
+    Returns:
+        JSON-serializable dict
+    """
     return make_serializable(dataclasses.asdict(obj))
 
 
 def dict_to_dataclass(cls: type[T], d: dict) -> T:
-    """Reconstruct a `cls` instance from a plain dict, restoring set-typed fields from lists."""
+    """Reconstruct a `cls` instance from a plain dict, restoring set-typed fields from lists.
+
+    Returns:
+        Dataclass object
+    """
     kwargs = dict(d)
     for f in dataclasses.fields(cls):
         if f.default_factory is not dataclasses.MISSING and isinstance(f.default_factory(), set):
@@ -77,7 +97,11 @@ def dict_to_dataclass(cls: type[T], d: dict) -> T:
 
 
 def write_ndjson(path: Path, rows: Iterable[Any]) -> int:
-    """Write dataclass instances to path, one JSON object per line. Return the number of rows written."""
+    """Write dataclass instances to path, one JSON object per line.
+
+    Returns:
+        Written rows count
+    """
     path.parent.mkdir(parents=True, exist_ok=True)
     count = 0
     with path.open('w', encoding='utf-8') as fp:
@@ -89,21 +113,34 @@ def write_ndjson(path: Path, rows: Iterable[Any]) -> int:
 
 
 def read_ndjson(path: Path, cls: type[T]) -> list[T]:
-    """Read an NDJSON file back into a list of `cls` instances. Raises FileNotFoundError if path doesn't exist."""
+    """Read an NDJSON file back into a list of `cls` instances.
+
+    Returns:
+        List of dataclass objects
+
+    Raises:
+        FileNotFoundError if path doesn't exist.
+    """
     with path.open('r', encoding='utf-8') as fp:
         return [dict_to_dataclass(cls, json.loads(line)) for line in fp if line.strip()]
 
 
 def parse_section(dir_path: Path, page: str, section: str, cls: type[T], parser: Callable[..., R], **kwargs: object) -> R:
     """Load the terse (page, section) NDJSON file from dir_path and run its rows through `parser`.
-    Returns whatever `parser` returns (a generator, list, or set, depending on the parser).
+
+    Returns:
+        whatever `parser` returns (a generator, list, or set, depending on the parser).
     """
     rows = read_ndjson(dir_path / f'{page}.{section}.ndjson', cls)
     return parser(rows, **kwargs)
 
 
 def short_path(path: Path) -> str:
-    """Format a path relative to PROJECT_ROOT for logging, or as an absolute path if outside it."""
+    """Format a path relative to PROJECT_ROOT for logging, or as an absolute path if outside it.
+
+    Returns:
+        Path relative to PROJECT_ROOT
+    """
     try:
         return str(path.relative_to(PROJECT_ROOT))
     except ValueError:
@@ -111,10 +148,18 @@ def short_path(path: Path) -> str:
 
 
 def deduplicate(items: Iterable[str]) -> list[str]:
-    """Deduplicate items, preserving first-seen order."""
+    """Deduplicate items, preserving first-seen order.
+
+    Returns:
+        Deduplicated input Iterable
+    """
     return list(dict.fromkeys(items))
 
 
 def normalize_url(url: str) -> str:
-    """Prefix relative spec URLs with the multipage base."""
+    """Prefix relative spec URLs with the multipage base.
+
+    Returns:
+        Full URL
+    """
     return url if url.startswith('https://') else _SPEC_BASE_URL + url

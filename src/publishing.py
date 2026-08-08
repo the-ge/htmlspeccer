@@ -1,7 +1,7 @@
 import json
 import logging
 import shutil
-import subprocess
+import subprocess  # noqa: S404
 from hashlib import sha256
 from pathlib import Path
 
@@ -38,9 +38,13 @@ def copy_licenses() -> None:
 
 
 def hash_compute(dirs: list[Path]) -> str:
-    """Hash file paths and contents across dirs, sorted for determinism. Used to detect real data changes
-    between publish runs, since DIST_DATA_MANIFEST always changes (source timestamps, git version info)
-    even when the actual published data hasn't.
+    """Hash file paths and contents across dirs, sorted for determinism.
+
+    Used to detect real data changes between publish runs, since DIST_DATA_MANIFEST always changes
+    (source timestamps, git version info), even when the actual published data has not.
+
+    Returns:
+        Hash computed for the content and file paths in the input path
     """
     digest = sha256()
     for d in dirs:
@@ -53,7 +57,9 @@ def hash_compute(dirs: list[Path]) -> str:
 
 def hash_update(dirs: list[Path]) -> bool:
     """Compare a fresh content hash of dirs against the stored stamp; rewrite the stamp only if it changed.
-    Returns True if the content changed since the last run.
+
+    Returns:
+        True if the content changed since the last run, False if not.
     """
     new_hash = hash_compute(dirs)
     old_hash = DIST_HASH_FILE.read_text(encoding='utf-8').strip() if DIST_HASH_FILE.exists() else None
@@ -65,8 +71,15 @@ def hash_update(dirs: list[Path]) -> bool:
 
 
 def get_repo_version() -> dict[str, str]:
-    """Return the repo's official_release (nearest tag, empty if none exist),
-    current_tag (nearest tag plus distance/dirty suffix), and current_commit_id (full HEAD SHA).
+    """Get repo version information.
+
+    Returns:
+        - official_release (nearest repo tag, empty if none exist),
+        - current_tag (nearest repo tag plus distance/dirty suffix), and
+        - current_commit_id (full HEAD SHA).
+
+    Raises:
+        FileNotFoundError: if `git` not found
     """
     git = shutil.which('git')
     if git is None:
@@ -74,7 +87,7 @@ def get_repo_version() -> dict[str, str]:
         raise FileNotFoundError(msg)
 
     try:
-        official_release = subprocess.run(
+        official_release = subprocess.run(  # noqa: S603
             [git, 'describe', '--tags', '--abbrev=0'],
             check=True,
             capture_output=True,
@@ -83,14 +96,14 @@ def get_repo_version() -> dict[str, str]:
     except subprocess.CalledProcessError:
         official_release = ''
 
-    current_tag = subprocess.run(
+    current_tag = subprocess.run(  # noqa: S603
         [git, 'describe', '--tags', '--always', '--dirty'],
         check=True,
         capture_output=True,
         text=True,
     ).stdout.strip()
 
-    current_commit_id = subprocess.run(
+    current_commit_id = subprocess.run(  # noqa: S603
         [git, 'rev-parse', 'HEAD'],
         check=True,
         capture_output=True,
@@ -105,7 +118,11 @@ def get_repo_version() -> dict[str, str]:
 
 
 def build_manifest(counts: dict[str, int]) -> dict:
-    """Combine the raw manifest written by make into RAW_DATA_DIR with category counts and repository version info."""
+    """Combine the raw manifest written by make into RAW_DATA_DIR with category counts and repository version info.
+
+    Returns:
+        Dict containing input and output data stats
+    """
     sources = {}
     if not RAW_DATA_MANIFEST.exists():
         logger.error('❌ File missing: %s; did you run `make -C acquire` first?', short_path(RAW_DATA_MANIFEST))
@@ -142,7 +159,9 @@ def write_yaml_file(data: list, path: Path) -> None:
 
 def write_yaml_items(data: dict, dir_path: Path) -> int:
     """Write each item as its own YAML file, named after its key, e.g. dir_path/abbr.yaml.
-    Returns the number of files written.
+
+    Returns:
+        Written files count
     """
     dir_path.mkdir(parents=True, exist_ok=True)
     count = 0
@@ -164,9 +183,13 @@ class Publisher:
         self.manifest_path = manifest_path
 
     def read_data_domains(self) -> dict[str, dict]:
-        """Load each section's entities from NORMALIZED_DATA_DIR, using its manifest as the index, and
-        group them by name (and by tag, for attributes) into the published shape. JSON-serializable
-        (sets become sorted lists).
+        """Load each section's entities from NORMALIZED_DATA_DIR.
+
+        Is using its manifest as the index, and group them by name (and by tag, for attributes)
+        into the published shape.
+
+        Returns:
+            JSON-serializable dict (sets become sorted lists)
         """
         manifest = json.loads(self.manifest_path.read_text(encoding='utf-8'))
         results = {}
@@ -178,7 +201,11 @@ class Publisher:
         return results
 
     def publish(self) -> dict[str, int]:
-        """Write dist JSON+YAML for each domain. Returns per-domain item counts for the manifest."""
+        """Write dist JSON+YAML for each domain.
+
+        Returns:
+            Per-domain item counts (manifest entries)
+        """
         DIST_JSON_DATA_DIR.mkdir(parents=True, exist_ok=True)
         DIST_YAML_DATA_DIR.mkdir(parents=True, exist_ok=True)
 
