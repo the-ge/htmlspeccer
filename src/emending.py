@@ -26,6 +26,8 @@ class Emender:
 
         emendations = []
         for path in sorted(domain_dir.glob('*.py')):
+            logger.info('🚧 Placeholder for emendation %r .', path.name)
+            continue  # loading emendations disabled during massive normalizing refactor
             spec = importlib.util.spec_from_file_location(f'emendation_{path.stem}', path)
             module = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(module)
