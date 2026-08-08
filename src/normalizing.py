@@ -569,6 +569,7 @@ class Normalizer:
         self.cache_dir = cache_dir
         self.emender = emender if emender is not None else Emender(domain='normalizing')
         self._soup_cache: dict[str, BeautifulSoup | None] = {}
+        self._section_cache: dict[str, list] = {}
         self._input_manifest: dict[str, dict] = {}
         self._output_manifest: dict[str, dict] = {}
 
@@ -681,9 +682,13 @@ class Normalizer:
         soup = self._load_soup(page)
 
         try:
+            if section in self._section_cache:
+                return self._section_cache[section]
+
             if soup is None:
                 msg = f'No raw HTML available for page {SECTION_SOURCES[section][0]!r}'
                 raise FileNotFoundError(msg)
+
             parser = getattr(sys.modules[__name__], f'parse_{section}')
             parsed = list(parser(soup))
             self.emender.emend_normalizing_section(section, parsed)
@@ -692,6 +697,7 @@ class Normalizer:
             return self._log_parse_error_and_fallback(e, section, cls)
         else:
             self._save_cache(section, parsed)
+            self._section_cache[section] = parsed
             logger.info('🏗️ Built and cached %s %s', len(parsed), section)
 
         self._input_manifest[input_key] = {
