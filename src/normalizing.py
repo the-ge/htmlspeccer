@@ -9,21 +9,12 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+from bs4 import BeautifulSoup
 from slugify import slugify
 
 from config import DUMP_JSON_KWARGS
 from emending import Emender
-from filtering import (
-    AriaRoleTerseData,
-    AttributeTerseData,
-    ContentCategoryTerseData,
-    ElementKindTerseData,
-    ElementTerseData,
-    EventHandlerTerseData,
-    GlobalAttributeTerseData,
-    InputTypeTerseData,
-)
-from util import dictify, make_serializable, parse_section, sort_top_level
+from util import dataclass_to_dict, deduplicate, dict_to_dataclass, normalize_url
 
 logger = logging.getLogger(__name__)
 
@@ -97,7 +88,7 @@ class InputTypeData:
     url: str = ''
 
 
-RECOVERABLE_ERRORS = (AttributeError, ValueError, FileNotFoundError)
+RECOVERABLE_ERRORS = (AttributeError, ValueError, OSError)
 
 # Match a list of one-or-more keywords such as `"foo"; "bar"; "the empty string"`
 ATTRIBUTE_VALUE_REGEX = re.compile(r'^(?:"[a-zA-Z0-9/-]*"|the empty string)(?:; (?:"[a-zA-Z0-9/-]*"|the empty string))*$')
@@ -156,6 +147,15 @@ URL_BY_STRING = {
     'video': 'media',
     'del': 'mod',
     'ins': 'mod',
+}
+
+# Expected cell count in each domain of the online HTML sources
+HTML_CELL_COUNT = {
+    'attributes':         4,
+    'content_categories': 3,
+    'elements':           7,
+    'event_handlers':     4,
+    'input_types':        4,
 }
 
 
@@ -228,40 +228,54 @@ def split_splittables(text: str, context: str) -> str:
     return _SPLITTABLE_REGEX.sub(repair, text)
 
 
-# ---- Parsers for each section ----
-# Each function takes the terse data rows for its section (read from TERSE_DATA_DIR by Normalizer).
+# ---- Per-section extract-and-parse functions ----
+# Each function takes the soup for its source page and yields typed entities directly. Extraction
+# (cell/anchor text out of the soup, stripped of surrounding whitespace only) and interpretation
+# (splitting, typing, spec-specific logic) are no longer separate stages.
 
 
-def parse_aria_roles(rows: Iterator[AriaRoleTerseData]) -> Iterator[AriaRoleData]:
-    for row in rows:
-        yield AriaRoleData(
-            name=row.name,
-            url=row.url,
-            deprecated_since_version=row.deprecated_since_version,
-        )
+def parse_aria_roles(soup: BeautifulSoup) -> Iterator[AriaRoleData]:
+    # https://w3c.github.io/aria/#widget
+    # https://w3c.github.io/aria/#document_structure_roles
+    # https://w3c.github.io/aria/#landmark_roles
+    # https://w3c.github.io/aria/#live_region_roles
+    # https://w3c.github.io/aria/#window_roles
+    concrete_roles = (
+        'widget',
+        'document_structure_roles',
+        'landmark_roles',
+        'live_region_roles',
+        'window_roles',
+    )
+    for role in concrete_roles:
+        rows = soup.find('section', {'id': role}).find_next('ul').find_all('li')
+        for row in rows:
+            deprecated = '' if row.strong is None else row.strong.get_text().strip()
+            if deprecated != '':
+                deprecated = re.search(r'(?<=ARIA )\d+\.\d+', deprecated)
+                deprecated = deprecated[0] if deprecated else ''
+            yield AriaRoleData(
+                name=row.code.get_text().strip(),
+                url=row.a['href'].strip(),
+                deprecated_since_version=deprecated,
+            )
 
 
-def _parse_attribute(row: AttributeTerseData) -> Iterator[AttributeData]:
-    """Parse one attribute terse data into one or more AttributeData entries, split by tag.
+def _parse_attribute_cells(
+    name: str, elements_info: str, description: str, value_info: str, urls: list[str]
+) -> Iterator[AttributeData]:
+    """Parse one attribute row's cells into one or more AttributeData entries, split by tag.
 
-    Splits the input data's `elements` text into tags via gen_tags(), tracking a per-tag scope note
-    (`tag_notes`) for tags with a `(if ...)`/`(in ...)` qualifier -- siblings from the same input data
-    don't inherit that note. Parses the value description into value_type/value_enum/separator,
-    and sets `is_more_value_info_required` when the value description carries a trailing '*'
-    (shared across every tag split from this input data, since it describes the value, not scope).
+    Splits `elements_info` into tags via gen_tags(), tracking a per-tag scope note (`tag_notes`) for
+    tags with a `(if ...)`/`(in ...)` qualifier -- siblings from the same row don't inherit that note.
+    Parses the value description into value_type/value_enum/separator, and sets
+    `is_more_value_info_required` when the value description carries a trailing '*' (shared across
+    every tag split from this row, since it describes the value, not scope).
 
     Yields:
-        - if the input data has no tag restriction: a single tagless AttributeData;
-        - otherwise splits the input data's shared URL list across tags and yields one AttributeData per tag.
+        - if the row has no tag restriction: a single tagless AttributeData;
+        - otherwise splits the row's shared URL list across tags and yields one AttributeData per tag.
     """
-    name, elements_info, description, value_info, urls = (
-        row.attribute,
-        row.elements,
-        row.description,
-        row.value,
-        row.urls,
-    )
-
     elements_info = split_splittables(elements_info, f'Attribute {name!r} element(s)')
     is_more_value_info_required = value_info.endswith('*')
     if is_more_value_info_required:
@@ -299,8 +313,9 @@ def _parse_attribute(row: AttributeTerseData) -> Iterator[AttributeData]:
             separator=separator,
             urls=set(urls),
         )
+        return
 
-    urls = _parse_attribute_urls(urls, tags)
+    url_by_tag = _parse_attribute_urls(urls, tags)
     for tag in sorted(tags):
         yield AttributeData(
             name=name,
@@ -311,7 +326,7 @@ def _parse_attribute(row: AttributeTerseData) -> Iterator[AttributeData]:
             value_info=value_info,
             is_more_value_info_required=is_more_value_info_required,
             separator=separator,
-            urls=set(urls[tag]),
+            urls=set(url_by_tag[tag]),
         )
 
 
@@ -356,9 +371,148 @@ def _parse_attribute_value(value_type_str: str) -> tuple[str, str]:
     return value_type, value_separator
 
 
-def parse_attributes(rows: Iterator[AttributeTerseData]) -> Iterator[AttributeData]:
+def parse_attributes(soup: BeautifulSoup) -> Iterator[AttributeData]:
+    # https://html.spec.whatwg.org/multipage/indices.html#attributes-3
+    rows = soup.find('h3', {'id': 'attributes-3'}).find_next('tbody').find_all('tr')
+    count = HTML_CELL_COUNT['attributes']
     for row in rows:
-        yield from _parse_attribute(row)
+        cells = [x.get_text().strip() for x in row.find_all(['th', 'td'])]
+        if len(cells) != count:
+            logger.error('❌ Expected %s cells, got %s. Skipping row: %s', count, len(cells), row)
+            continue
+        attribute, elements, description, value = cells
+        urls = deduplicate(normalize_url(x['href'].strip()) for x in row.find_all('a'))
+        yield from _parse_attribute_cells(attribute, elements, description, value, urls)
+
+
+def parse_content_categories(soup: BeautifulSoup) -> Iterator[ContentCategoryData]:
+    # https://html.spec.whatwg.org/multipage/indices.html#element-content-categories
+    rows = soup.find('h3', {'id': 'element-content-categories'}).find_next('tbody').find_all('tr')
+    count = HTML_CELL_COUNT['content_categories']
+    for row in rows:
+        cells = [x.get_text().strip() for x in row.find_all(['th', 'td'])]
+        if len(cells) != count:
+            logger.error('❌ Expected %s cells, got %s. Skipping row: %s', count, len(cells), row)
+            continue
+        category, elements, exceptions = cells
+        url = f'https://html.spec.whatwg.org/multipage/{row.td.a['href']}'
+
+        category = ' '.join(category.split())
+        exceptions = '; '.join(x.strip() for x in exceptions.split(';'))
+        if exceptions == '—':
+            exceptions = ''
+        if category.endswith('*'):
+            exceptions += '; The tabindex attribute can also make any element into interactive content.'
+        category = category.rstrip('*').strip()
+
+        elements_set = set(gen_tags(elements))
+        elements_maybe = list(gen_tag_ifs(exceptions))
+
+        yield ContentCategoryData(
+            name=category,
+            url=url,
+            elements=elements_set,
+            elements_maybe=elements_maybe,
+            exceptions=exceptions,
+        )
+
+
+def parse_elements(soup: BeautifulSoup) -> Iterator[ElementData]:
+    # https://html.spec.whatwg.org/multipage/indices.html#elements-3
+    rows = soup.find('h3', {'id': 'elements-3'}).find_next('tbody').find_all('tr')
+    count = HTML_CELL_COUNT['elements']
+    for row in rows:
+        cells = [x.get_text().strip() for x in row.find_all(['th', 'td'])]
+        if len(cells) != count:
+            logger.error('❌ Expected %s cells, got %s. Skipping row: %s', count, len(cells), row)
+            continue
+        element, description, categories, _, children, attributes, _ = cells
+
+        elements = gen_tags(element)
+        categories_set = set(gen_content_categories(categories))
+        attributes_set = set(gen_attribute_names(attributes))
+        attributes_set.discard('globals')
+        children_set = set(gen_content_categories(children))
+
+        for e in sorted(elements):
+            yield ElementData(
+                name=e,
+                description=description.strip(),
+                categories=categories_set,
+                attributes=attributes_set,
+                children=children_set,
+            )
+
+
+def parse_element_kinds(soup: BeautifulSoup) -> Iterator[ElementKindData]:
+    # https://html.spec.whatwg.org/dev/syntax.html#elements-2
+    rows = soup.find('h4', {'id': 'elements-2'}).find_next('dl').find_all(['dt', 'dd'], recursive=False)
+    prev = None  # tag name of the last row seen: None, 'dt', or 'dd'
+    name = None
+    for row in rows:
+        if row.name == 'dt':
+            if prev not in {None, 'dd'}:
+                logger.error('❌ <dt> not preceded by a <dd>: %s', row)
+            name = row.dfn.get_text().strip()  # literal text; slugify() happens below
+            prev = 'dt'
+        elif row.name == 'dd':
+            if prev != 'dt':
+                logger.error('❌ <dd> not preceded by a <dt>: %s', row)
+                continue
+            tags = deduplicate(tag.get_text().strip() for tag in row.find_all('code'))
+            info = '' if tags else row.get_text().strip()
+            prev = 'dd'
+            yield ElementKindData(name=slugify(name), tags=set(tags), info=info)
+    if prev == 'dt':
+        logger.error('❌ Trailing <dt> with no following <dd>: %s', name)
+
+
+def parse_event_handlers(soup: BeautifulSoup) -> Iterator[EventHandlerData]:
+    # https://html.spec.whatwg.org/multipage/indices.html#ix-event-handlers
+    rows = soup.find('table', {'id': 'ix-event-handlers'}).find_next('tbody').find_all('tr')
+    count = HTML_CELL_COUNT['event_handlers']
+    for row in rows:
+        cells = [x.get_text().strip() for x in row.find_all(['th', 'td'])]
+        if len(cells) != count:
+            logger.error('❌ Expected %s cells, got %s. Skipping row: %s', count, len(cells), row)
+            continue
+        attribute, elements, _, _ = cells
+        urls = deduplicate(normalize_url(x['href'].strip()) for x in row.find_all('a'))
+        yield EventHandlerData(
+            name=attribute,
+            applies_to=elements,
+            urls=set(urls),
+        )
+
+
+def parse_global_attributes(soup: BeautifulSoup) -> Iterator[GlobalAttributeData]:
+    # https://html.spec.whatwg.org/dev/dom.html#global-attributes
+    for name in ('class', 'id', 'role', 'slot'):
+        yield GlobalAttributeData(name=name)
+    anchors = soup.find('h4', {'id': 'global-attributes'}).find_next('ul', {'class': 'brief'}).find_all('a')
+    for a in anchors:
+        yield GlobalAttributeData(
+            name=a.get_text().strip(),
+            url=f'https://html.spec.whatwg.org/dev/{a['href'].strip()}',
+        )
+
+
+def parse_input_types(soup: BeautifulSoup) -> Iterator[InputTypeData]:
+    # https://html.spec.whatwg.org/dev/input.html#attr-input-type-keywords
+    rows = soup.find('table', {'id': 'attr-input-type-keywords'}).find_next('tbody').find_all('tr')
+    count = HTML_CELL_COUNT['input_types']
+    for row in rows:
+        cells = [x.get_text().strip() for x in row.contents]
+        if len(cells) != count:
+            logger.error('❌ Expected %s cells, got %s. Skipping row: %s', count, len(cells), row)
+            continue
+        keyword, state, data_type, control_type = cells
+        yield InputTypeData(
+            name=keyword,
+            value_type=data_type,
+            control_type=control_type,
+            url=f'https://html.spec.whatwg.org/dev/input.html{row.a['href'].strip()}',
+        )
 
 
 def dictify_attributes(attribute_list: list[AttributeData]) -> dict[str, dict[str, Any]]:
@@ -379,165 +533,86 @@ def dictify_attributes(attribute_list: list[AttributeData]) -> dict[str, dict[st
     return result
 
 
-def parse_content_categories(rows: Iterator[ContentCategoryTerseData]) -> Iterator[ContentCategoryData]:
-    for row in rows:
-        category = ' '.join(row.category.split())
-
-        exceptions = '; '.join(x.strip() for x in row.exceptions.split(';'))
-        if exceptions == '—':
-            exceptions = ''
-        if category.endswith('*'):
-            exceptions += '; The tabindex attribute can also make any element into interactive content.'
-        category = category.rstrip('*').strip()
-
-        elements_set = set(gen_tags(row.elements))
-        elements_maybe = list(gen_tag_ifs(exceptions))
-
-        yield ContentCategoryData(
-            name=category,
-            url=row.url,
-            elements=elements_set,
-            elements_maybe=elements_maybe,
-            exceptions=exceptions,
-        )
-
-
-def parse_elements(rows: Iterator[ElementTerseData]) -> Iterator[ElementData]:
-    for row in rows:
-        elements = gen_tags(row.element)
-        categories = set(gen_content_categories(row.categories))
-        attributes = set(gen_attribute_names(row.attributes))
-        attributes.discard('globals')
-        children = set(gen_content_categories(row.children))
-
-        for e in sorted(elements):
-            yield ElementData(
-                name=e,
-                description=row.description.strip(),
-                categories=categories,
-                attributes=attributes,
-                children=children,
-            )
-
-
-def parse_element_kinds(rows: Iterator[ElementKindTerseData]) -> Iterator[ElementKindData]:
-    for row in rows:
-        yield ElementKindData(
-            name=slugify(row.name),
-            tags=set(row.tags),
-            info=row.info,
-        )
-
-
-def parse_event_handlers(rows: Iterator[EventHandlerTerseData]) -> Iterator[EventHandlerData]:
-    for row in rows:
-        yield EventHandlerData(
-            name=row.attribute,
-            applies_to=row.elements,
-            urls=row.urls,
-        )
-
-
-def parse_global_attributes(rows: Iterator[GlobalAttributeTerseData]) -> Iterator[GlobalAttributeData]:
-    for name in ('class', 'id', 'role', 'slot'):
-        yield GlobalAttributeData(name=name)
-    for row in rows:
-        yield GlobalAttributeData(name=row.name, url=row.url)
-
-
-def parse_input_types(rows: Iterator[InputTypeTerseData]) -> Iterator[InputTypeData]:
-    for row in rows:
-        yield InputTypeData(
-            name=row.keyword,
-            value_type=row.data_type,
-            control_type=row.control_type,
-            url=row.url,
-        )
-
-
-# section name -> (page, terse dataclass); drives Normalizer.get(). Keys match config.PAGE_SECTIONS values.
+# section name -> (page, entity dataclass); drives Normalizer.get_all() and Publisher.read_data_domains().
+# Keys match config.PAGE_SECTIONS values.
 SECTION_SOURCES: dict[str, tuple[str, type]] = {
-    'aria_roles': ('aria', AriaRoleTerseData),
-    'attributes': ('indices', AttributeTerseData),
-    'content_categories': ('indices', ContentCategoryTerseData),
-    'elements': ('indices', ElementTerseData),
-    'element_kinds': ('syntax', ElementKindTerseData),
-    'event_handlers': ('indices', EventHandlerTerseData),
-    'global_attributes': ('dom', GlobalAttributeTerseData),
-    'input_types': ('input', InputTypeTerseData),
+    'aria_roles': ('aria', AriaRoleData),
+    'attributes': ('indices', AttributeData),
+    'content_categories': ('indices', ContentCategoryData),
+    'elements': ('indices', ElementData),
+    'element_kinds': ('syntax', ElementKindData),
+    'event_handlers': ('indices', EventHandlerData),
+    'global_attributes': ('dom', GlobalAttributeData),
+    'input_types': ('input', InputTypeData),
 }
 
 
 class Normalizer:
-    """Normalizing stage engine: terse data NDJSON -> typed entities, with validation and fallback cache."""
+    """Merged extract+normalize stage: raw spec HTML -> typed entities, with validation and fallback cache."""
 
     def __init__(
         self,
-        terse_data_dir: Path,
+        raw_data_dir: Path,
         cache_dir: Path,
         emender: Emender | None = None,
     ) -> None:
-        self.terse_data_dir = terse_data_dir
+        self.raw_data_dir = raw_data_dir
         self.cache_dir = cache_dir
         self.emender = emender if emender is not None else Emender(domain='normalizing')
-        self._manifest: dict[str, dict] = {}  # populated by _validate(), collected by get_all()
+        self._soup_cache: dict[str, BeautifulSoup | None] = {}
+        self._input_manifest: dict[str, dict] = {}
+        self._output_manifest: dict[str, dict] = {}
 
     # ---- internal helpers ----
 
-    def _save_cache(self, key: str, data: dict | set) -> None:
-        """Save a Python object to the cache directory as JSON."""
+    def _load_soup(self, page: str) -> BeautifulSoup | None:
+        """Load and cache the soup for `page` (shared across every section of that page); return None
+        (and log) if the raw HTML is missing or unreadable.
+        """
+        if page not in self._soup_cache:
+            try:
+                with (self.raw_data_dir / f'{page}.html').open('r') as fp:
+                    self._soup_cache[page] = BeautifulSoup(fp, 'lxml')
+            except OSError:
+                logger.exception('❌ Could not read %s.html', page)
+                self._soup_cache[page] = None
+        return self._soup_cache[page]
+
+    def _save_cache(self, key: str, entries: list) -> None:
+        """Save a list of entity dataclass instances to the cache directory as JSON."""
         self.cache_dir.mkdir(parents=True, exist_ok=True)
-        serialized = make_serializable(data)
-        if isinstance(serialized, dict):
-            serialized = sort_top_level(serialized)
+        serialized = [dataclass_to_dict(e) for e in entries]
         (self.cache_dir / f'{key}.json').write_text(
             json.dumps(serialized, **DUMP_JSON_KWARGS),
             encoding='utf-8',
         )
 
-    def _load_cache(self, key: str) -> dict | list | None:
-        """Load a Python object from the cache directory; return None if missing."""
+    def _load_cache_raw(self, key: str) -> list | None:
+        """Load the raw (still plain-dict) cached entries for `key`; return None if missing."""
         path = self.cache_dir / f'{key}.json'
         if not path.exists():
             return None
         return json.loads(path.read_text(encoding='utf-8'))
 
-    def _build_cached(self, key: str, builder: Callable[[], dict | set]) -> dict | set:
-        """Run `builder`, validate and cache its result under `key`; on a recoverable error, fall back to the cache."""
-        try:
-            result = builder()
-            self._validate(key, len(result))
-        except RECOVERABLE_ERRORS as e:
-            return self._log_parse_error_and_fallback(e, key)
-        else:
-            self._save_cache(key, result)
-            logger.info('🏗️ Built and cached %s %s', len(result), key)
-            return result
-
-    def _log_parse_error_and_fallback(self, e: Exception, cache_key: str) -> dict | list | None:
-        logger.error('❌ Terse data missing or unexpected shape: %s', e)
-        cached = self._load_cache(cache_key)
-        if cached is None:
-            msg = f'No cache available for {cache_key}'
-            raise RuntimeError(msg) from e
-        logger.info('📂 Loaded %s from cache', cache_key)
-        return cached
+    def _load_cache(self, key: str, cls: type) -> list | None:
+        """Load the cached entries for `key`, reconstructed as `cls` instances; return None if missing."""
+        raw = self._load_cache_raw(key)
+        return None if raw is None else [dict_to_dataclass(cls, d) for d in raw]
 
     def _validate(self, key: str, count: int) -> dict:
         """Compare `count` against the previous cached run for `key` (if any) and decide pass/warn/raise. No fixed floor:
         a category may legitimately grow or shrink a little as the spec evolves, but a bigger jump either way is more
-        likely a broken filter/parser than a real change upstream.
+        likely a broken extraction/parse than a real change upstream.
 
         delta ==  0 or no previous run -> pass, silent
         abs(delta) == 1                -> pass, warn
         abs(delta) >= 2                -> raise
 
-        Stores and returns the manifest entry for `key`: {status, row_count} plus delta, omitted when 0 (nothing changed)
-        or unavailable (first run).
+        Stores and returns the manifest entry for `key`: {status, row_count} plus delta.
         """
         delta_warn = 1
         delta_fatal = 2
-        previous = self._load_cache(key)
+        previous = self._load_cache_raw(key)
         previous_count = len(previous) if previous is not None else None
         delta = 0 if previous_count is None else count - previous_count
 
@@ -548,29 +623,56 @@ class Normalizer:
             logger.warning('⚠️ %s: count changed by %d since last run (%d -> %d)', key, delta, previous_count, count)
 
         entry = {'status': 'ok', 'row_count': count, 'delta': delta}
-        self._manifest[key] = entry
+        self._output_manifest[key] = entry
         return entry
 
-    def _get_dictified(
-        self, page: str, section: str, cls: type, dictifier: Callable[[list], dict[str, Any]] = dictify
-    ) -> dict[str, Any]:
-        def builder() -> dict[str, Any]:
-            parser = getattr(sys.modules[__name__], f'parse_{section}')
-            entries = list(parse_section(self.terse_data_dir, page, section, cls, parser))
-            self.emender.emend_normalizing_section(section, entries)
-            return dictifier(entries)
+    def _build_cached(self, key: str, cls: type, builder: Callable[[], list]) -> list:
+        """Run `builder`, validate and cache its result under `key`; on a recoverable error, fall back to the cache."""
+        try:
+            result = builder()
+            self._validate(key, len(result))
+        except RECOVERABLE_ERRORS as e:
+            return self._log_parse_error_and_fallback(e, key, cls)
+        else:
+            self._save_cache(key, result)
+            logger.info('🏗️ Built and cached %s %s', len(result), key)
+            return result
 
-        return self._build_cached(section, builder)
+    def _log_parse_error_and_fallback(self, e: Exception, cache_key: str, cls: type) -> list:
+        logger.error('❌ Extraction/parsing failed: %s', e)
+        cached = self._load_cache(cache_key, cls)
+        if cached is None:
+            msg = f'No cache available for {cache_key}'
+            raise RuntimeError(msg) from e
+        logger.info('📂 Loaded %s from cache', cache_key)
+        self._output_manifest[cache_key] = {'status': 'fallback', 'row_count': len(cached)}
+        return cached
+
+    def _get_section_entries(self, section: str) -> list:
+        page, cls = SECTION_SOURCES[section]
+        input_key = f'{page}.{section}'
+        soup = self._load_soup(page)
+
+        def builder() -> list:
+            if soup is None:
+                msg = f'No raw HTML available for page {page!r}'
+                raise FileNotFoundError(msg)
+            parser = getattr(sys.modules[__name__], f'parse_{section}')
+            entries = list(parser(soup))
+            self.emender.emend_normalizing_section(section, entries)
+            return entries
+
+        entries = self._build_cached(section, cls, builder)
+        self._input_manifest[input_key] = {
+            'status': 'ok' if soup is not None else 'fallback',
+            'row_count': len(entries),
+        }
+        return entries
 
     # ---- public builders ----
 
-    def get_section_data(self, section: str) -> dict[str, Any]:
-        """Build the named section with caching and validation. `section` must be a key in SECTION_SOURCES."""
-        page, cls = SECTION_SOURCES[section]
-        dictifier = dictify_attributes if section == 'attributes' else dictify
-        return self._get_dictified(page, section, cls, dictifier)
-
-    def get_all(self) -> dict[str, Any]:
-        """Run all builders and return a dict of results."""
-        results = {section: self.get_section_data(section) for section in SECTION_SOURCES}
-        return results, dict(self._manifest)
+    def get_all(self) -> tuple[dict[str, list], dict]:
+        """Run all section builders. Returns {section: [entities]} and the {'input', 'output'} manifest."""
+        results = {section: self._get_section_entries(section) for section in SECTION_SOURCES}
+        manifest = {'input': dict(self._input_manifest), 'output': dict(self._output_manifest)}
+        return results, manifest

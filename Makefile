@@ -1,18 +1,17 @@
-.PHONY: default all clear install acquire filter normalize publish
+.PHONY: default all clear install acquire normalize publish
 
-default: filter normalize publish
+default: normalize publish
 
-RAW_DATA_DIR           := .dev/data/raw/
-TERSE_DATA_DIR         := .dev/data/terse/
-ATOMIC_DATA_DIR        := .dev/data/atomic/
-ATOMIC_DATA_CACHE_DIR  := .dev/data/cache/
+RAW_DATA_DIR              := .dev/data/raw/
+NORMALIZED_DATA_DIR       := .dev/data/normalized/
+NORMALIZED_DATA_CACHE_DIR := .dev/data/cache/
 # Mirrors config.py: env var set -> <root>/data/ (root is a foreign checkout, e.g. htmlspec);
 # unset -> local .dev/data/dist/.
-DIST_DATA_DIR          := $(if $(DIST_DATA_DIR),$(DIST_DATA_DIR)/data/,.dev/data/dist/)
-DIST_CONTENT_HASH_FILE := $(ATOMIC_DATA_CACHE_DIR)dist_content.sha256
+DIST_DATA_DIR             := $(if $(DIST_DATA_DIR),$(DIST_DATA_DIR)/data/,.dev/data/dist/)
+DIST_CONTENT_HASH_FILE    := $(NORMALIZED_DATA_CACHE_DIR)dist_content.sha256
 
-DATA_DIRS := $(RAW_DATA_DIR) $(TERSE_DATA_DIR) $(ATOMIC_DATA_DIR) $(ATOMIC_DATA_CACHE_DIR) $(DIST_DATA_DIR)
-DATA_DIRS_RM := $(TERSE_DATA_DIR) $(ATOMIC_DATA_DIR) $(ATOMIC_DATA_CACHE_DIR)
+DATA_DIRS := $(RAW_DATA_DIR) $(NORMALIZED_DATA_DIR) $(NORMALIZED_DATA_CACHE_DIR) $(DIST_DATA_DIR)
+DATA_DIRS_RM := $(NORMALIZED_DATA_DIR) $(NORMALIZED_DATA_CACHE_DIR)
 
 specs      := indices.html dom.html input.html syntax.html
 spec_etags := $(addprefix $(RAW_DATA_DIR), $(specs:.html=.etag))
@@ -32,7 +31,7 @@ define confirm
 	@printf "$(GREEN)MAKE: ✅%s$(NC)\n" "$(1)"
 endef
 
-all: acquire filter normalize publish
+all: acquire normalize publish
 
 clear:
 	rm --force --recursive $(DATA_DIRS_RM)
@@ -47,28 +46,21 @@ install:
 publish: $(DIST_CONTENT_HASH_FILE) | $(DIST_DATA_DIR)
 	$(call confirm, Publishing and all preceding steps complete (see $(DIST_DATA_DIR)manifest.json).)
 
-normalize: $(ATOMIC_DATA_DIR)manifest.json | $(ATOMIC_DATA_DIR)
-	$(call confirm, Normalization and all preceding steps complete (see $(ATOMIC_DATA_DIR)manifest.json))
-
-filter: $(TERSE_DATA_DIR)manifest.json | $(TERSE_DATA_DIR)
-	$(call confirm, Filtering and acquiring steps complete (see $(TERSE_DATA_DIR)manifest.json))
+normalize: $(NORMALIZED_DATA_DIR)manifest.json | $(NORMALIZED_DATA_DIR)
+	$(call confirm, Normalizing and acquiring steps complete (see $(NORMALIZED_DATA_DIR)manifest.json))
 
 acquire: $(RAW_DATA_DIR)manifest.json | $(RAW_DATA_DIR)
 	$(call confirm, Acquiring step complete (see $(RAW_DATA_DIR)manifest.json))
 
 # --- Build rules ---
 
-$(DIST_CONTENT_HASH_FILE): $(ATOMIC_DATA_DIR)manifest.json | $(ATOMIC_DATA_CACHE_DIR)
+$(DIST_CONTENT_HASH_FILE): $(NORMALIZED_DATA_DIR)manifest.json | $(NORMALIZED_DATA_CACHE_DIR)
 	$(call say, 📦 Publishing $(DIST_DATA_DIR) files...)
-	@python3 src/main.py
+	@python3 src/publish.py
 
-$(ATOMIC_DATA_DIR)manifest.json: $(TERSE_DATA_DIR)manifest.json
-	$(call say, 🧲 Converting terse data to atomic data under $(ATOMIC_DATA_DIR)...)
+$(NORMALIZED_DATA_DIR)manifest.json: $(RAW_DATA_DIR)manifest.json
+	$(call say, 🧲 Extracting and normalizing raw HTML into typed NDJSON + manifest under $(NORMALIZED_DATA_DIR)...)
 	@python3 src/normalize.py
-
-$(TERSE_DATA_DIR)manifest.json: $(RAW_DATA_DIR)manifest.json
-	$(call say, 🧲 Filtering raw HTML into faithful NDJSON records + manifest under $(TERSE_DATA_DIR)...)
-	@python3 src/filter.py
 
 $(DATA_DIRS): %/:
 	@mkdir -p $@

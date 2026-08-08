@@ -51,32 +51,6 @@ def sort_top_level(d: dict) -> dict:
     return dict(sorted(d.items()))
 
 
-def write_ndjson(path: Path, rows: Iterable[Any]) -> int:
-    """Write dataclass instances to path, one JSON object per line. Return the number of rows written."""
-    path.parent.mkdir(parents=True, exist_ok=True)
-    count = 0
-    with path.open('w', encoding='utf-8') as fp:
-        for row in rows:
-            fp.write(json.dumps(dataclasses.asdict(row), **DUMP_NDJSON_KWARGS))
-            fp.write('\n')
-            count += 1
-    return count
-
-
-def read_ndjson(path: Path, cls: type[T]) -> list[T]:
-    """Read an NDJSON file back into a list of `cls` instances. Return a list of JSON objects. Raises FileNotFoundError if path doesn't exist."""
-    with path.open('r', encoding='utf-8') as fp:
-        return [cls(**json.loads(line)) for line in fp if line.strip()]
-
-
-def parse_section(dir_path: Path, page: str, section: str, cls: type[T], parser: Callable[..., R], **kwargs: object) -> R:
-    """Load the terse (page, section) NDJSON file from dir_path and run its rows through `parser`.
-    Returns whatever `parser` returns (a generator, list, or set, depending on the parser).
-    """
-    rows = read_ndjson(dir_path / f'{page}.{section}.ndjson', cls)
-    return parser(rows, **kwargs)
-
-
 def make_serializable(obj: object) -> JSONType:
     """Recursively convert sets, lists, and dicts into a JSON serializable form."""
     if isinstance(obj, set):
@@ -86,6 +60,46 @@ def make_serializable(obj: object) -> JSONType:
     if isinstance(obj, dict):
         return {k: make_serializable(v) for k, v in obj.items()}
     return obj
+
+
+def dataclass_to_dict(obj: Any) -> dict:
+    """Convert a dataclass instance to a JSON-serializable dict (set fields become sorted lists)."""
+    return make_serializable(dataclasses.asdict(obj))
+
+
+def dict_to_dataclass(cls: type[T], d: dict) -> T:
+    """Reconstruct a `cls` instance from a plain dict, restoring set-typed fields from lists."""
+    kwargs = dict(d)
+    for f in dataclasses.fields(cls):
+        if f.default_factory is not dataclasses.MISSING and isinstance(f.default_factory(), set):
+            kwargs[f.name] = set(kwargs[f.name])
+    return cls(**kwargs)
+
+
+def write_ndjson(path: Path, rows: Iterable[Any]) -> int:
+    """Write dataclass instances to path, one JSON object per line. Return the number of rows written."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    count = 0
+    with path.open('w', encoding='utf-8') as fp:
+        for row in rows:
+            fp.write(json.dumps(dataclass_to_dict(row), **DUMP_NDJSON_KWARGS))
+            fp.write('\n')
+            count += 1
+    return count
+
+
+def read_ndjson(path: Path, cls: type[T]) -> list[T]:
+    """Read an NDJSON file back into a list of `cls` instances. Raises FileNotFoundError if path doesn't exist."""
+    with path.open('r', encoding='utf-8') as fp:
+        return [dict_to_dataclass(cls, json.loads(line)) for line in fp if line.strip()]
+
+
+def parse_section(dir_path: Path, page: str, section: str, cls: type[T], parser: Callable[..., R], **kwargs: object) -> R:
+    """Load the terse (page, section) NDJSON file from dir_path and run its rows through `parser`.
+    Returns whatever `parser` returns (a generator, list, or set, depending on the parser).
+    """
+    rows = read_ndjson(dir_path / f'{page}.{section}.ndjson', cls)
+    return parser(rows, **kwargs)
 
 
 def short_path(path: Path) -> str:

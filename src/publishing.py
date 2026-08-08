@@ -1,29 +1,25 @@
 import json
 import logging
 import shutil
-import subprocess  # noqa: S404
+import subprocess
 from hashlib import sha256
 from pathlib import Path
 
 import yaml
 
 from config import (
-    ATOMIC_DATA_DIR,
-    ATOMIC_DATA_MANIFEST,
-    DIST_DATA_MANIFEST,
     DIST_HASH_FILE,
     DIST_JSON_DATA_DIR,
     DIST_ROOT_DIR,
     DIST_YAML_DATA_DIR,
     DUMP_JSON_KWARGS,
     DUMP_YAML_KWARGS,
-    LOG_LEVEL,
     PROJECT_ROOT,
     RAW_DATA_MANIFEST,
 )
-from util import short_path, sort_top_level
+from normalizing import SECTION_SOURCES, dictify_attributes
+from util import dictify, make_serializable, read_ndjson, short_path, sort_top_level
 
-logging.basicConfig(level=LOG_LEVEL, format='%(levelname)s: %(message)s')
 logger = logging.getLogger(__name__)
 
 # ---- Licenses (single consumer: this driver) ----
@@ -39,12 +35,6 @@ def copy_licenses() -> None:
     DIST_ROOT_DIR.mkdir(parents=True, exist_ok=True)
     DIST_COPYRIGHT_FILE.write_text(COPYRIGHT_FILE.read_text(encoding='utf-8'), encoding='utf-8')
     DIST_W3C_LICENSE_FILE.write_text(W3C_LICENSE_FILE.read_text(encoding='utf-8'), encoding='utf-8')
-
-
-def read_data_domains() -> dict[str, object]:
-    """Load categories produced by the normalize stage from ATOMIC_DATA_DIR, using its manifest as the index."""
-    manifest = json.loads(ATOMIC_DATA_MANIFEST.read_text(encoding='utf-8'))
-    return {c: json.loads((ATOMIC_DATA_DIR / f'{c}.json').read_text(encoding='utf-8')) for c in manifest}
 
 
 def hash_compute(dirs: list[Path]) -> str:
@@ -84,7 +74,7 @@ def get_repo_version() -> dict[str, str]:
         raise FileNotFoundError(msg)
 
     try:
-        official_release = subprocess.run(  # noqa: S603
+        official_release = subprocess.run(
             [git, 'describe', '--tags', '--abbrev=0'],
             check=True,
             capture_output=True,
@@ -93,14 +83,14 @@ def get_repo_version() -> dict[str, str]:
     except subprocess.CalledProcessError:
         official_release = ''
 
-    current_tag = subprocess.run(  # noqa: S603
+    current_tag = subprocess.run(
         [git, 'describe', '--tags', '--always', '--dirty'],
         check=True,
         capture_output=True,
         text=True,
     ).stdout.strip()
 
-    current_commit_id = subprocess.run(  # noqa: S603
+    current_commit_id = subprocess.run(
         [git, 'rev-parse', 'HEAD'],
         check=True,
         capture_output=True,
@@ -166,44 +156,48 @@ def write_yaml_items(data: dict, dir_path: Path) -> int:
     return count
 
 
-def main() -> None:
-    # Prepare output directories
-    DIST_JSON_DATA_DIR.mkdir(parents=True, exist_ok=True)
-    DIST_YAML_DATA_DIR.mkdir(parents=True, exist_ok=True)
+class Publisher:
+    """Publish stage: normalized entity NDJSON -> grouped, dictified dist/ JSON + YAML."""
 
-    # Assemble from the atomic data layer; this stage only formats and writes.
-    results = read_data_domains()
+    def __init__(self, normalized_data_dir: Path, manifest_path: Path) -> None:
+        self.normalized_data_dir = normalized_data_dir
+        self.manifest_path = manifest_path
 
-    # Write each result
-    counts = {}
-    for name, data in results.items():
-        output_path = DIST_JSON_DATA_DIR / f'{name}.json'
-        write_output(data, output_path)
-        logger.info('📦 Published %s', short_path(output_path))
+    def read_data_domains(self) -> dict[str, dict]:
+        """Load each section's entities from NORMALIZED_DATA_DIR, using its manifest as the index, and
+        group them by name (and by tag, for attributes) into the published shape. JSON-serializable
+        (sets become sorted lists).
+        """
+        manifest = json.loads(self.manifest_path.read_text(encoding='utf-8'))
+        results = {}
+        for section in manifest['output']:
+            cls = SECTION_SOURCES[section][1]
+            entries = read_ndjson(self.normalized_data_dir / f'{section}.ndjson', cls)
+            dictifier = dictify_attributes if section == 'attributes' else dictify
+            results[section] = make_serializable(dictifier(entries))
+        return results
 
-        if isinstance(data, dict):
-            yaml_subdir = DIST_YAML_DATA_DIR / name
-            item_count = write_yaml_items(data, yaml_subdir)
-            counts[name] = item_count
-            logger.info('📦 Published %s individual YAML files to %s', item_count, short_path(yaml_subdir))
-        else:
-            yaml_path = DIST_YAML_DATA_DIR / f'{name}.yaml'
-            write_yaml_file(data, yaml_path)
-            counts[name] = len(data)
-            logger.info('📦 Published %s', short_path(yaml_path))
+    def publish(self) -> dict[str, int]:
+        """Write dist JSON+YAML for each domain. Returns per-domain item counts for the manifest."""
+        DIST_JSON_DATA_DIR.mkdir(parents=True, exist_ok=True)
+        DIST_YAML_DATA_DIR.mkdir(parents=True, exist_ok=True)
 
-    if not hash_update([DIST_JSON_DATA_DIR, DIST_YAML_DATA_DIR]):
-        return
+        results = self.read_data_domains()
+        counts = {}
+        for name, data in results.items():
+            output_path = DIST_JSON_DATA_DIR / f'{name}.json'
+            write_output(data, output_path)
+            logger.info('📦 Published %s', short_path(output_path))
 
-    # Static legal notice, copied once — no per-file duplication
-    copy_licenses()
-    logger.info('📝 Wrote %s, %s', short_path(DIST_COPYRIGHT_FILE), short_path(DIST_W3C_LICENSE_FILE))
+            if isinstance(data, dict):
+                yaml_subdir = DIST_YAML_DATA_DIR / name
+                item_count = write_yaml_items(data, yaml_subdir)
+                counts[name] = item_count
+                logger.info('📦 Published %s individual YAML files to %s', item_count, short_path(yaml_subdir))
+            else:
+                yaml_path = DIST_YAML_DATA_DIR / f'{name}.yaml'
+                write_yaml_file(data, yaml_path)
+                counts[name] = len(data)
+                logger.info('📦 Published %s', short_path(yaml_path))
 
-    # Single manifest capturing per-source fetch times, generation time, and item counts
-    manifest = build_manifest(counts)
-    DIST_DATA_MANIFEST.write_text(json.dumps(manifest, **DUMP_JSON_KWARGS), encoding='utf-8')
-    logger.info('📝 Wrote %s', short_path(DIST_DATA_MANIFEST))
-
-
-if __name__ == '__main__':
-    main()
+        return counts
