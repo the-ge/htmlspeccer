@@ -652,33 +652,6 @@ class Normalizer:
         self._output_manifest[key] = entry
         return entry
 
-    def _build_cached(self, section: str, cls: type, soup: BeautifulSoup | None) -> list:
-        """Parse `section` from `soup`, apply its emendations, validate, and cache the result.
-
-        On a recoverable parse/extraction error, falls back to the previous cached run for `section`.
-
-        Returns:
-            List of data JSON objects
-
-        Raises:
-            FileNotFoundError: if section raw source not found
-        """
-        if soup is None:
-            msg = f'No raw HTML available for page {SECTION_SOURCES[section][0]!r}'
-            raise FileNotFoundError(msg)
-
-        try:
-            parser = getattr(sys.modules[__name__], f'parse_{section}')
-            result = list(parser(soup))
-            self.emender.emend_normalizing_section(section, result)
-            self._validate(section, len(result))
-        except RECOVERABLE_ERRORS as e:
-            return self._log_parse_error_and_fallback(e, section, cls)
-        else:
-            self._save_cache(section, result)
-            logger.info('🏗️ Built and cached %s %s', len(result), section)
-            return result
-
     def _log_parse_error_and_fallback(self, e: Exception, section: str, cls: type) -> list:
         logger.error('❌ Parsing failed: %s', e)
 
@@ -692,17 +665,40 @@ class Normalizer:
         self._output_manifest[section] = {'status': 'fallback', 'row_count': len(cached)}
         return cached
 
-    def _get_section_entries(self, section: str) -> list:
+    def _get_parsed_section(self, section: str) -> list:
+        """Parse `section` from `soup`, apply its emendations, validate, and cache the result.
+
+        On a recoverable parse/extraction error, falls back to the previous cached run for `section`.
+
+        Returns:
+            List of data JSON objects
+
+        Raises:
+            FileNotFoundError: if section raw source not found
+        """
         page, cls = SECTION_SOURCES[section]
         input_key = f'{page}.{section}'
         soup = self._load_soup(page)
 
-        entries = self._build_cached(section, cls, soup)
+        try:
+            if soup is None:
+                msg = f'No raw HTML available for page {SECTION_SOURCES[section][0]!r}'
+                raise FileNotFoundError(msg)
+            parser = getattr(sys.modules[__name__], f'parse_{section}')
+            parsed = list(parser(soup))
+            self.emender.emend_normalizing_section(section, parsed)
+            self._validate(section, len(parsed))
+        except RECOVERABLE_ERRORS as e:
+            return self._log_parse_error_and_fallback(e, section, cls)
+        else:
+            self._save_cache(section, parsed)
+            logger.info('🏗️ Built and cached %s %s', len(parsed), section)
+
         self._input_manifest[input_key] = {
             'status': 'ok' if soup is not None else 'fallback',
-            'row_count': len(entries),
+            'row_count': len(parsed),
         }
-        return entries
+        return parsed
 
     # ---- public builders ----
 
@@ -712,6 +708,6 @@ class Normalizer:
         Returns:
             {section: [entities]} and the {'input', 'output'} manifest
         """
-        results = {section: self._get_section_entries(section) for section in SECTION_SOURCES}
+        results = {section: self._get_parsed_section(section) for section in SECTION_SOURCES}
         manifest = {'input': dict(self._input_manifest), 'output': dict(self._output_manifest)}
         return results, manifest
