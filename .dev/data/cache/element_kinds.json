@@ -1,33 +1,6 @@
-{
-  "escapable-raw-text-elements": {
-    "tags": [
-      "textarea",
-      "title"
-    ],
-    "info": ""
-  },
-  "foreign-elements": {
-    "tags": [],
-    "info": "Elements from the MathML namespace and the SVG namespace."
-  },
-  "normal-elements": {
-    "tags": [],
-    "info": "All other allowed HTML elements are normal elements."
-  },
-  "raw-text-elements": {
-    "tags": [
-      "script",
-      "style"
-    ],
-    "info": ""
-  },
-  "the-template-element": {
-    "tags": [
-      "template"
-    ],
-    "info": ""
-  },
-  "void-elements": {
+[
+  {
+    "name": "void-elements",
     "tags": [
       "area",
       "base",
@@ -44,5 +17,38 @@
       "wbr"
     ],
     "info": ""
+  },
+  {
+    "name": "the-template-element",
+    "tags": [
+      "template"
+    ],
+    "info": ""
+  },
+  {
+    "name": "raw-text-elements",
+    "tags": [
+      "script",
+      "style"
+    ],
+    "info": ""
+  },
+  {
+    "name": "escapable-raw-text-elements",
+    "tags": [
+      "textarea",
+      "title"
+    ],
+    "info": ""
+  },
+  {
+    "name": "foreign-elements",
+    "tags": [],
+    "info": "Elements from the MathML namespace and the SVG namespace."
+  },
+  {
+    "name": "normal-elements",
+    "tags": [],
+    "info": "All other allowed HTML elements are normal elements."
   }
-}
+]

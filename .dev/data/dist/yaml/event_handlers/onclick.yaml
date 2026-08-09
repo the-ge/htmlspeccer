@@ -1,5 +1,5 @@
 applies_to: HTML elements
 urls:
+- https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes
 - https://html.spec.whatwg.org/multipage/webappapis.html#handler-onclick
 - https://w3c.github.io/pointerevents/#click
-- https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes

@@ -1,3 +1,7 @@
+{"name": "class", "url": ""}
+{"name": "id", "url": ""}
+{"name": "role", "url": ""}
+{"name": "slot", "url": ""}
 {"name": "accesskey", "url": "https://html.spec.whatwg.org/dev/interaction.html#the-accesskey-attribute"}
 {"name": "autocapitalize", "url": "https://html.spec.whatwg.org/dev/interaction.html#attr-autocapitalize"}
 {"name": "autocorrect", "url": "https://html.spec.whatwg.org/dev/interaction.html#attr-autocorrect"}

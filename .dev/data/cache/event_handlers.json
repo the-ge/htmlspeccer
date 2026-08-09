@@ -1,732 +1,821 @@
-{
-  "onafterprint": {
+[
+  {
+    "name": "onafterprint",
     "applies_to": "body",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-window-onafterprint",
       "https://html.spec.whatwg.org/multipage/#event-afterprint",
       "https://html.spec.whatwg.org/multipage/nav-history-apis.html#window",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-window-onafterprint"
     ]
   },
-  "onauxclick": {
+  {
+    "name": "onauxclick",
     "applies_to": "HTML elements",
     "urls": [
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
       "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onauxclick",
-      "https://w3c.github.io/pointerevents/#auxclick",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://w3c.github.io/pointerevents/#auxclick"
     ]
   },
-  "onbeforeinput": {
+  {
+    "name": "onbeforeinput",
     "applies_to": "HTML elements",
     "urls": [
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
       "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onbeforeinput",
-      "https://w3c.github.io/uievents/#event-type-beforeinput",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://w3c.github.io/uievents/#event-type-beforeinput"
     ]
   },
-  "onbeforematch": {
+  {
+    "name": "onbeforematch",
     "applies_to": "HTML elements",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onbeforematch",
       "https://html.spec.whatwg.org/multipage/#event-beforematch",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onbeforematch"
     ]
   },
-  "onbeforeprint": {
+  {
+    "name": "onbeforeprint",
     "applies_to": "body",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-window-onbeforeprint",
       "https://html.spec.whatwg.org/multipage/#event-beforeprint",
       "https://html.spec.whatwg.org/multipage/nav-history-apis.html#window",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-window-onbeforeprint"
     ]
   },
-  "onbeforetoggle": {
-    "applies_to": "HTML elements",
-    "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onbeforetoggle",
-      "https://html.spec.whatwg.org/multipage/#event-beforetoggle",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
-    ]
-  },
-  "onbeforeunload": {
+  {
+    "name": "onbeforeunload",
     "applies_to": "body",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-window-onbeforeunload",
       "https://html.spec.whatwg.org/multipage/#event-beforeunload",
       "https://html.spec.whatwg.org/multipage/nav-history-apis.html#window",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-window-onbeforeunload"
     ]
   },
-  "onblur": {
+  {
+    "name": "onbeforetoggle",
     "applies_to": "HTML elements",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onblur",
+      "https://html.spec.whatwg.org/multipage/#event-beforetoggle",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onbeforetoggle"
+    ]
+  },
+  {
+    "name": "onblur",
+    "applies_to": "HTML elements",
+    "urls": [
       "https://html.spec.whatwg.org/multipage/#event-blur",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onblur"
     ]
   },
-  "oncancel": {
+  {
+    "name": "oncancel",
     "applies_to": "HTML elements",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-oncancel",
       "https://html.spec.whatwg.org/multipage/#event-cancel",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-oncancel"
     ]
   },
-  "oncanplay": {
+  {
+    "name": "oncanplay",
     "applies_to": "HTML elements",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-oncanplay",
       "https://html.spec.whatwg.org/multipage/media.html#event-media-canplay",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-oncanplay"
     ]
   },
-  "oncanplaythrough": {
+  {
+    "name": "oncanplaythrough",
     "applies_to": "HTML elements",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-oncanplaythrough",
       "https://html.spec.whatwg.org/multipage/media.html#event-media-canplaythrough",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-oncanplaythrough"
     ]
   },
-  "onchange": {
+  {
+    "name": "onchange",
     "applies_to": "HTML elements",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onchange",
       "https://html.spec.whatwg.org/multipage/#event-change",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onchange"
     ]
   },
-  "onclick": {
+  {
+    "name": "onclick",
     "applies_to": "HTML elements",
     "urls": [
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
       "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onclick",
-      "https://w3c.github.io/pointerevents/#click",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://w3c.github.io/pointerevents/#click"
     ]
   },
-  "onclose": {
+  {
+    "name": "onclose",
     "applies_to": "HTML elements",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onclose",
       "https://html.spec.whatwg.org/multipage/#event-close",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onclose"
     ]
   },
-  "oncommand": {
+  {
+    "name": "oncommand",
     "applies_to": "HTML elements",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-oncommand",
       "https://html.spec.whatwg.org/multipage/#event-command",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-oncommand"
     ]
   },
-  "oncontextlost": {
+  {
+    "name": "oncontextlost",
     "applies_to": "HTML elements",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-oncontextlost",
       "https://html.spec.whatwg.org/multipage/#event-contextlost",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-oncontextlost"
     ]
   },
-  "oncontextmenu": {
+  {
+    "name": "oncontextmenu",
     "applies_to": "HTML elements",
     "urls": [
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
       "https://html.spec.whatwg.org/multipage/webappapis.html#handler-oncontextmenu",
-      "https://w3c.github.io/uievents/#event-type-contextmenu",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://w3c.github.io/uievents/#event-type-contextmenu"
     ]
   },
-  "oncontextrestored": {
+  {
+    "name": "oncontextrestored",
     "applies_to": "HTML elements",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-oncontextrestored",
       "https://html.spec.whatwg.org/multipage/#event-contextrestored",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-oncontextrestored"
     ]
   },
-  "oncopy": {
+  {
+    "name": "oncopy",
     "applies_to": "HTML elements",
     "urls": [
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
       "https://html.spec.whatwg.org/multipage/webappapis.html#handler-oncopy",
-      "https://w3c.github.io/clipboard-apis/#clipboard-event-copy",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://w3c.github.io/clipboard-apis/#clipboard-event-copy"
     ]
   },
-  "oncuechange": {
+  {
+    "name": "oncuechange",
     "applies_to": "HTML elements",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-oncuechange",
       "https://html.spec.whatwg.org/multipage/media.html#event-media-cuechange",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-oncuechange"
     ]
   },
-  "oncut": {
+  {
+    "name": "oncut",
     "applies_to": "HTML elements",
     "urls": [
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
       "https://html.spec.whatwg.org/multipage/webappapis.html#handler-oncut",
-      "https://w3c.github.io/clipboard-apis/#clipboard-event-cut",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://w3c.github.io/clipboard-apis/#clipboard-event-cut"
     ]
   },
-  "ondblclick": {
+  {
+    "name": "ondblclick",
     "applies_to": "HTML elements",
     "urls": [
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
       "https://html.spec.whatwg.org/multipage/webappapis.html#handler-ondblclick",
-      "https://w3c.github.io/pointerevents/#dblclick",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://w3c.github.io/pointerevents/#dblclick"
     ]
   },
-  "ondrag": {
+  {
+    "name": "ondrag",
     "applies_to": "HTML elements",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-ondrag",
       "https://html.spec.whatwg.org/multipage/dnd.html#event-dnd-drag",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-ondrag"
     ]
   },
-  "ondragend": {
+  {
+    "name": "ondragend",
     "applies_to": "HTML elements",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-ondragend",
       "https://html.spec.whatwg.org/multipage/dnd.html#event-dnd-dragend",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-ondragend"
     ]
   },
-  "ondragenter": {
+  {
+    "name": "ondragenter",
     "applies_to": "HTML elements",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-ondragenter",
       "https://html.spec.whatwg.org/multipage/dnd.html#event-dnd-dragenter",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-ondragenter"
     ]
   },
-  "ondragleave": {
+  {
+    "name": "ondragleave",
     "applies_to": "HTML elements",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-ondragleave",
       "https://html.spec.whatwg.org/multipage/dnd.html#event-dnd-dragleave",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-ondragleave"
     ]
   },
-  "ondragover": {
+  {
+    "name": "ondragover",
     "applies_to": "HTML elements",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-ondragover",
       "https://html.spec.whatwg.org/multipage/dnd.html#event-dnd-dragover",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-ondragover"
     ]
   },
-  "ondragstart": {
+  {
+    "name": "ondragstart",
     "applies_to": "HTML elements",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-ondragstart",
       "https://html.spec.whatwg.org/multipage/dnd.html#event-dnd-dragstart",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-ondragstart"
     ]
   },
-  "ondrop": {
+  {
+    "name": "ondrop",
     "applies_to": "HTML elements",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-ondrop",
       "https://html.spec.whatwg.org/multipage/dnd.html#event-dnd-drop",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-ondrop"
     ]
   },
-  "ondurationchange": {
+  {
+    "name": "ondurationchange",
     "applies_to": "HTML elements",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-ondurationchange",
       "https://html.spec.whatwg.org/multipage/media.html#event-media-durationchange",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-ondurationchange"
     ]
   },
-  "onemptied": {
+  {
+    "name": "onemptied",
     "applies_to": "HTML elements",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onemptied",
       "https://html.spec.whatwg.org/multipage/media.html#event-media-emptied",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onemptied"
     ]
   },
-  "onended": {
+  {
+    "name": "onended",
     "applies_to": "HTML elements",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onended",
       "https://html.spec.whatwg.org/multipage/media.html#event-media-ended",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onended"
     ]
   },
-  "onerror": {
+  {
+    "name": "onerror",
     "applies_to": "HTML elements",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onerror",
       "https://html.spec.whatwg.org/multipage/#event-error",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onerror"
     ]
   },
-  "onfocus": {
+  {
+    "name": "onfocus",
     "applies_to": "HTML elements",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onfocus",
       "https://html.spec.whatwg.org/multipage/#event-focus",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onfocus"
     ]
   },
-  "onformdata": {
+  {
+    "name": "onformdata",
     "applies_to": "HTML elements",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onformdata",
       "https://html.spec.whatwg.org/multipage/#event-formdata",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onformdata"
     ]
   },
-  "onhashchange": {
+  {
+    "name": "onhashchange",
     "applies_to": "body",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-window-onhashchange",
       "https://html.spec.whatwg.org/multipage/#event-hashchange",
       "https://html.spec.whatwg.org/multipage/nav-history-apis.html#window",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-window-onhashchange"
     ]
   },
-  "oninput": {
+  {
+    "name": "oninput",
     "applies_to": "HTML elements",
     "urls": [
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
       "https://html.spec.whatwg.org/multipage/webappapis.html#handler-oninput",
-      "https://w3c.github.io/uievents/#event-type-input",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://w3c.github.io/uievents/#event-type-input"
     ]
   },
-  "oninvalid": {
+  {
+    "name": "oninvalid",
     "applies_to": "HTML elements",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-oninvalid",
       "https://html.spec.whatwg.org/multipage/#event-invalid",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-oninvalid"
     ]
   },
-  "onkeydown": {
+  {
+    "name": "onkeydown",
     "applies_to": "HTML elements",
     "urls": [
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
       "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onkeydown",
-      "https://w3c.github.io/uievents/#event-type-keydown",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://w3c.github.io/uievents/#event-type-keydown"
     ]
   },
-  "onkeypress": {
+  {
+    "name": "onkeypress",
     "applies_to": "HTML elements",
     "urls": [
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
       "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onkeypress",
-      "https://w3c.github.io/uievents/#event-type-keypress",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://w3c.github.io/uievents/#event-type-keypress"
     ]
   },
-  "onkeyup": {
+  {
+    "name": "onkeyup",
     "applies_to": "HTML elements",
     "urls": [
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
       "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onkeyup",
-      "https://w3c.github.io/uievents/#event-type-keyup",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://w3c.github.io/uievents/#event-type-keyup"
     ]
   },
-  "onlanguagechange": {
+  {
+    "name": "onlanguagechange",
     "applies_to": "body",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-window-onlanguagechange",
       "https://html.spec.whatwg.org/multipage/#event-languagechange",
       "https://html.spec.whatwg.org/multipage/nav-history-apis.html#window",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-window-onlanguagechange"
     ]
   },
-  "onload": {
+  {
+    "name": "onload",
     "applies_to": "HTML elements",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onload",
       "https://html.spec.whatwg.org/multipage/#event-load",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onload"
     ]
   },
-  "onloadeddata": {
+  {
+    "name": "onloadeddata",
     "applies_to": "HTML elements",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onloadeddata",
       "https://html.spec.whatwg.org/multipage/media.html#event-media-loadeddata",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onloadeddata"
     ]
   },
-  "onloadedmetadata": {
+  {
+    "name": "onloadedmetadata",
     "applies_to": "HTML elements",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onloadedmetadata",
       "https://html.spec.whatwg.org/multipage/media.html#event-media-loadedmetadata",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onloadedmetadata"
     ]
   },
-  "onloadstart": {
+  {
+    "name": "onloadstart",
     "applies_to": "HTML elements",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onloadstart",
       "https://html.spec.whatwg.org/multipage/media.html#event-media-loadstart",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onloadstart"
     ]
   },
-  "onmessage": {
+  {
+    "name": "onmessage",
     "applies_to": "body",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-window-onmessage",
       "https://html.spec.whatwg.org/multipage/#event-message",
       "https://html.spec.whatwg.org/multipage/nav-history-apis.html#window",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-window-onmessage"
     ]
   },
-  "onmessageerror": {
+  {
+    "name": "onmessageerror",
     "applies_to": "body",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-window-onmessageerror",
       "https://html.spec.whatwg.org/multipage/#event-messageerror",
       "https://html.spec.whatwg.org/multipage/nav-history-apis.html#window",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-window-onmessageerror"
     ]
   },
-  "onmousedown": {
+  {
+    "name": "onmousedown",
     "applies_to": "HTML elements",
     "urls": [
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
       "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onmousedown",
-      "https://w3c.github.io/pointerevents/#mousedown",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://w3c.github.io/pointerevents/#mousedown"
     ]
   },
-  "onmouseenter": {
+  {
+    "name": "onmouseenter",
     "applies_to": "HTML elements",
     "urls": [
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
       "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onmouseenter",
-      "https://w3c.github.io/pointerevents/#mouseenter",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://w3c.github.io/pointerevents/#mouseenter"
     ]
   },
-  "onmouseleave": {
+  {
+    "name": "onmouseleave",
     "applies_to": "HTML elements",
     "urls": [
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
       "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onmouseleave",
-      "https://w3c.github.io/pointerevents/#mouseleave",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://w3c.github.io/pointerevents/#mouseleave"
     ]
   },
-  "onmousemove": {
+  {
+    "name": "onmousemove",
     "applies_to": "HTML elements",
     "urls": [
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
       "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onmousemove",
-      "https://w3c.github.io/pointerevents/#mousemove",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://w3c.github.io/pointerevents/#mousemove"
     ]
   },
-  "onmouseout": {
+  {
+    "name": "onmouseout",
     "applies_to": "HTML elements",
     "urls": [
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
       "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onmouseout",
-      "https://w3c.github.io/pointerevents/#mouseout",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://w3c.github.io/pointerevents/#mouseout"
     ]
   },
-  "onmouseover": {
+  {
+    "name": "onmouseover",
     "applies_to": "HTML elements",
     "urls": [
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
       "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onmouseover",
-      "https://w3c.github.io/pointerevents/#mouseover",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://w3c.github.io/pointerevents/#mouseover"
     ]
   },
-  "onmouseup": {
+  {
+    "name": "onmouseup",
     "applies_to": "HTML elements",
     "urls": [
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
       "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onmouseup",
-      "https://w3c.github.io/pointerevents/#mouseup",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://w3c.github.io/pointerevents/#mouseup"
     ]
   },
-  "onoffline": {
+  {
+    "name": "onoffline",
     "applies_to": "body",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-window-onoffline",
       "https://html.spec.whatwg.org/multipage/#event-offline",
       "https://html.spec.whatwg.org/multipage/nav-history-apis.html#window",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-window-onoffline"
     ]
   },
-  "ononline": {
+  {
+    "name": "ononline",
     "applies_to": "body",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-window-ononline",
       "https://html.spec.whatwg.org/multipage/#event-online",
       "https://html.spec.whatwg.org/multipage/nav-history-apis.html#window",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-window-ononline"
     ]
   },
-  "onpagehide": {
+  {
+    "name": "onpagehide",
     "applies_to": "body",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-window-onpagehide",
       "https://html.spec.whatwg.org/multipage/#event-pagehide",
       "https://html.spec.whatwg.org/multipage/nav-history-apis.html#window",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-window-onpagehide"
     ]
   },
-  "onpagereveal": {
+  {
+    "name": "onpagereveal",
     "applies_to": "body",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-window-onpagereveal",
       "https://html.spec.whatwg.org/multipage/#event-pagereveal",
       "https://html.spec.whatwg.org/multipage/nav-history-apis.html#window",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-window-onpagereveal"
     ]
   },
-  "onpageshow": {
+  {
+    "name": "onpageshow",
     "applies_to": "body",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-window-onpageshow",
       "https://html.spec.whatwg.org/multipage/#event-pageshow",
       "https://html.spec.whatwg.org/multipage/nav-history-apis.html#window",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-window-onpageshow"
     ]
   },
-  "onpageswap": {
+  {
+    "name": "onpageswap",
     "applies_to": "body",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-window-onpageswap",
       "https://html.spec.whatwg.org/multipage/#event-pageswap",
       "https://html.spec.whatwg.org/multipage/nav-history-apis.html#window",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-window-onpageswap"
     ]
   },
-  "onpaste": {
+  {
+    "name": "onpaste",
     "applies_to": "HTML elements",
     "urls": [
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
       "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onpaste",
-      "https://w3c.github.io/clipboard-apis/#clipboard-event-paste",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://w3c.github.io/clipboard-apis/#clipboard-event-paste"
     ]
   },
-  "onpause": {
+  {
+    "name": "onpause",
     "applies_to": "HTML elements",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onpause",
       "https://html.spec.whatwg.org/multipage/media.html#event-media-pause",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onpause"
     ]
   },
-  "onplay": {
+  {
+    "name": "onplay",
     "applies_to": "HTML elements",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onplay",
       "https://html.spec.whatwg.org/multipage/media.html#event-media-play",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onplay"
     ]
   },
-  "onplaying": {
+  {
+    "name": "onplaying",
     "applies_to": "HTML elements",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onplaying",
       "https://html.spec.whatwg.org/multipage/media.html#event-media-playing",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onplaying"
     ]
   },
-  "onpopstate": {
+  {
+    "name": "onpopstate",
     "applies_to": "body",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-window-onpopstate",
       "https://html.spec.whatwg.org/multipage/#event-popstate",
       "https://html.spec.whatwg.org/multipage/nav-history-apis.html#window",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-window-onpopstate"
     ]
   },
-  "onprogress": {
+  {
+    "name": "onprogress",
     "applies_to": "HTML elements",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onprogress",
       "https://html.spec.whatwg.org/multipage/media.html#event-media-progress",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onprogress"
     ]
   },
-  "onratechange": {
+  {
+    "name": "onratechange",
     "applies_to": "HTML elements",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onratechange",
       "https://html.spec.whatwg.org/multipage/media.html#event-media-ratechange",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onratechange"
     ]
   },
-  "onrejectionhandled": {
+  {
+    "name": "onreset",
+    "applies_to": "HTML elements",
+    "urls": [
+      "https://html.spec.whatwg.org/multipage/#event-reset",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onreset"
+    ]
+  },
+  {
+    "name": "onresize",
+    "applies_to": "HTML elements",
+    "urls": [
+      "https://drafts.csswg.org/cssom-view/#eventdef-window-resize",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onresize"
+    ]
+  },
+  {
+    "name": "onrejectionhandled",
     "applies_to": "body",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-window-onrejectionhandled",
       "https://html.spec.whatwg.org/multipage/#event-rejectionhandled",
       "https://html.spec.whatwg.org/multipage/nav-history-apis.html#window",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-window-onrejectionhandled"
     ]
   },
-  "onreset": {
+  {
+    "name": "onscroll",
     "applies_to": "HTML elements",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onreset",
-      "https://html.spec.whatwg.org/multipage/#event-reset",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
-    ]
-  },
-  "onresize": {
-    "applies_to": "HTML elements",
-    "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onresize",
-      "https://drafts.csswg.org/cssom-view/#eventdef-window-resize",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
-    ]
-  },
-  "onscroll": {
-    "applies_to": "HTML elements",
-    "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onscroll",
       "https://drafts.csswg.org/cssom-view/#eventdef-document-scroll",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onscroll"
     ]
   },
-  "onscrollend": {
+  {
+    "name": "onscrollend",
     "applies_to": "HTML elements",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onscrollend",
       "https://drafts.csswg.org/cssom-view/#eventdef-document-scrollend",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onscrollend"
     ]
   },
-  "onsecuritypolicyviolation": {
+  {
+    "name": "onsecuritypolicyviolation",
     "applies_to": "HTML elements",
     "urls": [
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
       "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onsecuritypolicyviolation",
-      "https://w3c.github.io/webappsec-csp/#eventdef-globaleventhandlers-securitypolicyviolation",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://w3c.github.io/webappsec-csp/#eventdef-globaleventhandlers-securitypolicyviolation"
     ]
   },
-  "onseeked": {
+  {
+    "name": "onseeked",
     "applies_to": "HTML elements",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onseeked",
       "https://html.spec.whatwg.org/multipage/media.html#event-media-seeked",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onseeked"
     ]
   },
-  "onseeking": {
+  {
+    "name": "onseeking",
     "applies_to": "HTML elements",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onseeking",
       "https://html.spec.whatwg.org/multipage/media.html#event-media-seeking",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onseeking"
     ]
   },
-  "onselect": {
+  {
+    "name": "onselect",
     "applies_to": "HTML elements",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onselect",
       "https://html.spec.whatwg.org/multipage/#event-select",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onselect"
     ]
   },
-  "onslotchange": {
+  {
+    "name": "onslotchange",
     "applies_to": "HTML elements",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onslotchange",
       "https://dom.spec.whatwg.org/#eventdef-htmlslotelement-slotchange",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onslotchange"
     ]
   },
-  "onstalled": {
+  {
+    "name": "onstalled",
     "applies_to": "HTML elements",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onstalled",
       "https://html.spec.whatwg.org/multipage/media.html#event-media-stalled",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onstalled"
     ]
   },
-  "onstorage": {
+  {
+    "name": "onstorage",
     "applies_to": "body",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-window-onstorage",
       "https://html.spec.whatwg.org/multipage/#event-storage",
       "https://html.spec.whatwg.org/multipage/nav-history-apis.html#window",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-window-onstorage"
     ]
   },
-  "onsubmit": {
+  {
+    "name": "onsubmit",
     "applies_to": "HTML elements",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onsubmit",
       "https://html.spec.whatwg.org/multipage/#event-submit",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onsubmit"
     ]
   },
-  "onsuspend": {
+  {
+    "name": "onsuspend",
     "applies_to": "HTML elements",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onsuspend",
       "https://html.spec.whatwg.org/multipage/media.html#event-media-suspend",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onsuspend"
     ]
   },
-  "ontimeupdate": {
+  {
+    "name": "ontimeupdate",
     "applies_to": "HTML elements",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-ontimeupdate",
       "https://html.spec.whatwg.org/multipage/media.html#event-media-timeupdate",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-ontimeupdate"
     ]
   },
-  "ontoggle": {
+  {
+    "name": "ontoggle",
     "applies_to": "HTML elements",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-ontoggle",
       "https://html.spec.whatwg.org/multipage/#event-toggle",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-ontoggle"
     ]
   },
-  "onunhandledrejection": {
+  {
+    "name": "onunhandledrejection",
     "applies_to": "body",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-window-onunhandledrejection",
       "https://html.spec.whatwg.org/multipage/#event-unhandledrejection",
       "https://html.spec.whatwg.org/multipage/nav-history-apis.html#window",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-window-onunhandledrejection"
     ]
   },
-  "onunload": {
+  {
+    "name": "onunload",
     "applies_to": "body",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-window-onunload",
       "https://html.spec.whatwg.org/multipage/#event-unload",
       "https://html.spec.whatwg.org/multipage/nav-history-apis.html#window",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-window-onunload"
     ]
   },
-  "onvolumechange": {
+  {
+    "name": "onvolumechange",
     "applies_to": "HTML elements",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onvolumechange",
       "https://html.spec.whatwg.org/multipage/media.html#event-media-volumechange",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onvolumechange"
     ]
   },
-  "onwaiting": {
+  {
+    "name": "onwaiting",
     "applies_to": "HTML elements",
     "urls": [
-      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onwaiting",
       "https://html.spec.whatwg.org/multipage/media.html#event-media-waiting",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
+      "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onwaiting"
     ]
   },
-  "onwheel": {
+  {
+    "name": "onwheel",
     "applies_to": "HTML elements",
     "urls": [
+      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes",
       "https://html.spec.whatwg.org/multipage/webappapis.html#handler-onwheel",
-      "https://w3c.github.io/pointerevents/#wheel",
-      "https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes"
+      "https://w3c.github.io/pointerevents/#wheel"
     ]
   }
-}
+]

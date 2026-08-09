@@ -1,5 +1,6 @@
-{
-  "a": {
+[
+  {
+    "name": "a",
     "description": "Hyperlink",
     "categories": [
       "flow",
@@ -21,7 +22,8 @@
       "transparent"
     ]
   },
-  "abbr": {
+  {
+    "name": "abbr",
     "description": "Abbreviation",
     "categories": [
       "flow",
@@ -33,7 +35,8 @@
       "phrasing"
     ]
   },
-  "address": {
+  {
+    "name": "address",
     "description": "Contact information for a page or article element",
     "categories": [
       "flow",
@@ -44,7 +47,8 @@
       "flow"
     ]
   },
-  "area": {
+  {
+    "name": "area",
     "description": "Hyperlink or dead area on an image map",
     "categories": [
       "flow",
@@ -63,7 +67,8 @@
     ],
     "children": []
   },
-  "article": {
+  {
+    "name": "article",
     "description": "Self-contained syndicatable or reusable composition",
     "categories": [
       "flow",
@@ -75,7 +80,8 @@
       "flow"
     ]
   },
-  "aside": {
+  {
+    "name": "aside",
     "description": "Sidebar for tangentially related content",
     "categories": [
       "flow",
@@ -87,7 +93,8 @@
       "flow"
     ]
   },
-  "audio": {
+  {
+    "name": "audio",
     "description": "Audio player",
     "categories": [
       "embedded",
@@ -112,7 +119,8 @@
       "transparent"
     ]
   },
-  "b": {
+  {
+    "name": "b",
     "description": "Keywords",
     "categories": [
       "flow",
@@ -124,7 +132,8 @@
       "phrasing"
     ]
   },
-  "base": {
+  {
+    "name": "base",
     "description": "Base URL and default target navigable for hyperlinks and forms",
     "categories": [
       "metadata"
@@ -135,7 +144,8 @@
     ],
     "children": []
   },
-  "bdi": {
+  {
+    "name": "bdi",
     "description": "Text directionality isolation",
     "categories": [
       "flow",
@@ -147,7 +157,8 @@
       "phrasing"
     ]
   },
-  "bdo": {
+  {
+    "name": "bdo",
     "description": "Text directionality formatting",
     "categories": [
       "flow",
@@ -159,7 +170,8 @@
       "phrasing"
     ]
   },
-  "blockquote": {
+  {
+    "name": "blockquote",
     "description": "A section quoted from another source",
     "categories": [
       "flow",
@@ -172,7 +184,8 @@
       "flow"
     ]
   },
-  "body": {
+  {
+    "name": "body",
     "description": "Document body",
     "categories": [
       "none"
@@ -201,7 +214,8 @@
       "flow"
     ]
   },
-  "br": {
+  {
+    "name": "br",
     "description": "Line break, e.g. in poem or postal address",
     "categories": [
       "flow",
@@ -210,7 +224,8 @@
     "attributes": [],
     "children": []
   },
-  "button": {
+  {
+    "name": "button",
     "description": "Button control",
     "categories": [
       "flow",
@@ -242,7 +257,8 @@
       "phrasing"
     ]
   },
-  "canvas": {
+  {
+    "name": "canvas",
     "description": "Scriptable bitmap canvas",
     "categories": [
       "embedded",
@@ -258,7 +274,8 @@
       "transparent"
     ]
   },
-  "caption": {
+  {
+    "name": "caption",
     "description": "Table caption",
     "categories": [
       "none"
@@ -268,7 +285,8 @@
       "flow"
     ]
   },
-  "cite": {
+  {
+    "name": "cite",
     "description": "Title of a work",
     "categories": [
       "flow",
@@ -280,7 +298,8 @@
       "phrasing"
     ]
   },
-  "code": {
+  {
+    "name": "code",
     "description": "Computer code",
     "categories": [
       "flow",
@@ -292,7 +311,8 @@
       "phrasing"
     ]
   },
-  "col": {
+  {
+    "name": "col",
     "description": "Table column",
     "categories": [
       "none"
@@ -302,7 +322,8 @@
     ],
     "children": []
   },
-  "colgroup": {
+  {
+    "name": "colgroup",
     "description": "Group of columns in a table",
     "categories": [
       "none"
@@ -315,7 +336,8 @@
       "template"
     ]
   },
-  "data": {
+  {
+    "name": "data",
     "description": "Machine-readable equivalent",
     "categories": [
       "flow",
@@ -329,7 +351,8 @@
       "phrasing"
     ]
   },
-  "datalist": {
+  {
+    "name": "datalist",
     "description": "Container for options for combo box control",
     "categories": [
       "flow",
@@ -342,7 +365,8 @@
       "script-supporting elements"
     ]
   },
-  "dd": {
+  {
+    "name": "dd",
     "description": "Content for corresponding dt element(s)",
     "categories": [
       "none"
@@ -352,7 +376,8 @@
       "flow"
     ]
   },
-  "del": {
+  {
+    "name": "del",
     "description": "A removal from the document",
     "categories": [
       "flow",
@@ -367,7 +392,8 @@
       "transparent"
     ]
   },
-  "details": {
+  {
+    "name": "details",
     "description": "Disclosure control for hiding details",
     "categories": [
       "flow",
@@ -383,7 +409,8 @@
       "summary"
     ]
   },
-  "dfn": {
+  {
+    "name": "dfn",
     "description": "Defining instance",
     "categories": [
       "flow",
@@ -395,7 +422,8 @@
       "phrasing"
     ]
   },
-  "dialog": {
+  {
+    "name": "dialog",
     "description": "Dialog box or window",
     "categories": [
       "flow"
@@ -407,7 +435,8 @@
       "flow"
     ]
   },
-  "div": {
+  {
+    "name": "div",
     "description": "Generic flow container, or container for name-value groups in dl elements",
     "categories": [
       "flow",
@@ -418,7 +447,8 @@
       "flow"
     ]
   },
-  "dl": {
+  {
+    "name": "dl",
     "description": "Association list consisting of zero or more name-value groups",
     "categories": [
       "flow",
@@ -432,7 +462,8 @@
       "script-supporting elements"
     ]
   },
-  "dt": {
+  {
+    "name": "dt",
     "description": "Legend for corresponding dd element(s)",
     "categories": [
       "none"
@@ -442,7 +473,8 @@
       "flow"
     ]
   },
-  "em": {
+  {
+    "name": "em",
     "description": "Stress emphasis",
     "categories": [
       "flow",
@@ -454,7 +486,8 @@
       "phrasing"
     ]
   },
-  "embed": {
+  {
+    "name": "embed",
     "description": "Plugin",
     "categories": [
       "embedded",
@@ -472,7 +505,8 @@
     ],
     "children": []
   },
-  "fieldset": {
+  {
+    "name": "fieldset",
     "description": "Group of form controls",
     "categories": [
       "flow",
@@ -490,7 +524,8 @@
       "legend"
     ]
   },
-  "figcaption": {
+  {
+    "name": "figcaption",
     "description": "Caption for figure",
     "categories": [
       "none"
@@ -500,7 +535,8 @@
       "flow"
     ]
   },
-  "figure": {
+  {
+    "name": "figure",
     "description": "Figure with optional caption",
     "categories": [
       "flow",
@@ -512,7 +548,8 @@
       "flow"
     ]
   },
-  "footer": {
+  {
+    "name": "footer",
     "description": "Footer for a page or section",
     "categories": [
       "flow",
@@ -523,7 +560,8 @@
       "flow"
     ]
   },
-  "form": {
+  {
+    "name": "form",
     "description": "User-submittable form",
     "categories": [
       "flow",
@@ -544,7 +582,8 @@
       "flow"
     ]
   },
-  "h1": {
+  {
+    "name": "h1",
     "description": "Heading",
     "categories": [
       "flow",
@@ -556,7 +595,8 @@
       "phrasing"
     ]
   },
-  "h2": {
+  {
+    "name": "h2",
     "description": "Heading",
     "categories": [
       "flow",
@@ -568,7 +608,8 @@
       "phrasing"
     ]
   },
-  "h3": {
+  {
+    "name": "h3",
     "description": "Heading",
     "categories": [
       "flow",
@@ -580,7 +621,8 @@
       "phrasing"
     ]
   },
-  "h4": {
+  {
+    "name": "h4",
     "description": "Heading",
     "categories": [
       "flow",
@@ -592,7 +634,8 @@
       "phrasing"
     ]
   },
-  "h5": {
+  {
+    "name": "h5",
     "description": "Heading",
     "categories": [
       "flow",
@@ -604,7 +647,8 @@
       "phrasing"
     ]
   },
-  "h6": {
+  {
+    "name": "h6",
     "description": "Heading",
     "categories": [
       "flow",
@@ -616,7 +660,8 @@
       "phrasing"
     ]
   },
-  "head": {
+  {
+    "name": "head",
     "description": "Container for document metadata",
     "categories": [
       "none"
@@ -626,7 +671,8 @@
       "metadata content"
     ]
   },
-  "header": {
+  {
+    "name": "header",
     "description": "Introductory or navigational aids for a page or section",
     "categories": [
       "flow",
@@ -637,7 +683,8 @@
       "flow"
     ]
   },
-  "hgroup": {
+  {
+    "name": "hgroup",
     "description": "Heading container",
     "categories": [
       "flow",
@@ -655,7 +702,8 @@
       "script-supporting elements"
     ]
   },
-  "hr": {
+  {
+    "name": "hr",
     "description": "Thematic break",
     "categories": [
       "flow"
@@ -663,7 +711,8 @@
     "attributes": [],
     "children": []
   },
-  "html": {
+  {
+    "name": "html",
     "description": "Root element",
     "categories": [
       "none"
@@ -674,7 +723,8 @@
       "head"
     ]
   },
-  "i": {
+  {
+    "name": "i",
     "description": "Alternate voice",
     "categories": [
       "flow",
@@ -686,7 +736,8 @@
       "phrasing"
     ]
   },
-  "iframe": {
+  {
+    "name": "iframe",
     "description": "Child navigable",
     "categories": [
       "embedded",
@@ -709,7 +760,8 @@
     ],
     "children": []
   },
-  "img": {
+  {
+    "name": "img",
     "description": "Image",
     "categories": [
       "embedded",
@@ -737,7 +789,8 @@
     ],
     "children": []
   },
-  "input": {
+  {
+    "name": "input",
     "description": "Form control",
     "categories": [
       "flow",
@@ -788,7 +841,8 @@
     ],
     "children": []
   },
-  "ins": {
+  {
+    "name": "ins",
     "description": "An addition to the document",
     "categories": [
       "flow",
@@ -803,7 +857,8 @@
       "transparent"
     ]
   },
-  "kbd": {
+  {
+    "name": "kbd",
     "description": "User input",
     "categories": [
       "flow",
@@ -815,7 +870,8 @@
       "phrasing"
     ]
   },
-  "label": {
+  {
+    "name": "label",
     "description": "Caption for a form control",
     "categories": [
       "flow",
@@ -830,7 +886,8 @@
       "phrasing"
     ]
   },
-  "legend": {
+  {
+    "name": "legend",
     "description": "Caption for fieldset",
     "categories": [
       "none"
@@ -841,7 +898,8 @@
       "phrasing"
     ]
   },
-  "li": {
+  {
+    "name": "li",
     "description": "List item",
     "categories": [
       "none"
@@ -853,7 +911,8 @@
       "flow"
     ]
   },
-  "link": {
+  {
+    "name": "link",
     "description": "Link metadata",
     "categories": [
       "flow",
@@ -880,7 +939,8 @@
     ],
     "children": []
   },
-  "main": {
+  {
+    "name": "main",
     "description": "Container for the dominant contents of the document",
     "categories": [
       "flow",
@@ -891,7 +951,8 @@
       "flow"
     ]
   },
-  "map": {
+  {
+    "name": "map",
     "description": "Image map",
     "categories": [
       "flow",
@@ -906,7 +967,8 @@
       "transparent"
     ]
   },
-  "mark": {
+  {
+    "name": "mark",
     "description": "Highlight",
     "categories": [
       "flow",
@@ -918,7 +980,8 @@
       "phrasing"
     ]
   },
-  "math": {
+  {
+    "name": "math",
     "description": "MathML root",
     "categories": [
       "embedded",
@@ -933,7 +996,8 @@
       "per [MATHML]"
     ]
   },
-  "menu": {
+  {
+    "name": "menu",
     "description": "Menu of commands",
     "categories": [
       "flow",
@@ -945,7 +1009,8 @@
       "script-supporting elements"
     ]
   },
-  "meta": {
+  {
+    "name": "meta",
     "description": "Text metadata",
     "categories": [
       "flow",
@@ -961,7 +1026,8 @@
     ],
     "children": []
   },
-  "meter": {
+  {
+    "name": "meter",
     "description": "Gauge",
     "categories": [
       "flow",
@@ -981,7 +1047,8 @@
       "phrasing"
     ]
   },
-  "nav": {
+  {
+    "name": "nav",
     "description": "Section with navigational links",
     "categories": [
       "flow",
@@ -993,7 +1060,8 @@
       "flow"
     ]
   },
-  "noscript": {
+  {
+    "name": "noscript",
     "description": "Fallback content for script",
     "categories": [
       "flow",
@@ -1005,7 +1073,8 @@
       "varies"
     ]
   },
-  "object": {
+  {
+    "name": "object",
     "description": "Image, child navigable, or plugin",
     "categories": [
       "embedded",
@@ -1028,7 +1097,8 @@
       "transparent"
     ]
   },
-  "ol": {
+  {
+    "name": "ol",
     "description": "Ordered list",
     "categories": [
       "flow",
@@ -1044,7 +1114,8 @@
       "script-supporting elements"
     ]
   },
-  "optgroup": {
+  {
+    "name": "optgroup",
     "description": "Group of options in a list box",
     "categories": [
       "none"
@@ -1061,7 +1132,8 @@
       "script-supporting elements"
     ]
   },
-  "option": {
+  {
+    "name": "option",
     "description": "Option in a list box or combo box control",
     "categories": [
       "none"
@@ -1078,7 +1150,8 @@
       "text"
     ]
   },
-  "output": {
+  {
+    "name": "output",
     "description": "Calculated output value",
     "categories": [
       "flow",
@@ -1098,7 +1171,8 @@
       "phrasing"
     ]
   },
-  "p": {
+  {
+    "name": "p",
     "description": "Paragraph",
     "categories": [
       "flow",
@@ -1109,7 +1183,8 @@
       "phrasing"
     ]
   },
-  "picture": {
+  {
+    "name": "picture",
     "description": "Image",
     "categories": [
       "embedded",
@@ -1124,7 +1199,8 @@
       "source"
     ]
   },
-  "pre": {
+  {
+    "name": "pre",
     "description": "Block of preformatted text",
     "categories": [
       "flow",
@@ -1135,7 +1211,8 @@
       "phrasing"
     ]
   },
-  "progress": {
+  {
+    "name": "progress",
     "description": "Progress bar",
     "categories": [
       "flow",
@@ -1151,7 +1228,8 @@
       "phrasing"
     ]
   },
-  "q": {
+  {
+    "name": "q",
     "description": "Quotation",
     "categories": [
       "flow",
@@ -1165,7 +1243,8 @@
       "phrasing"
     ]
   },
-  "rp": {
+  {
+    "name": "rp",
     "description": "Parenthesis for ruby annotation text",
     "categories": [
       "none"
@@ -1175,7 +1254,8 @@
       "text"
     ]
   },
-  "rt": {
+  {
+    "name": "rt",
     "description": "Ruby annotation text",
     "categories": [
       "none"
@@ -1185,7 +1265,8 @@
       "phrasing"
     ]
   },
-  "ruby": {
+  {
+    "name": "ruby",
     "description": "Ruby annotation(s)",
     "categories": [
       "flow",
@@ -1199,7 +1280,8 @@
       "rt"
     ]
   },
-  "s": {
+  {
+    "name": "s",
     "description": "Inaccurate text",
     "categories": [
       "flow",
@@ -1211,7 +1293,8 @@
       "phrasing"
     ]
   },
-  "samp": {
+  {
+    "name": "samp",
     "description": "Computer output",
     "categories": [
       "flow",
@@ -1223,7 +1306,8 @@
       "phrasing"
     ]
   },
-  "script": {
+  {
+    "name": "script",
     "description": "Embedded script",
     "categories": [
       "flow",
@@ -1247,7 +1331,8 @@
       "script, data, or script documentation"
     ]
   },
-  "search": {
+  {
+    "name": "search",
     "description": "Container for search controls",
     "categories": [
       "flow",
@@ -1258,7 +1343,8 @@
       "flow"
     ]
   },
-  "section": {
+  {
+    "name": "section",
     "description": "Generic document or application section",
     "categories": [
       "flow",
@@ -1270,7 +1356,8 @@
       "flow"
     ]
   },
-  "select": {
+  {
+    "name": "select",
     "description": "List box control",
     "categories": [
       "flow",
@@ -1302,7 +1389,8 @@
       "script-supporting elements"
     ]
   },
-  "selectedcontent": {
+  {
+    "name": "selectedcontent",
     "description": "Mirrors content from an option",
     "categories": [
       "none"
@@ -1310,7 +1398,8 @@
     "attributes": [],
     "children": []
   },
-  "slot": {
+  {
+    "name": "slot",
     "description": "Shadow tree slot",
     "categories": [
       "flow",
@@ -1323,7 +1412,8 @@
       "transparent"
     ]
   },
-  "small": {
+  {
+    "name": "small",
     "description": "Side comment",
     "categories": [
       "flow",
@@ -1335,7 +1425,8 @@
       "phrasing"
     ]
   },
-  "source": {
+  {
+    "name": "source",
     "description": "Image source for img or media source for video or audio",
     "categories": [
       "none"
@@ -1351,7 +1442,8 @@
     ],
     "children": []
   },
-  "span": {
+  {
+    "name": "span",
     "description": "Generic phrasing container",
     "categories": [
       "flow",
@@ -1363,7 +1455,8 @@
       "phrasing"
     ]
   },
-  "strong": {
+  {
+    "name": "strong",
     "description": "Importance",
     "categories": [
       "flow",
@@ -1375,7 +1468,8 @@
       "phrasing"
     ]
   },
-  "style": {
+  {
+    "name": "style",
     "description": "Embedded styling information",
     "categories": [
       "metadata"
@@ -1388,7 +1482,8 @@
       "text"
     ]
   },
-  "sub": {
+  {
+    "name": "sub",
     "description": "Subscript",
     "categories": [
       "flow",
@@ -1400,7 +1495,8 @@
       "phrasing"
     ]
   },
-  "summary": {
+  {
+    "name": "summary",
     "description": "Caption for details",
     "categories": [
       "none"
@@ -1411,7 +1507,8 @@
       "phrasing"
     ]
   },
-  "sup": {
+  {
+    "name": "sup",
     "description": "Superscript",
     "categories": [
       "flow",
@@ -1423,7 +1520,8 @@
       "phrasing"
     ]
   },
-  "svg": {
+  {
+    "name": "svg",
     "description": "SVG root",
     "categories": [
       "embedded",
@@ -1438,7 +1536,8 @@
       "per [SVG]"
     ]
   },
-  "table": {
+  {
+    "name": "table",
     "description": "Table",
     "categories": [
       "flow",
@@ -1455,7 +1554,8 @@
       "tr"
     ]
   },
-  "tbody": {
+  {
+    "name": "tbody",
     "description": "Group of rows in a table",
     "categories": [
       "none"
@@ -1466,7 +1566,8 @@
       "tr"
     ]
   },
-  "td": {
+  {
+    "name": "td",
     "description": "Table cell",
     "categories": [
       "none"
@@ -1480,7 +1581,8 @@
       "flow"
     ]
   },
-  "template": {
+  {
+    "name": "template",
     "description": "Template",
     "categories": [
       "flow",
@@ -1498,7 +1600,8 @@
     ],
     "children": []
   },
-  "textarea": {
+  {
+    "name": "textarea",
     "description": "Multiline text controls",
     "categories": [
       "flow",
@@ -1530,7 +1633,8 @@
       "text"
     ]
   },
-  "tfoot": {
+  {
+    "name": "tfoot",
     "description": "Group of footer rows in a table",
     "categories": [
       "none"
@@ -1541,7 +1645,8 @@
       "tr"
     ]
   },
-  "th": {
+  {
+    "name": "th",
     "description": "Table header cell",
     "categories": [
       "interactive"
@@ -1557,7 +1662,8 @@
       "flow"
     ]
   },
-  "thead": {
+  {
+    "name": "thead",
     "description": "Group of heading rows in a table",
     "categories": [
       "none"
@@ -1568,7 +1674,8 @@
       "tr"
     ]
   },
-  "time": {
+  {
+    "name": "time",
     "description": "Machine-readable equivalent of date- or time-related data",
     "categories": [
       "flow",
@@ -1582,7 +1689,8 @@
       "phrasing"
     ]
   },
-  "title": {
+  {
+    "name": "title",
     "description": "Document title",
     "categories": [
       "metadata"
@@ -1592,7 +1700,8 @@
       "text"
     ]
   },
-  "tr": {
+  {
+    "name": "tr",
     "description": "Table row",
     "categories": [
       "none"
@@ -1604,7 +1713,8 @@
       "th"
     ]
   },
-  "track": {
+  {
+    "name": "track",
     "description": "Timed text track",
     "categories": [
       "none"
@@ -1618,7 +1728,8 @@
     ],
     "children": []
   },
-  "u": {
+  {
+    "name": "u",
     "description": "Unarticulated annotation",
     "categories": [
       "flow",
@@ -1630,7 +1741,8 @@
       "phrasing"
     ]
   },
-  "ul": {
+  {
+    "name": "ul",
     "description": "List",
     "categories": [
       "flow",
@@ -1642,7 +1754,8 @@
       "script-supporting elements"
     ]
   },
-  "var": {
+  {
+    "name": "var",
     "description": "Variable",
     "categories": [
       "flow",
@@ -1654,7 +1767,8 @@
       "phrasing"
     ]
   },
-  "video": {
+  {
+    "name": "video",
     "description": "Video player",
     "categories": [
       "embedded",
@@ -1683,7 +1797,8 @@
       "transparent"
     ]
   },
-  "wbr": {
+  {
+    "name": "wbr",
     "description": "Line breaking opportunity",
     "categories": [
       "flow",
@@ -1692,4 +1807,4 @@
     "attributes": [],
     "children": []
   }
-}
+]

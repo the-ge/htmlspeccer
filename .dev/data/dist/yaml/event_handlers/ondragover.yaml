@@ -1,5 +1,5 @@
 applies_to: HTML elements
 urls:
-- https://html.spec.whatwg.org/multipage/webappapis.html#handler-ondragover
 - https://html.spec.whatwg.org/multipage/dnd.html#event-dnd-dragover
 - https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes
+- https://html.spec.whatwg.org/multipage/webappapis.html#handler-ondragover

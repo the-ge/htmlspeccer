@@ -1,5 +1,5 @@
 applies_to: HTML elements
 urls:
-- https://html.spec.whatwg.org/multipage/webappapis.html#handler-onformdata
 - https://html.spec.whatwg.org/multipage/#event-formdata
 - https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes
+- https://html.spec.whatwg.org/multipage/webappapis.html#handler-onformdata

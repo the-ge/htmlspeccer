@@ -1,0 +1,78 @@
+{
+  "input": {
+    "aria.aria_roles": {
+      "status": "ok",
+      "row_count": 63
+    },
+    "indices.attributes": {
+      "status": "ok",
+      "row_count": 292
+    },
+    "indices.content_categories": {
+      "status": "ok",
+      "row_count": 15
+    },
+    "indices.elements": {
+      "status": "ok",
+      "row_count": 115
+    },
+    "syntax.element_kinds": {
+      "status": "ok",
+      "row_count": 6
+    },
+    "indices.event_handlers": {
+      "status": "ok",
+      "row_count": 89
+    },
+    "dom.global_attributes": {
+      "status": "ok",
+      "row_count": 32
+    },
+    "input.input_types": {
+      "status": "ok",
+      "row_count": 22
+    }
+  },
+  "output": {
+    "aria_roles": {
+      "status": "ok",
+      "row_count": 63,
+      "delta": 0
+    },
+    "attributes": {
+      "status": "ok",
+      "row_count": 292,
+      "delta": 0
+    },
+    "content_categories": {
+      "status": "ok",
+      "row_count": 15,
+      "delta": 0
+    },
+    "elements": {
+      "status": "ok",
+      "row_count": 115,
+      "delta": 0
+    },
+    "element_kinds": {
+      "status": "ok",
+      "row_count": 6,
+      "delta": 0
+    },
+    "event_handlers": {
+      "status": "ok",
+      "row_count": 89,
+      "delta": 0
+    },
+    "global_attributes": {
+      "status": "ok",
+      "row_count": 32,
+      "delta": 0
+    },
+    "input_types": {
+      "status": "ok",
+      "row_count": 22,
+      "delta": 0
+    }
+  }
+}
