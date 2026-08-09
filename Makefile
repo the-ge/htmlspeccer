@@ -8,7 +8,7 @@ CURATED_DATA_DIR       := .dev/data/curated/
 CURATED_DATA_CACHE_DIR := .dev/data/cache/
 # Mirrors config.py: env var set -> <root>/data/ (root is a foreign checkout, e.g. htmlspec);
 # unset -> local .dev/data/dist/.
-DIST_DATA_DIR          := $(if $(DIST_DATA_DIR),$(DIST_DATA_DIR)/data/,.dev/data/dist/)
+DIST_DATA_DIR          := $(if $(DIST_DATA_DIR),$(DIST_DATA_DIR)/,.dev/data/dist/)
 DIST_CONTENT_HASH_FILE := $(CURATED_DATA_CACHE_DIR)dist_content.sha256
 
 DATA_DIRS := $(RAW_DATA_DIR) $(NORMALIZED_DATA_DIR) $(CURATED_DATA_DIR) $(CURATED_DATA_CACHE_DIR) $(DIST_DATA_DIR)
