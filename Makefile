@@ -3,6 +3,7 @@
 default: curate publish
 
 RAW_DATA_DIR           := .dev/data/raw/
+NORMALIZED_DATA_DIR    := .dev/data/normalized/
 CURATED_DATA_DIR       := .dev/data/curated/
 CURATED_DATA_CACHE_DIR := .dev/data/cache/
 # Mirrors config.py: env var set -> <root>/data/ (root is a foreign checkout, e.g. htmlspec);
@@ -10,8 +11,8 @@ CURATED_DATA_CACHE_DIR := .dev/data/cache/
 DIST_DATA_DIR          := $(if $(DIST_DATA_DIR),$(DIST_DATA_DIR)/data/,.dev/data/dist/)
 DIST_CONTENT_HASH_FILE := $(CURATED_DATA_CACHE_DIR)dist_content.sha256
 
-DATA_DIRS := $(RAW_DATA_DIR) $(CURATED_DATA_DIR) $(CURATED_DATA_CACHE_DIR) $(DIST_DATA_DIR)
-DATA_DIRS_RM := $(CURATED_DATA_DIR) $(CURATED_DATA_CACHE_DIR)
+DATA_DIRS := $(RAW_DATA_DIR) $(NORMALIZED_DATA_DIR) $(CURATED_DATA_DIR) $(CURATED_DATA_CACHE_DIR) $(DIST_DATA_DIR)
+DATA_DIRS_RM := $(NORMALIZED_DATA_DIR) $(CURATED_DATA_DIR) $(CURATED_DATA_CACHE_DIR)
 
 specs      := indices.html dom.html input.html syntax.html
 spec_etags := $(addprefix $(RAW_DATA_DIR), $(specs:.html=.etag))
