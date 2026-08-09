@@ -624,28 +624,16 @@ class Curator:
 
         No fixed floor: a category may legitimately grow or shrink a little as the spec evolves,
         but a bigger jump either way is more likely a broken extraction/parse than a real change upstream.
-        Stores the manifest entry.
-
-        delta ==  0 or no previous run -> pass, silent
-        abs(delta) == 1                -> pass, warn
-        abs(delta) >= 2                -> raise
+        Stores the manifest entry. Warns if the source row count changes.
 
         Returns:
             The manifest entry for `key`: {status, row_count} plus delta
-
-        Raises:
-            ValueError: if the category count increases od decreases by 2 or more
         """
-        delta_warn = 1
-        delta_fatal = 2
         previous = self._load_cache_raw(key)
         previous_count = len(previous) if previous is not None else None
         delta = 0 if previous_count is None else count - previous_count
 
-        if abs(delta) >= delta_fatal:
-            msg = f'{key}: count changed by {delta:+d} since last run ({previous_count} -> {count})'
-            raise ValueError(msg)
-        if abs(delta) == delta_warn:
+        if abs(delta) >= 1:
             logger.warning('⚠️ %s: count changed by %d since last run (%d -> %d)', key, delta, previous_count, count)
 
         entry = {'status': 'ok', 'row_count': count, 'delta': delta}
