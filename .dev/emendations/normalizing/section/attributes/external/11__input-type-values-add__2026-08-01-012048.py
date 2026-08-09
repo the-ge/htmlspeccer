@@ -1,11 +1,9 @@
 import dataclasses
 import logging
 
-from filtering import InputTypeTerseData
-
-from config import TERSE_DATA_DIR
-from normalizing import parse_input_types
-from util import parse_section
+from config import PRE_EMENDATION_DATA_DIR
+from normalizing import InputTypeData
+from util import read_ndjson
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +25,7 @@ def emend(section: str, data: list) -> bool:
     if entry is None:
         return False
 
-    parsed = list(parse_section(TERSE_DATA_DIR, 'input', 'input_types', InputTypeTerseData, parse_input_types))
+    parsed = read_ndjson(PRE_EMENDATION_DATA_DIR / 'input_types.ndjson', InputTypeData)
     new_entry = dataclasses.replace(
         entry,
         value_type='enum',
@@ -37,5 +35,5 @@ def emend(section: str, data: list) -> bool:
         urls=entry.urls | {x.url for x in parsed},
     )
     data[data.index(entry)] = new_entry
-    logger.info('🩹 Emended duplicate %r/%r pair: merged input type values into enum', 'type', 'input')
+    logger.info('🩹 Emend: added values to %r/%r value enum', 'type', 'input')
     return True

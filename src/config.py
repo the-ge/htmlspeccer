@@ -7,7 +7,8 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 # ---- Directories ----
 DATA_DIR = PROJECT_ROOT / '.dev/data'
 RAW_DATA_DIR = DATA_DIR / 'raw'  # raw spec HTML files
-NORMALIZED_DATA_DIR = DATA_DIR / 'normalized'  # typed entities, one NDJSON file per section
+PRE_EMENDATION_DATA_DIR = DATA_DIR / 'pre_emendation'  # typed entities after 1st emending pass, one NDJSON file per section
+NORMALIZED_DATA_DIR = DATA_DIR / 'normalized'  # typed entities after 2nd emending pass, one NDJSON file per section
 NORMALIZED_DATA_CACHE_DIR = DATA_DIR / 'cache'  # normalize-stage fallback cache
 EMENDATIONS_DIR = PROJECT_ROOT / '.dev/emendations'  # hand-authored emendation rules (plain Python)
 

@@ -21,6 +21,6 @@ def emend(section: str, data: list) -> bool:
 
     for entry in entries[1:]:
         data.remove(entry)
-        logger.info('🩹 Emended duplicate %r/%r pair: dropped redundant entries', 'title', 'link')
+        logger.info('🩹 Emend: dropped duplicate %r/%r pairs', 'title', 'link')
 
     return True

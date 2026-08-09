@@ -12,9 +12,9 @@ from typing import Any
 from bs4 import BeautifulSoup
 from slugify import slugify
 
-from config import DUMP_JSON_KWARGS
+from config import DUMP_JSON_KWARGS, PRE_EMENDATION_DATA_DIR
 from emending import Emender
-from util import dataclass_to_dict, deduplicate, dict_to_dataclass, normalize_url
+from util import dataclass_to_dict, deduplicate, dict_to_dataclass, normalize_url, write_ndjson
 
 logger = logging.getLogger(__name__)
 
@@ -569,7 +569,6 @@ class Normalizer:
         self.cache_dir = cache_dir
         self.emender = emender if emender is not None else Emender(domain='normalizing')
         self._soup_cache: dict[str, BeautifulSoup | None] = {}
-        self._section_cache: dict[str, list] = {}
         self._input_manifest: dict[str, dict] = {}
         self._output_manifest: dict[str, dict] = {}
 
@@ -682,22 +681,18 @@ class Normalizer:
         soup = self._load_soup(page)
 
         try:
-            if section in self._section_cache:
-                return self._section_cache[section]
-
             if soup is None:
                 msg = f'No raw HTML available for page {SECTION_SOURCES[section][0]!r}'
                 raise FileNotFoundError(msg)
 
             parser = getattr(sys.modules[__name__], f'parse_{section}')
             parsed = list(parser(soup))
-            self.emender.emend_normalizing_section(section, parsed)
+            self.emender.emend_normalizing_section_input(section, parsed)
             self._validate(section, len(parsed))
         except RECOVERABLE_ERRORS as e:
             return self._log_parse_error_and_fallback(e, section, cls)
         else:
             self._save_cache(section, parsed)
-            self._section_cache[section] = parsed
             logger.info('🏗️ Built and cached %s %s', len(parsed), section)
 
         self._input_manifest[input_key] = {
@@ -709,11 +704,19 @@ class Normalizer:
     # ---- public builders ----
 
     def get_all(self) -> tuple[dict[str, list], dict]:
-        """Run all section builders.
+        """Run all section builders, snapshot pre-external-emendation data, then apply external emendations.
 
         Returns:
             {section: [entities]} and the {'input', 'output'} manifest
         """
         results = {section: self._get_parsed_section(section) for section in SECTION_SOURCES}
+
+        PRE_EMENDATION_DATA_DIR.mkdir(parents=True, exist_ok=True)
+        for section, entries in results.items():
+            write_ndjson(PRE_EMENDATION_DATA_DIR / f'{section}.ndjson', entries)
+
+        for section, entries in results.items():
+            self.emender.emend_normalizing_section_external(section, entries)
+
         manifest = {'input': dict(self._input_manifest), 'output': dict(self._output_manifest)}
         return results, manifest

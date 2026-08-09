@@ -1,8 +1,10 @@
-from filtering import AriaRoleTerseData
+import logging
 
-from config import TERSE_DATA_DIR
-from normalizing import AttributeData, parse_aria_roles
-from util import parse_section
+from config import PRE_EMENDATION_DATA_DIR
+from normalizing import AriaRoleData, AttributeData
+from util import read_ndjson
+
+logger = logging.getLogger(__name__)
 
 
 def emend(section: str, data: list) -> bool:
@@ -17,13 +19,14 @@ def emend(section: str, data: list) -> bool:
     if section != 'attributes':
         return False
 
-    parsed = list(parse_section(TERSE_DATA_DIR, 'aria', 'aria_roles', AriaRoleTerseData, parse_aria_roles))
+    roles = read_ndjson(PRE_EMENDATION_DATA_DIR / 'aria_roles.ndjson', AriaRoleData)
     data.append(AttributeData(
         name='role',
         description='ARIA semantic role',
-        value_enum={x.name for x in parsed},
+        value_enum={x.name for x in roles},
         separator=' ',
-        urls={x.url for x in parsed},
+        urls={x.url for x in roles},
     ))
+    logger.info("🩹 Emend: added the 'role' attribute")
 
     return True
