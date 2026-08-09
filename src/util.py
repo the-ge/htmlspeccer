@@ -125,16 +125,6 @@ def read_ndjson(path: Path, cls: type[T]) -> list[T]:
         return [dict_to_dataclass(cls, json.loads(line)) for line in fp if line.strip()]
 
 
-def parse_section(dir_path: Path, page: str, section: str, cls: type[T], parser: Callable[..., R], **kwargs: object) -> R:
-    """Load the terse (page, section) NDJSON file from dir_path and run its rows through `parser`.
-
-    Returns:
-        whatever `parser` returns (a generator, list, or set, depending on the parser).
-    """
-    rows = read_ndjson(dir_path / f'{page}.{section}.ndjson', cls)
-    return parser(rows, **kwargs)
-
-
 def short_path(path: Path) -> str:
     """Format a path relative to PROJECT_ROOT for logging, or as an absolute path if outside it.
 
