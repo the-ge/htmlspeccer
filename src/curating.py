@@ -567,7 +567,7 @@ class Curator:
     ) -> None:
         self.raw_data_dir = raw_data_dir
         self.cache_dir = cache_dir
-        self.emender = emender if emender is not None else Emender(domain='curating')
+        self.emender = emender if emender is not None else Emender()
         self._soup_cache: dict[str, BeautifulSoup | None] = {}
         self._input_manifest: dict[str, dict] = {}
         self._output_manifest: dict[str, dict] = {}
@@ -675,7 +675,7 @@ class Curator:
 
             parser = getattr(sys.modules[__name__], f'parse_{section}')
             parsed = list(parser(soup))
-            self.emender.emend_section_input(section, parsed)
+            self.emender.emend('_get_parsed_section', section, parsed)
             self._validate(section, len(parsed))
         except RECOVERABLE_ERRORS as e:
             return self._log_parse_error_and_fallback(e, section, cls)
@@ -704,7 +704,7 @@ class Curator:
             write_ndjson(NORMALIZED_DATA_DIR / f'{section}.ndjson', entries)
 
         for section, entries in results.items():
-            self.emender.emend_section_external(section, entries)
+            self.emender.emend('get_all', section, entries)
 
         manifest = {'input': dict(self._input_manifest), 'output': dict(self._output_manifest)}
         return results, manifest
