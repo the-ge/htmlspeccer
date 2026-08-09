@@ -1,17 +1,17 @@
-.PHONY: default all clear install acquire normalize publish
+.PHONY: default all clear install acquire curate publish
 
-default: normalize publish
+default: curate publish
 
-RAW_DATA_DIR              := .dev/data/raw/
-NORMALIZED_DATA_DIR       := .dev/data/normalized/
-NORMALIZED_DATA_CACHE_DIR := .dev/data/cache/
+RAW_DATA_DIR           := .dev/data/raw/
+CURATED_DATA_DIR       := .dev/data/curated/
+CURATED_DATA_CACHE_DIR := .dev/data/cache/
 # Mirrors config.py: env var set -> <root>/data/ (root is a foreign checkout, e.g. htmlspec);
 # unset -> local .dev/data/dist/.
-DIST_DATA_DIR             := $(if $(DIST_DATA_DIR),$(DIST_DATA_DIR)/data/,.dev/data/dist/)
-DIST_CONTENT_HASH_FILE    := $(NORMALIZED_DATA_CACHE_DIR)dist_content.sha256
+DIST_DATA_DIR          := $(if $(DIST_DATA_DIR),$(DIST_DATA_DIR)/data/,.dev/data/dist/)
+DIST_CONTENT_HASH_FILE := $(CURATED_DATA_CACHE_DIR)dist_content.sha256
 
-DATA_DIRS := $(RAW_DATA_DIR) $(NORMALIZED_DATA_DIR) $(NORMALIZED_DATA_CACHE_DIR) $(DIST_DATA_DIR)
-DATA_DIRS_RM := $(NORMALIZED_DATA_DIR) $(NORMALIZED_DATA_CACHE_DIR)
+DATA_DIRS := $(RAW_DATA_DIR) $(CURATED_DATA_DIR) $(CURATED_DATA_CACHE_DIR) $(DIST_DATA_DIR)
+DATA_DIRS_RM := $(CURATED_DATA_DIR) $(CURATED_DATA_CACHE_DIR)
 
 specs      := indices.html dom.html input.html syntax.html
 spec_etags := $(addprefix $(RAW_DATA_DIR), $(specs:.html=.etag))
@@ -31,7 +31,7 @@ define confirm
 	@printf "$(GREEN)MAKE: ✅%s$(NC)\n" "$(1)"
 endef
 
-all: acquire normalize publish
+all: acquire curate publish
 
 clear:
 	rm --force --recursive $(DATA_DIRS_RM)
@@ -46,21 +46,21 @@ install:
 publish: $(DIST_CONTENT_HASH_FILE) | $(DIST_DATA_DIR)
 	$(call confirm, Publishing and all preceding steps complete (see $(DIST_DATA_DIR)manifest.json).)
 
-normalize: $(NORMALIZED_DATA_DIR)manifest.json | $(NORMALIZED_DATA_DIR)
-	$(call confirm, Normalizing and acquiring steps complete (see $(NORMALIZED_DATA_DIR)manifest.json))
+curate: $(CURATED_DATA_DIR)manifest.json | $(CURATED_DATA_DIR)
+	$(call confirm, Acquiring and curating complete (see $(CURATED_DATA_DIR)manifest.json))
 
 acquire: $(RAW_DATA_DIR)manifest.json | $(RAW_DATA_DIR)
-	$(call confirm, Acquiring step complete (see $(RAW_DATA_DIR)manifest.json))
+	$(call confirm, Acquiring complete (see $(RAW_DATA_DIR)manifest.json))
 
 # --- Build rules ---
 
-$(DIST_CONTENT_HASH_FILE): $(NORMALIZED_DATA_DIR)manifest.json | $(NORMALIZED_DATA_CACHE_DIR)
+$(DIST_CONTENT_HASH_FILE): $(CURATED_DATA_DIR)manifest.json | $(CURATED_DATA_CACHE_DIR)
 	$(call say, 📦 Publishing $(DIST_DATA_DIR) files...)
 	@python3 src/publish.py
 
-$(NORMALIZED_DATA_DIR)manifest.json: $(RAW_DATA_DIR)manifest.json
-	$(call say, 🧲 Extracting and normalizing raw HTML into typed NDJSON + manifest under $(NORMALIZED_DATA_DIR)...)
-	@python3 src/normalize.py
+$(CURATED_DATA_DIR)manifest.json: $(RAW_DATA_DIR)manifest.json
+	$(call say, 🧲 Extracting and curating raw HTML into typed NDJSON + manifest under $(CURATED_DATA_DIR)...)
+	@python3 src/curate.py
 
 $(DATA_DIRS): %/:
 	@mkdir -p $@

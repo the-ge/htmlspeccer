@@ -17,19 +17,19 @@ class Emender:
         self.domain = domain
         self.emendations_dir = emendations_dir
 
-    def emend_normalizing_section_input(self, section: str, data: list) -> None:
+    def emend_section_input(self, section: str, data: list) -> None:
         """Load and apply this section's input emendations (if any) to `data`, in place.
 
-        Input emendations correct only `section`'s own extracted data. Run from normalize pass 1,
+        Input emendations correct only `section`'s own extracted data. Run from curate pass 1,
         before validation, so `_validate()`'s row count reflects corrected data.
         """
         self._apply(section, data, 'input')
 
-    def emend_normalizing_section_external(self, section: str, data: list) -> None:
+    def emend_section_external(self, section: str, data: list) -> None:
         """Load and apply this section's external emendations (if any) to `data`, in place.
 
-        External emendations pull in another section's already-parsed data. Run from normalize pass 2,
-        after every section has been built and snapshotted to PRE_EMENDATION_DATA_DIR, so cross-section
+        External emendations pull in another section's already-parsed data. Run from curate pass 2,
+        after every section has been built and snapshotted to NORMALIZED_DATA_DIR, so cross-section
         reads always see this run's data regardless of SECTION_SOURCES order.
         """
         self._apply(section, data, 'external')

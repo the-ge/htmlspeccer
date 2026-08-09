@@ -1,8 +1,8 @@
 import dataclasses
 import logging
 
-from config import PRE_EMENDATION_DATA_DIR
-from normalizing import InputTypeData
+from config import NORMALIZED_DATA_DIR
+from curating import InputTypeData
 from util import read_ndjson
 
 logger = logging.getLogger(__name__)
@@ -25,7 +25,7 @@ def emend(section: str, data: list) -> bool:
     if entry is None:
         return False
 
-    parsed = read_ndjson(PRE_EMENDATION_DATA_DIR / 'input_types.ndjson', InputTypeData)
+    parsed = read_ndjson(NORMALIZED_DATA_DIR / 'input_types.ndjson', InputTypeData)
     new_entry = dataclasses.replace(
         entry,
         value_type='enum',

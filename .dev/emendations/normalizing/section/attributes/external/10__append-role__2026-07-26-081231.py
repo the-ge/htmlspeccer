@@ -1,7 +1,7 @@
 import logging
 
-from config import PRE_EMENDATION_DATA_DIR
-from normalizing import AriaRoleData, AttributeData
+from config import NORMALIZED_DATA_DIR
+from curating import AriaRoleData, AttributeData
 from util import read_ndjson
 
 logger = logging.getLogger(__name__)
@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 def emend(section: str, data: list) -> bool:
     """Add a new `role` AttributeData.
 
-    Source:      https://w3c.github.io/aria/ pages (see `parse_aria_roles()` in `normalizing.py` for full URL list)
+    Source:      https://w3c.github.io/aria/ pages (see `parse_aria_roles()` in `curating.py` for full URL list)
     Explanation: synthesize the `role` attribute from the retrieved data
 
     Returns:
@@ -19,7 +19,7 @@ def emend(section: str, data: list) -> bool:
     if section != 'attributes':
         return False
 
-    roles = read_ndjson(PRE_EMENDATION_DATA_DIR / 'aria_roles.ndjson', AriaRoleData)
+    roles = read_ndjson(NORMALIZED_DATA_DIR / 'aria_roles.ndjson', AriaRoleData)
     data.append(AttributeData(
         name='role',
         description='ARIA semantic role',

@@ -12,14 +12,14 @@ from typing import Any
 from bs4 import BeautifulSoup
 from slugify import slugify
 
-from config import DUMP_JSON_KWARGS, PRE_EMENDATION_DATA_DIR
+from config import DUMP_JSON_KWARGS, NORMALIZED_DATA_DIR
 from emending import Emender
 from util import dataclass_to_dict, deduplicate, dict_to_dataclass, normalize_url, write_ndjson
 
 logger = logging.getLogger(__name__)
 
 
-# ---- Typed entities (normalize-stage output shape) ----
+# ---- Typed entities (curate-stage output shape) ----
 
 
 @dataclass(frozen=True, slots=True)
@@ -537,12 +537,12 @@ def dictify_attributes(attribute_list: list[AttributeData]) -> dict[str, dict[st
         by_tag = result.setdefault(attribute.name, {})
         if tag_key in by_tag:
             # (name, tag) collision (indicates a parsing bug rather than legitimate data)
-            logger.warning('⚠️ Duplicate name+tag pair: (%r, %r)', attribute.name, tag_key)
+            logger.warning('⚠️ Duplicate attribute name + tag pair: (%r, %r)', attribute.name, tag_key)
         by_tag[tag_key] = r
     return result
 
 
-# section name -> (page, entity dataclass); drives Normalizer.get_all() and Publisher.read_data_domains().
+# section name -> (page, entity dataclass); drives Curator.get_all() and Publisher.read_data_domains().
 # Keys match config.PAGE_SECTIONS values.
 SECTION_SOURCES: dict[str, tuple[str, type]] = {
     'aria_roles': ('aria', AriaRoleData),
@@ -556,8 +556,8 @@ SECTION_SOURCES: dict[str, tuple[str, type]] = {
 }
 
 
-class Normalizer:
-    """Merged extract+normalize stage: raw spec HTML -> typed entities, with validation and fallback cache."""
+class Curator:
+    """Converts raw spec HTML to typed entities, with validation and fallback cache."""
 
     def __init__(
         self,
@@ -567,7 +567,7 @@ class Normalizer:
     ) -> None:
         self.raw_data_dir = raw_data_dir
         self.cache_dir = cache_dir
-        self.emender = emender if emender is not None else Emender(domain='normalizing')
+        self.emender = emender if emender is not None else Emender(domain='curating')
         self._soup_cache: dict[str, BeautifulSoup | None] = {}
         self._input_manifest: dict[str, dict] = {}
         self._output_manifest: dict[str, dict] = {}
@@ -687,7 +687,7 @@ class Normalizer:
 
             parser = getattr(sys.modules[__name__], f'parse_{section}')
             parsed = list(parser(soup))
-            self.emender.emend_normalizing_section_input(section, parsed)
+            self.emender.emend_section_input(section, parsed)
             self._validate(section, len(parsed))
         except RECOVERABLE_ERRORS as e:
             return self._log_parse_error_and_fallback(e, section, cls)
@@ -711,12 +711,12 @@ class Normalizer:
         """
         results = {section: self._get_parsed_section(section) for section in SECTION_SOURCES}
 
-        PRE_EMENDATION_DATA_DIR.mkdir(parents=True, exist_ok=True)
+        NORMALIZED_DATA_DIR.mkdir(parents=True, exist_ok=True)
         for section, entries in results.items():
-            write_ndjson(PRE_EMENDATION_DATA_DIR / f'{section}.ndjson', entries)
+            write_ndjson(NORMALIZED_DATA_DIR / f'{section}.ndjson', entries)
 
         for section, entries in results.items():
-            self.emender.emend_normalizing_section_external(section, entries)
+            self.emender.emend_section_external(section, entries)
 
         manifest = {'input': dict(self._input_manifest), 'output': dict(self._output_manifest)}
         return results, manifest

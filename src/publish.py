@@ -2,13 +2,13 @@ import json
 import logging
 
 from config import (
+    CURATED_DATA_DIR,
+    CURATED_DATA_MANIFEST,
     DIST_DATA_MANIFEST,
     DIST_JSON_DATA_DIR,
     DIST_YAML_DATA_DIR,
     DUMP_JSON_KWARGS,
     LOG_LEVEL,
-    NORMALIZED_DATA_DIR,
-    NORMALIZED_DATA_MANIFEST,
 )
 from publishing import (
     DIST_COPYRIGHT_FILE,
@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 
 
 def main() -> None:
-    publisher = Publisher(normalized_data_dir=NORMALIZED_DATA_DIR, manifest_path=NORMALIZED_DATA_MANIFEST)
+    publisher = Publisher(input_data_dir=CURATED_DATA_DIR, manifest_path=CURATED_DATA_MANIFEST)
     counts = publisher.publish()
 
     if not hash_update([DIST_JSON_DATA_DIR, DIST_YAML_DATA_DIR]):

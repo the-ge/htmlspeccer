@@ -17,7 +17,7 @@ from config import (
     PROJECT_ROOT,
     RAW_DATA_MANIFEST,
 )
-from normalizing import SECTION_SOURCES, dictify_attributes
+from curating import SECTION_SOURCES, dictify_attributes
 from util import dictify, make_serializable, read_ndjson, short_path, sort_top_level
 
 logger = logging.getLogger(__name__)
@@ -176,14 +176,14 @@ def write_yaml_items(data: dict, dir_path: Path) -> int:
 
 
 class Publisher:
-    """Publish stage: normalized entity NDJSON -> grouped, dictified dist/ JSON + YAML."""
+    """Publish stage: curated entity NDJSON -> grouped, dictified dist/ JSON + YAML."""
 
-    def __init__(self, normalized_data_dir: Path, manifest_path: Path) -> None:
-        self.normalized_data_dir = normalized_data_dir
+    def __init__(self, input_data_dir: Path, manifest_path: Path) -> None:
+        self.input_data_dir = input_data_dir
         self.manifest_path = manifest_path
 
     def read_data_domains(self) -> dict[str, dict]:
-        """Load each section's entities from NORMALIZED_DATA_DIR.
+        """Load each section's entities from CURATED_DATA_DIR.
 
         Is using its manifest as the index, and group them by name (and by tag, for attributes)
         into the published shape.
@@ -195,7 +195,7 @@ class Publisher:
         results = {}
         for section in manifest['output']:
             cls = SECTION_SOURCES[section][1]
-            entries = read_ndjson(self.normalized_data_dir / f'{section}.ndjson', cls)
+            entries = read_ndjson(self.input_data_dir / f'{section}.ndjson', cls)
             dictifier = dictify_attributes if section == 'attributes' else dictify
             results[section] = make_serializable(dictifier(entries))
         return results
