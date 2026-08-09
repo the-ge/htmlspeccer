@@ -6,6 +6,7 @@ import string
 import sys
 from collections.abc import Iterator
 from dataclasses import dataclass, field
+from inspect import currentframe
 from pathlib import Path
 from typing import Any
 
@@ -675,7 +676,7 @@ class Curator:
 
             parser = getattr(sys.modules[__name__], f'parse_{section}')
             parsed = list(parser(soup))
-            self.emender.emend('_get_parsed_section', section, parsed)
+            self.emender.emend(currentframe().f_code.co_name, section, parsed)
             self._validate(section, len(parsed))
         except RECOVERABLE_ERRORS as e:
             return self._log_parse_error_and_fallback(e, section, cls)
@@ -704,7 +705,7 @@ class Curator:
             write_ndjson(NORMALIZED_DATA_DIR / f'{section}.ndjson', entries)
 
         for section, entries in results.items():
-            self.emender.emend('get_all', section, entries)
+            self.emender.emend(currentframe().f_code.co_name, section, entries)
 
         manifest = {'input': dict(self._input_manifest), 'output': dict(self._output_manifest)}
         return results, manifest
