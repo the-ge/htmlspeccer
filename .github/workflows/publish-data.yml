@@ -25,27 +25,26 @@ jobs:
       - name: Restore .dev/data cache
         uses: actions/cache@v4
         with:
-          path: .dev/data
+          path: |
+            .dev/data/raw
+            .dev/data/cache
           key: htmlspec-data-${{ github.run_id }}
           restore-keys: htmlspec-data-
+
+      - name: Run pipeline
+        run: make publish
 
       - name: Clone htmlspec
         run: |
           git clone https://x-access-token:${{ secrets.HTMLSPEC_DEPLOY_TOKEN }}@github.com/the-ge/htmlspec.git \
               ${{ runner.temp }}/htmlspec
 
-      - name: Run pipeline
-        env:
-          DIST_DATA_DIR: ${{ runner.temp }}/htmlspec
-        run: make publish
-
-      - name: Check for changes
+      - name: Compare content hashes
         id: diff
-        working-directory: ${{ runner.temp }}/htmlspec
         run: |
-          git add -A
-          git reset -- manifest.json
-          if git diff --cached --quiet; then
+          local_hash=.dev/data/dist/dist_content.sha256
+          remote_hash=${{ runner.temp }}/htmlspec/data/dist_content.sha256
+          if [ -f "$remote_hash" ] && cmp -s "$local_hash" "$remote_hash"; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
             echo "changed=true" >> "$GITHUB_OUTPUT"
@@ -57,6 +56,10 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.HTMLSPEC_DEPLOY_TOKEN }}
         run: |
+          rsync -a --delete "$GITHUB_WORKSPACE/.dev/data/dist/" data/
+          cp "$GITHUB_WORKSPACE/.dev/data/COPYRIGHT" COPYRIGHT
+          cp "$GITHUB_WORKSPACE/.dev/data/W3C-Document-License.html" W3C-Document-License.html
+
           git config user.name 'htmlspeccer bot'
           git config user.email 'actions@users.noreply.github.com'
 
@@ -83,5 +86,7 @@ jobs:
         if: always()
         uses: actions/cache/save@v4
         with:
-          path: .dev/data
+          path: |
+            .dev/data/raw
+            .dev/data/cache
           key: htmlspec-data-${{ github.run_id }}
