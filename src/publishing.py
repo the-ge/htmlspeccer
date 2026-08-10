@@ -193,7 +193,7 @@ class Publisher:
         """
         manifest = json.loads(self.manifest_path.read_text(encoding='utf-8'))
         results = {}
-        for section in manifest['output']:
+        for section in manifest:
             cls = SECTION_SOURCES[section][1]
             entries = read_ndjson(self.input_data_dir / f'{section}.ndjson', cls)
             dictifier = dictify_attributes if section == 'attributes' else dictify

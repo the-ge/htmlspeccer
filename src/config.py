@@ -32,7 +32,7 @@ PAGE_SECTIONS = {
 
 # ---- Manifest ----
 RAW_DATA_MANIFEST = RAW_DATA_DIR / 'manifest.json'  # raw per-source fetch timestamps
-CURATED_DATA_MANIFEST = CURATED_DATA_DIR / 'manifest.json'  # {'input': {...}, 'output': {...}}
+CURATED_DATA_MANIFEST = CURATED_DATA_DIR / 'manifest.json'  # {section: {input_row_count, output_row_count, delta?}}
 DIST_DATA_MANIFEST = DIST_DATA_DIR / 'manifest.json'
 
 # ---- Logging ----

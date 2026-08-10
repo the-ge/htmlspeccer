@@ -570,8 +570,8 @@ class Curator:
         self.cache_dir = cache_dir
         self.emender = emender if emender is not None else Emender()
         self._soup_cache: dict[str, BeautifulSoup | None] = {}
-        self._input_manifest: dict[str, dict] = {}
-        self._output_manifest: dict[str, dict] = {}
+        self._manifest: dict[str, dict] = {}
+        self._fallback_sections: set[str] = set()
 
     # ---- internal helpers ----
 
@@ -642,6 +642,17 @@ class Curator:
         return entry
 
     def _log_parse_error_and_fallback(self, e: Exception, section: str, cls: type) -> list:
+        """Load `section`'s previously cached (already fully emended) data after a recoverable parse error.
+
+        Records a manifest entry with `input_row_count: None`, and marks `section` as a fallback so
+        `get_all()` skips re-running emendations and re-caching over data that's already final.
+
+        Returns:
+            The cached list of dataclass objects
+
+        Raises:
+            RuntimeError: if no cache is available for `section`
+        """
         logger.error('❌ Parsing failed: %s', e)
 
         cached = self._load_cache(section, cls)
@@ -651,13 +662,16 @@ class Curator:
             raise RuntimeError(msg) from e
 
         logger.info('📂 Loaded %s from cache', section)
-        self._output_manifest[section] = {'status': 'fallback', 'row_count': len(cached)}
+        self._manifest[section] = {'input_row_count': None}
+        self._fallback_sections.add(section)
         return cached
 
     def _get_parsed_section(self, section: str) -> list:
-        """Parse `section` from `soup`, apply its emendations, validate, and cache the result.
+        """Parse `section` from its page's soup and apply its input emendations.
 
-        On a recoverable parse/extraction error, falls back to the previous cached run for `section`.
+        Records `input_row_count` (the row count straight out of parse_X(), before any emendation) in the
+        manifest. On a recoverable parse/extraction error, falls back to the previous cached run for
+        `section` instead (see `_log_parse_error_and_fallback`).
 
         Returns:
             List of data JSON objects
@@ -666,7 +680,6 @@ class Curator:
             FileNotFoundError: if section raw source not found
         """
         page, cls = SECTION_SOURCES[section]
-        input_key = f'{page}.{section}'
         soup = self._load_soup(page)
 
         try:
@@ -676,36 +689,52 @@ class Curator:
 
             parser = getattr(sys.modules[__name__], f'parse_{section}')
             parsed = list(parser(soup))
+            input_row_count = len(parsed)
             self.emender.emend(currentframe().f_code.co_name, section, parsed)
-            self._validate(section, len(parsed))
         except RECOVERABLE_ERRORS as e:
             return self._log_parse_error_and_fallback(e, section, cls)
-        else:
-            self._save_cache(section, parsed)
-            logger.info('🏗️ Built and cached %s %s', len(parsed), section)
 
-        self._input_manifest[input_key] = {
-            'status': 'ok' if soup is not None else 'fallback',
-            'row_count': len(parsed),
-        }
+        self._manifest[section] = {'input_row_count': input_row_count}
+        logger.info('🏗️ Built %s %s', len(parsed), section)
         return parsed
 
     # ---- public builders ----
 
     def get_all(self) -> tuple[dict[str, list], dict]:
-        """Run all section builders, snapshot pre-external-emendation data, then apply external emendations.
+        """Run all section builders, apply external emendations, then finalize the manifest and cache.
+
+        Non-fallback sections get their normalized-data write, external emendation, and cache save;
+        fallback sections already hold final (post-emendation) cached data, so all three are skipped for
+        them. `output_row_count` and `delta` are recorded for every section once all entries are final.
 
         Returns:
-            {section: [entities]} and the {'input', 'output'} manifest
+            {section: [entities]} and the manifest
         """
         results = {section: self._get_parsed_section(section) for section in SECTION_SOURCES}
 
         NORMALIZED_DATA_DIR.mkdir(parents=True, exist_ok=True)
         for section, entries in results.items():
-            write_ndjson(NORMALIZED_DATA_DIR / f'{section}.ndjson', entries)
+            if section not in self._fallback_sections:
+                write_ndjson(NORMALIZED_DATA_DIR / f'{section}.ndjson', entries)
 
         for section, entries in results.items():
-            self.emender.emend(currentframe().f_code.co_name, section, entries)
+            if section not in self._fallback_sections:
+                self.emender.emend(currentframe().f_code.co_name, section, entries)
 
-        manifest = {'input': dict(self._input_manifest), 'output': dict(self._output_manifest)}
-        return results, manifest
+        for section, entries in results.items():
+            count = len(entries)
+            previous = self._load_cache_raw(section)
+            previous_count = len(previous) if previous is not None else None
+            delta = 0 if previous_count is None else count - previous_count
+            self._manifest[section]['output_row_count'] = count
+            if delta:
+                logger.warning(
+                    '⚠️ %s: count changed by %d since last run (%d -> %d)', section, delta, previous_count, count
+                )
+                self._manifest[section]['delta'] = delta
+
+        for section, entries in results.items():
+            if section not in self._fallback_sections:
+                self._save_cache(section, entries)
+
+        return results, dict(self._manifest)
