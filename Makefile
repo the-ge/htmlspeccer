@@ -51,7 +51,7 @@ curate: $(CURATED_DATA_DIR)manifest.json | $(CURATED_DATA_DIR)
 	$(call confirm, Acquiring and curating complete (see $(CURATED_DATA_DIR)manifest.json))
 
 acquire: $(RAW_DATA_DIR)manifest.json | $(RAW_DATA_DIR)
-	$(call confirm, Acquiring complete (see $(RAW_DATA_DIR)manifest.json))
+	$(call confirm, Acquiring completed; collected all last‑modified timestamps in $(RAW_DATA_DIR)manifest.json.)
 
 # --- Build rules ---
 
@@ -109,4 +109,3 @@ $(RAW_DATA_DIR)manifest.json: $(all_specs) $(RAW_DATA_DIR)aria.html
 	    done; \
 	    echo '}'; \
 	} > $@
-	$(call confirm, Acquisition completed; collected all last‑modified timestamps in the raw data manifest.)
