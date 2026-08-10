@@ -1,78 +1,34 @@
 {
-  "input": {
-    "aria.aria_roles": {
-      "status": "ok",
-      "row_count": 63
-    },
-    "indices.attributes": {
-      "status": "ok",
-      "row_count": 292
-    },
-    "indices.content_categories": {
-      "status": "ok",
-      "row_count": 15
-    },
-    "indices.elements": {
-      "status": "ok",
-      "row_count": 115
-    },
-    "syntax.element_kinds": {
-      "status": "ok",
-      "row_count": 6
-    },
-    "indices.event_handlers": {
-      "status": "ok",
-      "row_count": 89
-    },
-    "dom.global_attributes": {
-      "status": "ok",
-      "row_count": 32
-    },
-    "input.input_types": {
-      "status": "ok",
-      "row_count": 22
-    }
+  "aria_roles": {
+    "input_row_count": 63,
+    "output_row_count": 63
   },
-  "output": {
-    "aria_roles": {
-      "status": "ok",
-      "row_count": 63,
-      "delta": 0
-    },
-    "attributes": {
-      "status": "ok",
-      "row_count": 292,
-      "delta": 0
-    },
-    "content_categories": {
-      "status": "ok",
-      "row_count": 15,
-      "delta": 0
-    },
-    "elements": {
-      "status": "ok",
-      "row_count": 115,
-      "delta": 0
-    },
-    "element_kinds": {
-      "status": "ok",
-      "row_count": 6,
-      "delta": 0
-    },
-    "event_handlers": {
-      "status": "ok",
-      "row_count": 89,
-      "delta": 0
-    },
-    "global_attributes": {
-      "status": "ok",
-      "row_count": 32,
-      "delta": 0
-    },
-    "input_types": {
-      "status": "ok",
-      "row_count": 22,
-      "delta": 0
-    }
+  "attributes": {
+    "input_row_count": 293,
+    "output_row_count": 293
+  },
+  "content_categories": {
+    "input_row_count": 15,
+    "output_row_count": 15
+  },
+  "elements": {
+    "input_row_count": 115,
+    "output_row_count": 115
+  },
+  "element_kinds": {
+    "input_row_count": 6,
+    "output_row_count": 6
+  },
+  "event_handlers": {
+    "input_row_count": 89,
+    "output_row_count": 89
+  },
+  "global_attributes": {
+    "input_row_count": 32,
+    "output_row_count": 32
+  },
+  "input_types": {
+    "input_row_count": 22,
+    "output_row_count": 22
   }
 }
