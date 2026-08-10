@@ -1,3 +1,0 @@
-value_type: A date (year, month, day) with no time zone
-control_type: A date control
-url: https://html.spec.whatwg.org/dev/input.html#date-state-(type=date)

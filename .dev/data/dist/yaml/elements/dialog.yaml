@@ -1,7 +1,0 @@
-description: Dialog box or window
-categories:
-- flow
-attributes:
-- open
-children:
-- flow

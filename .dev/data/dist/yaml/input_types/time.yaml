@@ -1,3 +1,0 @@
-value_type: A time (hour, minute, seconds, fractional seconds) with no time zone
-control_type: A time control
-url: https://html.spec.whatwg.org/dev/input.html#time-state-(type=time)

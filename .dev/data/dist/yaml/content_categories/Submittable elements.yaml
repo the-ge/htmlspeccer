@@ -1,9 +1,0 @@
-elements:
-- button
-- custom
-- input
-- select
-- textarea
-elements_maybe: []
-exceptions: ''
-url: https://html.spec.whatwg.org/multipage/forms.html#category-submit

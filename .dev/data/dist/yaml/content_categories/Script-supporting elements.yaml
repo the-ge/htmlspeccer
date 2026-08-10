@@ -1,6 +1,0 @@
-elements:
-- script
-- template
-elements_maybe: []
-exceptions: ''
-url: https://html.spec.whatwg.org/multipage/dom.html#script-supporting-elements-2

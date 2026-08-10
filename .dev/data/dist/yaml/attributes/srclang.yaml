@@ -1,9 +1,0 @@
-track:
-  description: Language of the text track
-  value_type: string
-  value_enum: []
-  value_info: Valid BCP 47 language tag
-  is_more_value_info_required: false
-  separator: ''
-  urls:
-  - https://html.spec.whatwg.org/multipage/media.html#attr-track-srclang

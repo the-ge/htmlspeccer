@@ -1,3 +1,0 @@
-value_type: A date consisting of a year and a month with no time zone
-control_type: A month control
-url: https://html.spec.whatwg.org/dev/input.html#month-state-(type=month)

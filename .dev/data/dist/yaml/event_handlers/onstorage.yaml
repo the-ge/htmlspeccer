@@ -1,6 +1,0 @@
-applies_to: body
-urls:
-- https://html.spec.whatwg.org/multipage/#event-storage
-- https://html.spec.whatwg.org/multipage/nav-history-apis.html#window
-- https://html.spec.whatwg.org/multipage/webappapis.html#event-handler-content-attributes
-- https://html.spec.whatwg.org/multipage/webappapis.html#handler-window-onstorage

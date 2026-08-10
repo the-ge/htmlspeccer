@@ -1,9 +1,0 @@
-description: Table cell
-categories:
-- none
-attributes:
-- colspan
-- headers
-- rowspan
-children:
-- flow

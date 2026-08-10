@@ -1,3 +1,0 @@
-value_type: An enumerated value, with the extra semantic that it must be the last value selected and initiates form submission
-control_type: A button
-url: https://html.spec.whatwg.org/dev/input.html#submit-button-state-(type=submit)

@@ -1,7 +1,0 @@
-description: Base URL and default target navigable for hyperlinks and forms
-categories:
-- metadata
-attributes:
-- href
-- target
-children: []

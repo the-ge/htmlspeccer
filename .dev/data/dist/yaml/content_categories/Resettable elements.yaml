@@ -1,9 +1,0 @@
-elements:
-- custom
-- input
-- output
-- select
-- textarea
-elements_maybe: []
-exceptions: ''
-url: https://html.spec.whatwg.org/multipage/forms.html#category-reset
