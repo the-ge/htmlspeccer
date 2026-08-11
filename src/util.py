@@ -11,10 +11,6 @@ T = TypeVar('T')
 JSONType: TypeAlias = bool | int | float | str | list['JSONType'] | dict[str, 'JSONType'] | None
 
 
-# Base URL for relative spec links
-_SPEC_BASE_URL = 'https://html.spec.whatwg.org/multipage/'
-
-
 def dictify(xs: list[Any]) -> dict[str, Any]:
     """Convert a dataclass objects list/generator to a dict with unique keys as the the first field in each object.
 
@@ -146,10 +142,10 @@ def deduplicate(items: Iterable[str]) -> list[str]:
     return list(dict.fromkeys(items))
 
 
-def normalize_url(url: str) -> str:
+def normalize_url(url: str, base: str) -> str:
     """Prefix relative spec URLs with the multipage base.
 
     Returns:
         Full URL
     """
-    return url if url.startswith('https://') else _SPEC_BASE_URL + url
+    return url if url.startswith('https://') else base + url

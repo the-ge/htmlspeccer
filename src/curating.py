@@ -128,6 +128,9 @@ _SEPARATOR_BY_SUBSTRING = {
     'set of comma-separated tokens':                ',',
 }
 
+# Base URL for relative spec links
+_SPEC_BASE_URL = 'https://html.spec.whatwg.org/multipage/'
+
 # Special cases: phrase -> list of yielded tokens (empty list yields nothing)
 _TAGS_BY_STRING = {
     'autonomous custom elements': [],
@@ -404,7 +407,7 @@ def parse_attributes(soup: BeautifulSoup) -> Iterator[AttributeData]:
             logger.error('❌ Expected %s cells, got %s. Skipping row: %s', count, len(cells), row)
             continue
         attribute, elements, description, value = cells
-        urls = deduplicate(normalize_url(x['href'].strip()) for x in row.find_all('a'))
+        urls = deduplicate(normalize_url(x['href'].strip(), _SPEC_BASE_URL) for x in row.find_all('a'))
         yield from _parse_attribute_cells(attribute, elements, description, value, urls)
 
 
@@ -500,7 +503,7 @@ def parse_event_handlers(soup: BeautifulSoup) -> Iterator[EventHandlerData]:
             logger.error('❌ Expected %s cells, got %s. Skipping row: %s', count, len(cells), row)
             continue
         attribute, elements, _, _ = cells
-        urls = deduplicate(normalize_url(x['href'].strip()) for x in row.find_all('a'))
+        urls = deduplicate(normalize_url(x['href'].strip(), _SPEC_BASE_URL) for x in row.find_all('a'))
         yield EventHandlerData(
             name=attribute,
             applies_to=elements,
