@@ -89,25 +89,39 @@ class InputTypeData:
     url: str = ''
 
 
-RECOVERABLE_ERRORS = (AttributeError, ValueError, OSError)
-
-# Match a list of one-or-more keywords such as `"foo"; "bar"; "the empty string"`
-ATTRIBUTE_VALUE_REGEX = re.compile(r'^(?:"[a-zA-Z0-9/-]*"|the empty string)(?:; (?:"[a-zA-Z0-9/-]*"|the empty string))*$')
-
-# Match element exceptions like "element (if ...)"
-TAG_IF_REGEX = re.compile(r'([a-zA-Z0-9-]+) \(if [a-zA-Z0-9\' -]+\)')
-
-_SPLITTABLE_REGEX = re.compile(r'\b([a-zA-Z][a-zA-Z0-9-]*)\b[ \t]*\n[ \t]*\b([a-zA-Z][a-zA-Z0-9-]*)\b')
+# section name -> (page, entity dataclass); drives Curator.get_all() and Publisher.read_data_domains().
+# Keys match config.PAGE_SECTIONS values.
+SECTION_SOURCES: dict[str, tuple[str, type]] = {
+    'aria_roles': ('aria', AriaRoleData),
+    'attributes': ('indices', AttributeData),
+    'content_categories': ('indices', ContentCategoryData),
+    'elements': ('indices', ElementData),
+    'element_kinds': ('syntax', ElementKindData),
+    'event_handlers': ('indices', EventHandlerData),
+    'global_attributes': ('dom', GlobalAttributeData),
+    'input_types': ('input', InputTypeData),
+}
 
 # Sentinel used as the dict key (in place of `tag`) for attributes with no tag restriction.
-ALL_TAGS = 'all'
+_ALL_TAGS = 'all'
 
-SEPARATOR_BY_STRING = {
+# Expected cell count in each domain of the online HTML sources
+_HTML_CELL_COUNT = {
+    'attributes':         4,
+    'content_categories': 3,
+    'elements':           7,
+    'event_handlers':     4,
+    'input_types':        4,
+}
+
+_RECOVERABLE_ERRORS = (AttributeError, ValueError, OSError)
+
+_SEPARATOR_BY_STRING = {
     'Valid list of floating-point numbers': ',',
     'Valid source size list':               ',',
 }
 
-SEPARATOR_BY_SUBSTRING = {
+_SEPARATOR_BY_SUBSTRING = {
     'space-separated tokens':                       ' ',
     'ordered set of unique space-separated tokens': ' ',
     'comma-separated list of':                      ',',
@@ -115,7 +129,7 @@ SEPARATOR_BY_SUBSTRING = {
 }
 
 # Special cases: phrase -> list of yielded tokens (empty list yields nothing)
-TAGS_BY_STRING = {
+_TAGS_BY_STRING = {
     'autonomous custom elements': [],
     'HTML elements': [],
     'form-associated custom elements': ['custom'],
@@ -123,13 +137,13 @@ TAGS_BY_STRING = {
     'SVG svg': ['svg'],
 }
 
-TYPE_BY_STRING = {
+_TYPE_BY_STRING = {
     'Boolean attribute':                    'bool',
     'Valid integer':                        'int',
     'Valid date string with optional time': 'datetime',
 }
 
-TYPE_BY_PREFIX = {
+_TYPE_BY_PREFIX = {
     'Valid non-negative integer':  'int',
     'Valid floating-point number': 'float',
 }
@@ -141,7 +155,7 @@ TYPE_BY_PREFIX = {
 # real audience is a strict subset of the row's tags requires an entry here; rows where the fragment is
 # genuinely shared by every tag in the row need no entry (the no-match-shares-to-all-tags fallback covers
 # them). Matching is additive: a tag always still matches its own name, this only adds a second candidate.
-URL_BY_STRING = {
+_URL_BY_STRING = {
     'a': 'hyperlink',
     'area': 'hyperlink',
     'audio': 'media',
@@ -150,14 +164,15 @@ URL_BY_STRING = {
     'ins': 'mod',
 }
 
-# Expected cell count in each domain of the online HTML sources
-HTML_CELL_COUNT = {
-    'attributes':         4,
-    'content_categories': 3,
-    'elements':           7,
-    'event_handlers':     4,
-    'input_types':        4,
-}
+# ---- Regex ---
+
+# Match a list of one-or-more keywords such as `"foo"; "bar"; "the empty string"`
+_ATTRIBUTE_VALUE_REGEX = re.compile(r'^(?:"[a-zA-Z0-9/-]*"|the empty string)(?:; (?:"[a-zA-Z0-9/-]*"|the empty string))*$')
+
+_SPLITTABLE_REGEX = re.compile(r'\b([a-zA-Z][a-zA-Z0-9-]*)\b[ \t]*\n[ \t]*\b([a-zA-Z][a-zA-Z0-9-]*)\b')
+
+# Match element exceptions like "element (if ...)"
+_TAG_IF_REGEX = re.compile(r'([a-zA-Z0-9-]+) \(if [a-zA-Z0-9\' -]+\)')
 
 
 # ---- Generators for splitting spec strings ----
@@ -169,7 +184,7 @@ def gen_attribute_names(input_str: str) -> Iterator[str]:
 
 
 def gen_attribute_value_enums(input_str: str) -> Iterator[str]:
-    if ATTRIBUTE_VALUE_REGEX.fullmatch(input_str):
+    if _ATTRIBUTE_VALUE_REGEX.fullmatch(input_str):
 
         def process_keyword(keyword: str) -> str:
             keyword = keyword.strip()
@@ -191,8 +206,8 @@ def gen_tags(input_str: str) -> Iterator[str]:
         return
 
     # 1) Handle known special phrases
-    if input_str in TAGS_BY_STRING:
-        yield from TAGS_BY_STRING[input_str]
+    if input_str in _TAGS_BY_STRING:
+        yield from _TAGS_BY_STRING[input_str]
         return
 
     if ';' in input_str:
@@ -210,7 +225,7 @@ def gen_tag_ifs(input_str: str) -> Iterator[str]:
         return
     parts = input_str.split(';') if ';' in input_str else [input_str]
     for x in parts:
-        matches = TAG_IF_REGEX.fullmatch(x.strip())
+        matches = _TAG_IF_REGEX.fullmatch(x.strip())
         if matches:
             yield matches.group(1)
 
@@ -338,14 +353,14 @@ def _parse_attribute_cells(
 def _parse_attribute_urls(urls: list[str], tags: set[str]) -> dict[str, list[str]]:
     """Partition a row's shared URL list across its tags.
 
-    A URL goes to every tag whose keyword (its own name, plus an URL_BY_STRING override if one exists)
+    A URL goes to every tag whose keyword (its own name, plus an _URL_BY_STRING override if one exists)
     appears as an exact segment of the URL's fragment (the part after '#').
     A URL matching no tag's keyword is shared by every tag in the row.
 
     Returns:
         Dict of URL lists, indexed by tag
     """
-    keywords = {tag: {tag, URL_BY_STRING[tag]} if tag in URL_BY_STRING else {tag} for tag in tags}
+    keywords = {tag: {tag, _URL_BY_STRING[tag]} if tag in _URL_BY_STRING else {tag} for tag in tags}
     result: dict[str, list[str]] = {tag: [] for tag in tags}
     for url in urls:
         fragment = url.split('#', 1)[-1] if '#' in url else ''
@@ -357,19 +372,19 @@ def _parse_attribute_urls(urls: list[str], tags: set[str]) -> dict[str, list[str
 
 
 def _parse_attribute_value(value_type_str: str) -> tuple[str, str]:
-    value_type = TYPE_BY_STRING.get(value_type_str)
+    value_type = _TYPE_BY_STRING.get(value_type_str)
     if value_type is None:
-        for prefix, mapped_type in TYPE_BY_PREFIX.items():
+        for prefix, mapped_type in _TYPE_BY_PREFIX.items():
             if value_type_str.startswith(prefix):
                 value_type = mapped_type
                 break
         else:
             value_type = 'string'
 
-    value_separator = SEPARATOR_BY_STRING.get(value_type_str)
+    value_separator = _SEPARATOR_BY_STRING.get(value_type_str)
     if value_separator is None:
         value_type_lower = value_type_str.lower()
-        for substring, sep in SEPARATOR_BY_SUBSTRING.items():
+        for substring, sep in _SEPARATOR_BY_SUBSTRING.items():
             if substring in value_type_lower:
                 value_separator = sep
                 break
@@ -382,7 +397,7 @@ def _parse_attribute_value(value_type_str: str) -> tuple[str, str]:
 def parse_attributes(soup: BeautifulSoup) -> Iterator[AttributeData]:
     # https://html.spec.whatwg.org/multipage/indices.html#attributes-3
     rows = soup.find('h3', {'id': 'attributes-3'}).find_next('tbody').find_all('tr')
-    count = HTML_CELL_COUNT['attributes']
+    count = _HTML_CELL_COUNT['attributes']
     for row in rows:
         cells = [x.get_text().strip() for x in row.find_all(['th', 'td'])]
         if len(cells) != count:
@@ -396,7 +411,7 @@ def parse_attributes(soup: BeautifulSoup) -> Iterator[AttributeData]:
 def parse_content_categories(soup: BeautifulSoup) -> Iterator[ContentCategoryData]:
     # https://html.spec.whatwg.org/multipage/indices.html#element-content-categories
     rows = soup.find('h3', {'id': 'element-content-categories'}).find_next('tbody').find_all('tr')
-    count = HTML_CELL_COUNT['content_categories']
+    count = _HTML_CELL_COUNT['content_categories']
     for row in rows:
         cells = [x.get_text().strip() for x in row.find_all(['th', 'td'])]
         if len(cells) != count:
@@ -428,7 +443,7 @@ def parse_content_categories(soup: BeautifulSoup) -> Iterator[ContentCategoryDat
 def parse_elements(soup: BeautifulSoup) -> Iterator[ElementData]:
     # https://html.spec.whatwg.org/multipage/indices.html#elements-3
     rows = soup.find('h3', {'id': 'elements-3'}).find_next('tbody').find_all('tr')
-    count = HTML_CELL_COUNT['elements']
+    count = _HTML_CELL_COUNT['elements']
     for row in rows:
         cells = [x.get_text().strip() for x in row.find_all(['th', 'td'])]
         if len(cells) != count:
@@ -478,7 +493,7 @@ def parse_element_kinds(soup: BeautifulSoup) -> Iterator[ElementKindData]:
 def parse_event_handlers(soup: BeautifulSoup) -> Iterator[EventHandlerData]:
     # https://html.spec.whatwg.org/multipage/indices.html#ix-event-handlers
     rows = soup.find('table', {'id': 'ix-event-handlers'}).find_next('tbody').find_all('tr')
-    count = HTML_CELL_COUNT['event_handlers']
+    count = _HTML_CELL_COUNT['event_handlers']
     for row in rows:
         cells = [x.get_text().strip() for x in row.find_all(['th', 'td'])]
         if len(cells) != count:
@@ -508,7 +523,7 @@ def parse_global_attributes(soup: BeautifulSoup) -> Iterator[GlobalAttributeData
 def parse_input_types(soup: BeautifulSoup) -> Iterator[InputTypeData]:
     # https://html.spec.whatwg.org/dev/input.html#attr-input-type-keywords
     rows = soup.find('table', {'id': 'attr-input-type-keywords'}).find_next('tbody').find_all('tr')
-    count = HTML_CELL_COUNT['input_types']
+    count = _HTML_CELL_COUNT['input_types']
     for row in rows:
         cells = [x.get_text().strip() for x in row.contents]
         if len(cells) != count:
@@ -524,7 +539,7 @@ def parse_input_types(soup: BeautifulSoup) -> Iterator[InputTypeData]:
 
 
 def dictify_attributes(attribute_list: list[AttributeData]) -> dict[str, dict[str, Any]]:
-    """Convert a list of AttributeData into a dict keyed by name, then by tag (ALL_TAGS for `tag is None`).
+    """Convert a list of AttributeData into a dict keyed by name, then by tag (_ALL_TAGS for `tag is None`).
 
     Returns:
         JSON-serializable dict of HTML attribute data
@@ -534,27 +549,13 @@ def dictify_attributes(attribute_list: list[AttributeData]) -> dict[str, dict[st
         r = dataclasses.asdict(attribute)
         del r['name']
         del r['tag']
-        tag_key = ALL_TAGS if attribute.tag is None else attribute.tag
+        tag_key = _ALL_TAGS if attribute.tag is None else attribute.tag
         by_tag = result.setdefault(attribute.name, {})
         if tag_key in by_tag:
             # (name, tag) collision (indicates a parsing bug rather than legitimate data)
             logger.warning('⚠️ Duplicate attribute name + tag pair: (%r, %r)', attribute.name, tag_key)
         by_tag[tag_key] = r
     return result
-
-
-# section name -> (page, entity dataclass); drives Curator.get_all() and Publisher.read_data_domains().
-# Keys match config.PAGE_SECTIONS values.
-SECTION_SOURCES: dict[str, tuple[str, type]] = {
-    'aria_roles': ('aria', AriaRoleData),
-    'attributes': ('indices', AttributeData),
-    'content_categories': ('indices', ContentCategoryData),
-    'elements': ('indices', ElementData),
-    'element_kinds': ('syntax', ElementKindData),
-    'event_handlers': ('indices', EventHandlerData),
-    'global_attributes': ('dom', GlobalAttributeData),
-    'input_types': ('input', InputTypeData),
-}
 
 
 class Curator:
@@ -691,7 +692,7 @@ class Curator:
             parsed = list(parser(soup))
             input_row_count = len(parsed)
             self.emender.emend(currentframe().f_code.co_name, section, parsed)
-        except RECOVERABLE_ERRORS as e:
+        except _RECOVERABLE_ERRORS as e:
             return self._log_parse_error_and_fallback(e, section, cls)
 
         self._manifest[section] = {'input_row_count': input_row_count}
