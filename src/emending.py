@@ -33,4 +33,5 @@ class Emender:
             spec = importlib.util.spec_from_file_location(f'emendation_{path.stem}', path)
             module = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(module)
-            module.emend(section, data)
+            if module.emend(section, data):
+                logger.info('🩹 Emendation applied (%s/%s): %s', hook, section, module.description)

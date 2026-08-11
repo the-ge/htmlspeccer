@@ -1,10 +1,8 @@
-import logging
-
 from config import NORMALIZED_DATA_DIR
 from curating import AriaRoleData, AttributeData
 from util import read_ndjson
 
-logger = logging.getLogger(__name__)
+description = "add the 'role' attribute"
 
 
 def emend(section: str, data: list) -> bool:
@@ -27,6 +25,5 @@ def emend(section: str, data: list) -> bool:
         separator=' ',
         urls={x.url for x in roles},
     ))
-    logger.info("🩹 Emend: added the 'role' attribute")
 
     return True

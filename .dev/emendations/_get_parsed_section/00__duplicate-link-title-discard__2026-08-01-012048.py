@@ -1,6 +1,4 @@
-import logging
-
-logger = logging.getLogger(__name__)
+description = "drop duplicate 'title'/'link' pairs"
 
 
 def emend(section: str, data: list) -> bool:
@@ -21,6 +19,5 @@ def emend(section: str, data: list) -> bool:
 
     for entry in entries[1:]:
         data.remove(entry)
-        logger.info('🩹 Emend: dropped duplicate %r/%r pairs', 'title', 'link')
 
     return True

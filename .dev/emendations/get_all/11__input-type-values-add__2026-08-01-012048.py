@@ -1,11 +1,10 @@
 import dataclasses
-import logging
 
 from config import NORMALIZED_DATA_DIR
 from curating import InputTypeData
 from util import read_ndjson
 
-logger = logging.getLogger(__name__)
+description = "add values to 'type'/'input' value enum"
 
 
 def emend(section: str, data: list) -> bool:
@@ -35,5 +34,4 @@ def emend(section: str, data: list) -> bool:
         urls=entry.urls | {x.url for x in parsed},
     )
     data[data.index(entry)] = new_entry
-    logger.info('🩹 Emend: added values to %r/%r value enum', 'type', 'input')
     return True
