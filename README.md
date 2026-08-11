@@ -19,7 +19,7 @@ This repository was originally a fork of [Tawesoft](https://github.com/tawesoft)
 > [!CAUTION]
 > **I do not intend to keep any backwards compatibility whatsoever with the old [**html5spec** repository](https://github.com/tawesoft/html5spec/).** If you are relying on the old repository conventions, your best bet would be to fork it yourself. Sorry about that ¯\\\_\_(ツ)\_\_/¯.
 > 
-> Also, aside from the inherent brittle nature of trying to add structure to data from non-structured data sources, this repository' data structures for its own end JSON/YAML/who knows what will be added? files are still work in progress, so do not rely on hardwired keys or data types.
+> Also, aside from the inherent brittle nature of trying to add structure to data from non-structured data sources, the data structures for this repository's own end files are still work in progress, so do not rely on hardwired keys or data types.
 
 ## Source data issues
 
