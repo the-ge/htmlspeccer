@@ -10,7 +10,7 @@ from inspect import currentframe
 from pathlib import Path
 from typing import Any
 
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, element
 from slugify import slugify
 
 from config import DUMP_JSON_KWARGS, NORMALIZED_DATA_DIR
@@ -27,7 +27,12 @@ logger = logging.getLogger(__name__)
 class AriaRoleData:
     name: str
     url: str = ''
-    deprecated_since_version: str = ''
+    description: str = ''
+    is_abstract: bool = False
+    parents: dict[str, str] = field(default_factory=dict)
+    children: dict[str, str] = field(default_factory=dict)
+    states: dict[str, dict[str, str]] = field(default_factory=dict)
+    properties: dict[str, dict[str, str]] = field(default_factory=dict)
 
 
 @dataclass(frozen=True, slots=True)
@@ -257,31 +262,80 @@ def split_splittables(text: str, context: str) -> str:
 # (splitting, typing, spec-specific logic) are no longer separate stages.
 
 
+def _parse_aria_role_relations(table: element.Tag, td_class: str) -> dict[str, str]:
+    td = table.find('td', {'class': td_class})
+    if td is None:
+        return {}
+    return {a.get_text().strip(): a['href'].strip() for a in td.find_all('a')}
+
+
+def _parse_aria_role_states_properties(table: element.Tag) -> tuple[dict[str, dict[str, str]], dict[str, dict[str, str]]]:
+    states: dict[str, dict[str, str]] = {}
+    properties: dict[str, dict[str, str]] = {}
+    for td_class in ('role-properties', 'role-inherited'):
+        td = table.find('td', {'class': td_class})
+        if td is None:
+            continue
+        for li in td.find_all('li'):
+            a = li.find('a')
+            if a is None:
+                continue
+            strong = li.find('strong')
+            deprecated = ''
+            if strong is not None:
+                match = re.search(r'(?<=ARIA )\d+\.\d+', strong.get_text())
+                deprecated = match[0] if match else ''
+            entry = {'url': a['href'].strip(), 'deprecated_since': deprecated}
+            target = states if 'state-reference' in a.get('class', []) else properties
+            target[a.get_text().strip()] = entry
+    return states, properties
+
+
 def parse_aria_roles(soup: BeautifulSoup) -> Iterator[AriaRoleData]:
-    # https://w3c.github.io/aria/#widget
-    # https://w3c.github.io/aria/#document_structure_roles
-    # https://w3c.github.io/aria/#landmark_roles
-    # https://w3c.github.io/aria/#live_region_roles
-    # https://w3c.github.io/aria/#window_roles
-    concrete_roles = (
-        'widget',
-        'document_structure_roles',
-        'landmark_roles',
-        'live_region_roles',
-        'window_roles',
-    )
-    for role in concrete_roles:
-        rows = soup.find('section', {'id': role}).find_next('ul').find_all('li')
-        for row in rows:
-            deprecated = '' if row.strong is None else row.strong.get_text().strip()
-            if deprecated != '':
-                deprecated = re.search(r'(?<=ARIA )\d+\.\d+', deprecated)
-                deprecated = deprecated[0] if deprecated else ''
+    # https://w3c.github.io/aria/#index_role
+    # https://w3c.github.io/aria/#<ROLE_NAME>
+    rows = soup.find('dl', {'id': 'index_role'}).find_all(['dt', 'dd'], recursive=False)
+    prev = None
+    name = url = role_id = None
+    for row in rows:
+        if row.name == 'dt':
+            if prev not in {None, 'dd'}:
+                logger.error('❌ <dt> not preceded by a <dd>: %s', row)
+            href = row.a['href'].strip()
+            name = row.a.code.get_text().strip()
+            role_id = href.removeprefix('#')
+            url = f'https://w3c.github.io/aria/{href}'
+            prev = 'dt'
+        elif row.name == 'dd':
+            if prev != 'dt':
+                logger.error('❌ <dd> not preceded by a <dt>: %s', row)
+                continue
+            description = row.get_text().strip()
+            prev = 'dd'
+
+            role_section = soup.find('section', {'id': role_id})
+            table = role_section.find('table', {'class': 'def'}) if role_section is not None else None
+            if table is None:
+                logger.warning('⚠️ aria_roles: no structural data table found for role %r; role omitted', name)
+                continue
+
+            is_abstract_td = table.find('td', {'class': 'role-abstract'})
+            is_abstract = is_abstract_td is not None and is_abstract_td.get_text().strip() == 'True'
+
+            states, properties = _parse_aria_role_states_properties(table)
+
             yield AriaRoleData(
-                name=row.code.get_text().strip(),
-                url=row.a['href'].strip(),
-                deprecated_since_version=deprecated,
+                name=name,
+                url=url,
+                description=description,
+                is_abstract=is_abstract,
+                parents=_parse_aria_role_relations(table, 'role-parent'),
+                children=_parse_aria_role_relations(table, 'role-children'),
+                states=states,
+                properties=properties,
             )
+    if prev == 'dt':
+        logger.error('❌ Trailing <dt> with no following <dd>: %s', name)
 
 
 def _parse_attribute_cells(
@@ -589,7 +643,9 @@ class Curator:
         if page not in self._soup_cache:
             try:
                 with (self.raw_data_dir / f'{page}.html').open('r') as fp:
-                    self._soup_cache[page] = BeautifulSoup(fp, 'lxml')
+                    soup = BeautifulSoup(fp, 'lxml')
+                self.emender.emend(currentframe().f_code.co_name, page, soup)
+                self._soup_cache[page] = soup
             except OSError:
                 logger.exception('❌ Could not read %s.html', page)
                 self._soup_cache[page] = None
