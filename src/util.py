@@ -70,7 +70,7 @@ def make_serializable(obj: object) -> JSONType:
     return obj
 
 
-def dataclass_to_dict(obj: Any) -> dict:
+def dataclass_to_dict(obj: T) -> dict:
     """Convert a dataclass instance to a JSON-serializable dict (set fields become sorted lists).
 
     Returns:
