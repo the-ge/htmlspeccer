@@ -39,10 +39,10 @@ class AriaRoleData:
 class AttributeData:
     name: str
     tag: str | None = None
+    tag_url: str = ''
     separator: str = ''
     value_type: str = 'string'
     value_enum: set[str] = field(default_factory=set)
-    tag_url: str = ''
     value_info: list[tuple[str, str]] = field(default_factory=list)
     is_more_value_info_required: bool = False
     description: list[tuple[str, str]] = field(default_factory=list)
