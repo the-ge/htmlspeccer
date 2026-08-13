@@ -452,8 +452,8 @@ def _parse_attribute_value(value_type_str: str) -> tuple[str, str]:
 
 
 def parse_attributes(soup: BeautifulSoup) -> Iterator[AttributeData]:
-    # https://html.spec.whatwg.org/multipage/indices.html#attributes-3
-    rows = soup.find('h3', {'id': 'attributes-3'}).find_next('tbody').find_all('tr')
+    # https://html.spec.whatwg.org/multipage/indices.html#attributes-1
+    rows = soup.find('table', {'id': 'attributes-1'}).find_next('tbody').find_all('tr')
     count = _HTML_CELL_COUNT['attributes']
     for row in rows:
         cells = [x.get_text().strip() for x in row.find_all(['th', 'td'])]
