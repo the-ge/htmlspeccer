@@ -155,7 +155,7 @@ _TAGS_BY_STRING = {
 
 # Bare (non-<code>-wrapped) anchor text found in an attribute's elements cell -> special scope key, or
 # None for "no tag restriction". Any other bare anchor text is unrecognized (warned and skipped).
-_SPECIAL_SCOPES = {'HTML elements': None, 'form-associated custom elements': 'formcustom'}
+_SPECIAL_NODES = {'HTML elements': None, 'form-associated custom elements': 'formcustom'}
 
 _TYPE_BY_STRING = {
     'Boolean attribute':                    'bool',
@@ -437,7 +437,7 @@ def _parse_attribute_scopes(cell: element.Tag, name: str) -> Iterator[tuple[str 
     """Extract (scope, scope_url) pairs from an attribute row's elements cell.
 
     A <code>-wrapped anchor is a real tag: its own text is the tag name (scope), its own href is
-    scope_url. A bare (non-<code>-wrapped) anchor is looked up in _SPECIAL_SCOPES: found gives one
+    scope_url. A bare (non-<code>-wrapped) anchor is looked up in _SPECIAL_NODES: found gives one
     additional scope (None for "no tag restriction", or a tag-group name); not found is warned and
     skipped. More than one bare anchor in a cell is unexpected: only the first is used, others are
     warned and ignored. A bare anchor resolving to "no tag restriction" alongside real tags is a
@@ -468,11 +468,11 @@ def _parse_attribute_scopes(cell: element.Tag, name: str) -> Iterator[tuple[str 
         )
 
     text = chosen.get_text().strip()
-    if text not in _SPECIAL_SCOPES:
+    if text not in _SPECIAL_NODES:
         logger.warning('⚠️ Attribute %r: unrecognized special scope phrase %r', name, text)
         return
 
-    scope = _SPECIAL_SCOPES[text]
+    scope = _SPECIAL_NODES[text]
     if scope is None and real_tags:
         logger.warning(
             "⚠️ Attribute %r: bare anchor %r resolves to 'no tag restriction' alongside real tags; skipping it",
