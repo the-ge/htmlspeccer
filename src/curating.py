@@ -15,7 +15,14 @@ from slugify import slugify
 
 from config import DUMP_JSON_KWARGS, NORMALIZED_DATA_DIR
 from emending import Emender
-from util import dataclass_to_dict, deduplicate, dict_merge, dict_to_dataclass, normalize_url, write_ndjson
+from util import (
+    dataclass_to_dict,
+    deduplicate,
+    dict_merge,
+    dict_to_dataclass,
+    normalize_url,
+    write_ndjson,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -38,8 +45,8 @@ class AriaRoleData:
 @dataclass(frozen=True, slots=True)
 class AttributeData:
     name: str
-    tag: str | None = None
-    tag_url: str = ''
+    scope: str | None = None
+    scope_url: str = ''
     separator: str = ''
     value_type: str = 'string'
     value_enum: set[str] = field(default_factory=set)
@@ -107,7 +114,7 @@ SECTION_SOURCES: dict[str, tuple[str, type]] = {
     'input_types': ('input', InputTypeData),
 }
 
-# Sentinel used as the dict key (in place of `tag`) for attributes with no tag restriction.
+# Sentinel used as the dict key (in place of `scope`) for attributes with no tag restriction.
 _ALL_TAGS = 'all'
 
 # Expected cell count in each domain of the online HTML sources
@@ -146,7 +153,7 @@ _TAGS_BY_STRING = {
     'SVG svg': ['svg'],
 }
 
-# Bare (non-<code>-wrapped) anchor text found in an attribute's elements cell -> tag-group name, or
+# Bare (non-<code>-wrapped) anchor text found in an attribute's elements cell -> special scope key, or
 # None for "no tag restriction". Any other bare anchor text is unrecognized (warned and skipped).
 _SPECIAL_SCOPES = {'HTML elements': None, 'form-associated custom elements': 'formcustom'}
 
@@ -361,7 +368,7 @@ def _apply_value_info_marker(nodes: list[tuple[str, str]]) -> tuple[list[tuple[s
 def _parse_attribute_cells(
     name: str, elements_cell: element.Tag, description_cell: element.Tag, value_cell: element.Tag
 ) -> Iterator[AttributeData]:
-    """Parse one attribute row's cells into one or more AttributeData entries, split by tag/scope.
+    """Parse one attribute row's cells into one or more AttributeData entries, split by scope.
 
     `description` and `value_info` are decomposed via _gen_cell_nodes() into (text, url) node lists.
     A leading '*' marker on the value cell is stripped and sets `is_more_value_info_required` (see
@@ -369,7 +376,7 @@ def _parse_attribute_cells(
     joined node text; `value_info` is reset to [] when value_enum ends up populated.
 
     Yields:
-        One AttributeData per (tag, tag_url) scope found in the elements cell (see
+        One AttributeData per (scope, scope_url) scope found in the elements cell (see
         _parse_attribute_scopes()); nothing if the elements cell yields no scope at all
     """
     description = list(_gen_cell_nodes(description_cell))
@@ -386,17 +393,17 @@ def _parse_attribute_cells(
 
     scopes = list(_parse_attribute_scopes(elements_cell, name))
     if not scopes:
-        logger.warning('⚠️ Attribute %r: no tag or scope found in elements cell; row skipped', name)
+        logger.warning('⚠️ Attribute %r: no tag found in elements cell; row skipped', name)
         return
 
-    for tag, tag_url in scopes:
+    for scope, scope_url in scopes:
         yield AttributeData(
             name=name,
-            tag=tag,
+            scope=scope,
             value_type=value_type,
             value_enum=value_enum,
             separator=separator,
-            tag_url=tag_url,
+            scope_url=scope_url,
             value_info=value_info,
             description=description,
             is_more_value_info_required=is_more_value_info_required,
@@ -427,17 +434,17 @@ def _parse_attribute_value(value_type_str: str) -> tuple[str, str]:
 
 
 def _parse_attribute_scopes(cell: element.Tag, name: str) -> Iterator[tuple[str | None, str]]:
-    """Extract (tag, tag_url) pairs from an attribute row's elements cell.
+    """Extract (scope, scope_url) pairs from an attribute row's elements cell.
 
-    A <code>-wrapped anchor is a real tag: its own text is the tag name, its own href is tag_url. A
-    bare (non-<code>-wrapped) anchor is looked up in _SPECIAL_SCOPES: found gives one additional scope
-    (None for "no tag restriction", or a tag-group name); not found is warned and skipped. More than
-    one bare anchor in a cell is unexpected: only the first is used, others are warned and ignored. A
-    bare anchor resolving to "no tag restriction" alongside real tags is a contradiction: warned and
-    skipped.
+    A <code>-wrapped anchor is a real tag: its own text is the tag name (scope), its own href is
+    scope_url. A bare (non-<code>-wrapped) anchor is looked up in _SPECIAL_SCOPES: found gives one
+    additional scope (None for "no tag restriction", or a tag-group name); not found is warned and
+    skipped. More than one bare anchor in a cell is unexpected: only the first is used, others are
+    warned and ignored. A bare anchor resolving to "no tag restriction" alongside real tags is a
+    contradiction: warned and skipped.
 
     Yields:
-        (tag, tag_url) pairs; tag is None (no restriction), a tag-group name, or a real tag name
+        (scope, scope_url) pairs; scope is None (no restriction), a tag-group name, or a real tag name
     """
     real_tags: list[tuple[str, str]] = []
     bare_anchors: list[element.Tag] = []
@@ -456,13 +463,13 @@ def _parse_attribute_scopes(cell: element.Tag, name: str) -> Iterator[tuple[str 
     if len(bare_anchors) > 1:
         ignored = ', '.join(repr(a.get_text().strip()) for a in bare_anchors[1:])
         logger.warning(
-            '⚠️ Attribute %r: multiple tag-group anchors in one cell; using %r, ignoring: %s',
+            '⚠️ Attribute %r: multiple special scope anchors in one cell; using %r, ignoring: %s',
             name, chosen.get_text().strip(), ignored,
         )
 
     text = chosen.get_text().strip()
     if text not in _SPECIAL_SCOPES:
-        logger.warning('⚠️ Attribute %r: unrecognized tag-group phrase %r', name, text)
+        logger.warning('⚠️ Attribute %r: unrecognized special scope phrase %r', name, text)
         return
 
     scope = _SPECIAL_SCOPES[text]
@@ -620,7 +627,7 @@ def parse_input_types(soup: BeautifulSoup) -> Iterator[InputTypeData]:
 
 
 def dictify_attributes(attribute_list: list[AttributeData]) -> dict[str, dict[str, Any]]:
-    """Convert a list of AttributeData into a dict keyed by name, then by tag (_ALL_TAGS for `tag is None`).
+    """Convert a list of AttributeData into a dict keyed by name, then by scope (_ALL_TAGS for `scope is None`).
 
     Returns:
         JSON-serializable dict of HTML attribute data
@@ -629,14 +636,14 @@ def dictify_attributes(attribute_list: list[AttributeData]) -> dict[str, dict[st
     for attribute in attribute_list:
         r = dataclasses.asdict(attribute)
         del r['name']
-        del r['tag']
-        tag_key = _ALL_TAGS if attribute.tag is None else attribute.tag
-        by_tag = result.setdefault(attribute.name, {})
-        if tag_key in by_tag:
-            logger.debug('Duplicate attribute name + tag pair: (%r, %r)', attribute.name, tag_key)
-            dict_merge(by_tag[tag_key], r, concat_fields=('description', 'value_info'))
+        del r['scope']
+        scope_key = _ALL_TAGS if attribute.scope is None else attribute.scope
+        by_scope = result.setdefault(attribute.name, {})
+        if scope_key in by_scope:
+            logger.debug('Duplicate attribute name + scope pair: (%r, %r)', attribute.name, scope_key)
+            dict_merge(by_scope[scope_key], r, concat_fields=('description', 'value_info'))
         else:
-            by_tag[tag_key] = r
+            by_scope[scope_key] = r
     return result
 
 

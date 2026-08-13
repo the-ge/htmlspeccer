@@ -5,7 +5,7 @@ def emend(section: str, data: list) -> bool:
     """Resolve two attribute data rows yielding a title/link entry; keep first, drop the redundant second.
 
     Issue location: https://html.spec.whatwg.org/multipage/indices.html#attributes-3:attr-link-title.
-    Explanation: the next row also containing a `link` tag for the `title` attribute will be dropped.
+    Explanation: the next row also containing a `link` scope for the `title` attribute will be dropped.
 
     Returns:
         True if any duplicates were discarded or False if not
@@ -13,7 +13,7 @@ def emend(section: str, data: list) -> bool:
     if section != 'attributes':
         return False
 
-    entries = [e for e in data if e.name == 'title' and e.tag == 'link']
+    entries = [e for e in data if e.name == 'title' and e.scope == 'link']
     if len(entries) <= 1:
         return False
 

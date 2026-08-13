@@ -185,7 +185,7 @@ class Publisher:
     def read_data_domains(self) -> dict[str, dict]:
         """Load each section's entities from CURATED_DATA_DIR.
 
-        Is using its manifest as the index, and group them by name (and by tag, for attributes)
+        Is using its manifest as the index, and group them by name (and by scope, for attributes)
         into the published shape.
 
         Returns:

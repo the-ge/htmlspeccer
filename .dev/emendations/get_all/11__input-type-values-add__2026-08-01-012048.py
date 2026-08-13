@@ -20,7 +20,7 @@ def emend(section: str, data: list) -> bool:
     if section != 'attributes':
         return False
 
-    entry = next((e for e in data if e.name == 'type' and e.tag == 'input'), None)
+    entry = next((e for e in data if e.name == 'type' and e.scope == 'input'), None)
     if entry is None:
         return False
 
