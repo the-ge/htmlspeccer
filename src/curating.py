@@ -358,56 +358,6 @@ def _apply_value_info_marker(nodes: list[tuple[str, str]]) -> tuple[list[tuple[s
     return result, found
 
 
-def _parse_attribute_scopes(cell: element.Tag, name: str) -> Iterator[tuple[str | None, str]]:
-    """Extract (tag, tag_url) pairs from an attribute row's elements cell.
-
-    A <code>-wrapped anchor is a real tag: its own text is the tag name, its own href is tag_url. A
-    bare (non-<code>-wrapped) anchor is looked up in _SPECIAL_SCOPES: found gives one additional scope
-    (None for "no tag restriction", or a tag-group name); not found is warned and skipped. More than
-    one bare anchor in a cell is unexpected: only the first is used, others are warned and ignored. A
-    bare anchor resolving to "no tag restriction" alongside real tags is a contradiction: warned and
-    skipped.
-
-    Yields:
-        (tag, tag_url) pairs; tag is None (no restriction), a tag-group name, or a real tag name
-    """
-    real_tags: list[tuple[str, str]] = []
-    bare_anchors: list[element.Tag] = []
-    for a in cell.find_all('a'):
-        if a.find_parent('code') is not None:
-            real_tags.append((a.get_text().strip(), normalize_url(a['href'].strip(), _SPEC_BASE_URL)))
-        else:
-            bare_anchors.append(a)
-
-    yield from real_tags
-
-    if not bare_anchors:
-        return
-
-    chosen = bare_anchors[0]
-    if len(bare_anchors) > 1:
-        ignored = ', '.join(repr(a.get_text().strip()) for a in bare_anchors[1:])
-        logger.warning(
-            '⚠️ Attribute %r: multiple tag-group anchors in one cell; using %r, ignoring: %s',
-            name, chosen.get_text().strip(), ignored,
-        )
-
-    text = chosen.get_text().strip()
-    if text not in _SPECIAL_SCOPES:
-        logger.warning('⚠️ Attribute %r: unrecognized tag-group phrase %r', name, text)
-        return
-
-    scope = _SPECIAL_SCOPES[text]
-    if scope is None and real_tags:
-        logger.warning(
-            "⚠️ Attribute %r: bare anchor %r resolves to 'no tag restriction' alongside real tags; skipping it",
-            name, text,
-        )
-        return
-
-    yield scope, normalize_url(chosen['href'].strip(), _SPEC_BASE_URL)
-
-
 def _parse_attribute_cells(
     name: str, elements_cell: element.Tag, description_cell: element.Tag, value_cell: element.Tag
 ) -> Iterator[AttributeData]:
@@ -476,6 +426,56 @@ def _parse_attribute_value(value_type_str: str) -> tuple[str, str]:
     return value_type, value_separator
 
 
+def _parse_attribute_scopes(cell: element.Tag, name: str) -> Iterator[tuple[str | None, str]]:
+    """Extract (tag, tag_url) pairs from an attribute row's elements cell.
+
+    A <code>-wrapped anchor is a real tag: its own text is the tag name, its own href is tag_url. A
+    bare (non-<code>-wrapped) anchor is looked up in _SPECIAL_SCOPES: found gives one additional scope
+    (None for "no tag restriction", or a tag-group name); not found is warned and skipped. More than
+    one bare anchor in a cell is unexpected: only the first is used, others are warned and ignored. A
+    bare anchor resolving to "no tag restriction" alongside real tags is a contradiction: warned and
+    skipped.
+
+    Yields:
+        (tag, tag_url) pairs; tag is None (no restriction), a tag-group name, or a real tag name
+    """
+    real_tags: list[tuple[str, str]] = []
+    bare_anchors: list[element.Tag] = []
+    for a in cell.find_all('a'):
+        if a.find_parent('code') is not None:
+            real_tags.append((a.get_text().strip(), normalize_url(a['href'].strip(), _SPEC_BASE_URL)))
+        else:
+            bare_anchors.append(a)
+
+    yield from real_tags
+
+    if not bare_anchors:
+        return
+
+    chosen = bare_anchors[0]
+    if len(bare_anchors) > 1:
+        ignored = ', '.join(repr(a.get_text().strip()) for a in bare_anchors[1:])
+        logger.warning(
+            '⚠️ Attribute %r: multiple tag-group anchors in one cell; using %r, ignoring: %s',
+            name, chosen.get_text().strip(), ignored,
+        )
+
+    text = chosen.get_text().strip()
+    if text not in _SPECIAL_SCOPES:
+        logger.warning('⚠️ Attribute %r: unrecognized tag-group phrase %r', name, text)
+        return
+
+    scope = _SPECIAL_SCOPES[text]
+    if scope is None and real_tags:
+        logger.warning(
+            "⚠️ Attribute %r: bare anchor %r resolves to 'no tag restriction' alongside real tags; skipping it",
+            name, text,
+        )
+        return
+
+    yield scope, normalize_url(chosen['href'].strip(), _SPEC_BASE_URL)
+
+
 def parse_attributes(soup: BeautifulSoup) -> Iterator[AttributeData]:
     # https://html.spec.whatwg.org/multipage/indices.html#attributes-1
     rows = soup.find('table', {'id': 'attributes-1'}).find_next('tbody').find_all('tr')
@@ -521,6 +521,29 @@ def parse_content_categories(soup: BeautifulSoup) -> Iterator[ContentCategoryDat
         )
 
 
+def parse_element_kinds(soup: BeautifulSoup) -> Iterator[ElementKindData]:
+    # https://html.spec.whatwg.org/dev/syntax.html#elements-2
+    rows = soup.find('h4', {'id': 'elements-2'}).find_next('dl').find_all(['dt', 'dd'], recursive=False)
+    prev = None  # tag name of the last row seen: None, 'dt', or 'dd'
+    name = None
+    for row in rows:
+        if row.name == 'dt':
+            if prev not in {None, 'dd'}:
+                logger.error('❌ <dt> not preceded by a <dd>: %s', row)
+            name = row.dfn.get_text().strip()  # literal text; slugify() happens below
+            prev = 'dt'
+        elif row.name == 'dd':
+            if prev != 'dt':
+                logger.error('❌ <dd> not preceded by a <dt>: %s', row)
+                continue
+            tags = deduplicate(tag.get_text().strip() for tag in row.find_all('code'))
+            info = '' if tags else row.get_text().strip()
+            prev = 'dd'
+            yield ElementKindData(name=slugify(name), tags=set(tags), info=info)
+    if prev == 'dt':
+        logger.error('❌ Trailing <dt> with no following <dd>: %s', name)
+
+
 def parse_elements(soup: BeautifulSoup) -> Iterator[ElementData]:
     # https://html.spec.whatwg.org/multipage/indices.html#elements-3
     rows = soup.find('h3', {'id': 'elements-3'}).find_next('tbody').find_all('tr')
@@ -546,29 +569,6 @@ def parse_elements(soup: BeautifulSoup) -> Iterator[ElementData]:
                 attributes=attributes_set,
                 children=children_set,
             )
-
-
-def parse_element_kinds(soup: BeautifulSoup) -> Iterator[ElementKindData]:
-    # https://html.spec.whatwg.org/dev/syntax.html#elements-2
-    rows = soup.find('h4', {'id': 'elements-2'}).find_next('dl').find_all(['dt', 'dd'], recursive=False)
-    prev = None  # tag name of the last row seen: None, 'dt', or 'dd'
-    name = None
-    for row in rows:
-        if row.name == 'dt':
-            if prev not in {None, 'dd'}:
-                logger.error('❌ <dt> not preceded by a <dd>: %s', row)
-            name = row.dfn.get_text().strip()  # literal text; slugify() happens below
-            prev = 'dt'
-        elif row.name == 'dd':
-            if prev != 'dt':
-                logger.error('❌ <dd> not preceded by a <dt>: %s', row)
-                continue
-            tags = deduplicate(tag.get_text().strip() for tag in row.find_all('code'))
-            info = '' if tags else row.get_text().strip()
-            prev = 'dd'
-            yield ElementKindData(name=slugify(name), tags=set(tags), info=info)
-    if prev == 'dt':
-        logger.error('❌ Trailing <dt> with no following <dd>: %s', name)
 
 
 def parse_event_handlers(soup: BeautifulSoup) -> Iterator[EventHandlerData]:
