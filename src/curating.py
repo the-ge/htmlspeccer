@@ -143,6 +143,10 @@ _SEPARATOR_BY_SUBSTRING = {
 # Base URL for relative spec links
 _SPEC_BASE_URL = 'https://html.spec.whatwg.org/multipage/'
 
+# Bare (non-<code>-wrapped) anchor text found in an attribute's elements cell -> special scope key, or
+# None for "no tag restriction". Any other bare anchor text is unrecognized (warned and skipped).
+_SPECIAL_NODES = {'HTML elements': None, 'form-associated custom elements': 'formcustom'}
+
 # Special cases: phrase -> list of yielded tokens (empty list yields nothing). Used by gen_tags(), which
 # still serves parse_content_categories() and parse_elements(); parse_attributes() no longer uses gen_tags().
 _TAGS_BY_STRING = {
@@ -152,10 +156,6 @@ _TAGS_BY_STRING = {
     'MathML math': ['math'],
     'SVG svg': ['svg'],
 }
-
-# Bare (non-<code>-wrapped) anchor text found in an attribute's elements cell -> special scope key, or
-# None for "no tag restriction". Any other bare anchor text is unrecognized (warned and skipped).
-_SPECIAL_NODES = {'HTML elements': None, 'form-associated custom elements': 'formcustom'}
 
 _TYPE_BY_STRING = {
     'Boolean attribute':                    'bool',
