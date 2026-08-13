@@ -29,9 +29,8 @@ def emend(section: str, data: list) -> bool:
         entry,
         value_type='enum',
         value_enum=entry.value_enum | {x.name for x in parsed},
-        value_info='',
+        value_info=[(x.name, x.url) for x in parsed],
         separator='',
-        urls=entry.urls | {x.url for x in parsed},
     )
     data[data.index(entry)] = new_entry
     return True

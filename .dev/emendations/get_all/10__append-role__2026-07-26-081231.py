@@ -20,10 +20,10 @@ def emend(section: str, data: list) -> bool:
     roles = [x for x in read_ndjson(NORMALIZED_DATA_DIR / 'aria_roles.ndjson', AriaRoleData) if not x.is_abstract]
     data.append(AttributeData(
         name='role',
-        description='ARIA semantic role',
+        description=[('ARIA semantic role', '')],
         value_enum={x.name for x in roles},
         separator=' ',
-        urls={x.url for x in roles},
+        value_info=[(x.name, x.url) for x in roles],
     ))
 
     return True

@@ -15,7 +15,7 @@ from slugify import slugify
 
 from config import DUMP_JSON_KWARGS, NORMALIZED_DATA_DIR
 from emending import Emender
-from util import dataclass_to_dict, deduplicate, dict_to_dataclass, normalize_url, write_ndjson
+from util import dataclass_to_dict, deduplicate, dict_merge, dict_to_dataclass, normalize_url, write_ndjson
 
 logger = logging.getLogger(__name__)
 
@@ -39,13 +39,13 @@ class AriaRoleData:
 class AttributeData:
     name: str
     tag: str | None = None
-    description: str = ''
     value_type: str = 'string'
     value_enum: set[str] = field(default_factory=set)
-    value_info: str = ''
-    is_more_value_info_required: bool = False
     separator: str = ''
-    urls: set[str] = field(default_factory=set)
+    tag_url: str = ''
+    value_info: list[tuple[str, str]] = field(default_factory=list)
+    is_more_value_info_required: bool = False
+    description: list[tuple[str, str]] = field(default_factory=list)
 
 
 @dataclass(frozen=True, slots=True)
@@ -136,7 +136,8 @@ _SEPARATOR_BY_SUBSTRING = {
 # Base URL for relative spec links
 _SPEC_BASE_URL = 'https://html.spec.whatwg.org/multipage/'
 
-# Special cases: phrase -> list of yielded tokens (empty list yields nothing)
+# Special cases: phrase -> list of yielded tokens (empty list yields nothing). Used by gen_tags(), which
+# still serves parse_content_categories() and parse_elements(); parse_attributes() no longer uses gen_tags().
 _TAGS_BY_STRING = {
     'autonomous custom elements': [],
     'HTML elements': [],
@@ -144,6 +145,10 @@ _TAGS_BY_STRING = {
     'MathML math': ['math'],
     'SVG svg': ['svg'],
 }
+
+# Bare (non-<code>-wrapped) anchor text found in an attribute's elements cell -> tag-group name, or
+# None for "no tag restriction". Any other bare anchor text is unrecognized (warned and skipped).
+_SPECIAL_SCOPES = {'HTML elements': None, 'form-associated custom elements': 'formcustom'}
 
 _TYPE_BY_STRING = {
     'Boolean attribute':                    'bool',
@@ -156,28 +161,10 @@ _TYPE_BY_PREFIX = {
     'Valid floating-point number': 'float',
 }
 
-# Fragment keyword to search for when splitting a shared URL list across a row's tags, in addition to
-# the tag's own name. Needed only where a URL fragment doesn't literally contain the tag name (e.g. `a`
-# and `area` share fragments under "hyperlink"; `audio`/`video` under "media"; `del`/`ins` under "mod").
-# Validated against indices.attributes.ndjson on 2026-08-06: every multi-tag row where a generic fragment's
-# real audience is a strict subset of the row's tags requires an entry here; rows where the fragment is
-# genuinely shared by every tag in the row need no entry (the no-match-shares-to-all-tags fallback covers
-# them). Matching is additive: a tag always still matches its own name, this only adds a second candidate.
-_URL_BY_STRING = {
-    'a': 'hyperlink',
-    'area': 'hyperlink',
-    'audio': 'media',
-    'video': 'media',
-    'del': 'mod',
-    'ins': 'mod',
-}
-
 # ---- Regex ---
 
 # Match a list of one-or-more keywords such as `"foo"; "bar"; "the empty string"`
 _ATTRIBUTE_VALUE_REGEX = re.compile(r'^(?:"[a-zA-Z0-9/-]*"|the empty string)(?:; (?:"[a-zA-Z0-9/-]*"|the empty string))*$')
-
-_SPLITTABLE_REGEX = re.compile(r'\b([a-zA-Z][a-zA-Z0-9-]*)\b[ \t]*\n[ \t]*\b([a-zA-Z][a-zA-Z0-9-]*)\b')
 
 # Match element exceptions like "element (if ...)"
 _TAG_IF_REGEX = re.compile(r'([a-zA-Z0-9-]+) \(if [a-zA-Z0-9\' -]+\)')
@@ -236,24 +223,6 @@ def gen_tag_ifs(input_str: str) -> Iterator[str]:
         matches = _TAG_IF_REGEX.fullmatch(x.strip())
         if matches:
             yield matches.group(1)
-
-
-def split_splittables(text: str, context: str) -> str:
-    """Detect and repair words missing a separator in the whitespace.
-
-    First issue of this kind: `controls` "Element(s)" cell has no semicolon between 'video' and 'img' <code> elements in
-    https://html.spec.whatwg.org/multipage/indices.html#attributes-3:attr-media-controls (still active on 2026-07-22).
-
-    Returns:
-        words in a semicolon-separated string
-    """
-
-    def repair(match: re.Match) -> str:
-        word_a, word_b = match.group(1), match.group(2)
-        logger.warning("⚠️ %s: missing separator between '%s' and '%s'.", context, word_a, word_b)
-        return f'{word_a};{word_b}'
-
-    return _SPLITTABLE_REGEX.sub(repair, text)
 
 
 # ---- Per-section extract-and-parse functions ----
@@ -338,94 +307,150 @@ def parse_aria_roles(soup: BeautifulSoup) -> Iterator[AriaRoleData]:
         logger.error('❌ Trailing <dt> with no following <dd>: %s', name)
 
 
-def _parse_attribute_cells(
-    name: str, elements_info: str, description: str, value_info: str, urls: list[str]
-) -> Iterator[AttributeData]:
-    """Parse one attribute row's cells into one or more AttributeData entries, split by tag.
+def _gen_cell_nodes(cell: element.Tag) -> Iterator[tuple[str, str]]:
+    """Recursively decompose `cell` into (text, url) leaf nodes.
 
-    Splits `elements_info` into tags via gen_tags(), tracking a per-tag scope note (`tag_notes`) for
-    tags with a `(if ...)`/`(in ...)` qualifier -- siblings from the same row don't inherit that note.
-    Parses the value description into value_type/value_enum/separator, and sets
-    `is_more_value_info_required` when the value description carries a trailing '*' (shared across
-    every tag split from this row, since it describes the value, not scope).
+    An <a> tag is an atomic (text, url) leaf using its own href, not descended into. Any other tag is
+    transparent: recurse into its children instead of emitting a node for it. Bare text runs become
+    (text, '') nodes; whitespace-only text nodes are dropped. Concatenating the first elements with
+    spaces approximately restores the cell's text (whitespace is not preserved exactly).
 
     Yields:
-        - if the row has no tag restriction: a single tagless AttributeData;
-        - otherwise splits the row's shared URL list across tags and yields one AttributeData per tag.
+        (text, url) tuples in document order
     """
-    elements_info = split_splittables(elements_info, f'Attribute {name!r} element(s)')
-    is_more_value_info_required = value_info.endswith('*')
-    if is_more_value_info_required:
-        value_info = value_info[:-1]
-    value_type = ' '.join(x.strip().strip('*') for x in value_info.split('\n')).strip()
-    value_info = value_type
+    for child in cell.children:
+        if isinstance(child, element.Tag):
+            if child.name == 'a':
+                text = child.get_text().strip()
+                if text:
+                    yield text, normalize_url(child['href'].strip(), _SPEC_BASE_URL)
+            else:
+                yield from _gen_cell_nodes(child)
+        else:
+            text = str(child).strip()
+            if text:
+                yield text, ''
 
-    tag_notes: dict[str, str] = {}
-    for token in gen_tags(elements_info):
-        tmp = token.strip()
-        idx = tmp.find('(')
-        if idx != -1:
-            tag = tmp[:idx].strip()
-            tag_notes[tag] = f'Special tag scope: {token}'
-        elif tmp not in tag_notes:
-            tag_notes[tmp] = ''
-    tags = set(tag_notes)
 
-    value_enum = set(gen_attribute_value_enums(value_type))
-    if value_enum:
-        value_type, value_info, separator = 'enum', '', ''
-    else:
-        value_type, separator = _parse_attribute_value(value_type)
+def _apply_value_info_marker(nodes: list[tuple[str, str]]) -> tuple[list[tuple[str, str]], bool]:
+    """Strip a leading '*' marker (meaning "more info needed") from a value-info node list.
 
-    if not tags:
-        # No tag restriction (e.g. 'HTML elements'): single entry, no URL split needed.
-        yield AttributeData(
-            name=name,
-            tag=None,
-            description=description,
-            value_type=value_type,
-            value_enum=value_enum,
-            value_info=value_info,
-            is_more_value_info_required=is_more_value_info_required,
-            separator=separator,
-            urls=set(urls),
+    The marker is a '*' character found as the leading character of a plain-text node's (url == '')
+    text, immediately following an anchor node (url != ''). Only that leading character is stripped;
+    if the remainder is empty, the node is dropped entirely.
+
+    Returns:
+        (nodes with the marker(s) stripped/removed, True if at least one marker was found)
+    """
+    result: list[tuple[str, str]] = []
+    found = False
+    prev_was_anchor = False
+    for text, url in nodes:
+        if prev_was_anchor and not url and text.startswith('*'):
+            found = True
+            text = text[1:]  # noqa: PLW2901
+            if text:
+                result.append((text, url))
+            prev_was_anchor = False
+            continue
+        result.append((text, url))
+        prev_was_anchor = bool(url)
+    return result, found
+
+
+def _parse_attribute_scopes(cell: element.Tag, name: str) -> Iterator[tuple[str | None, str]]:
+    """Extract (tag, tag_url) pairs from an attribute row's elements cell.
+
+    A <code>-wrapped anchor is a real tag: its own text is the tag name, its own href is tag_url. A
+    bare (non-<code>-wrapped) anchor is looked up in _SPECIAL_SCOPES: found gives one additional scope
+    (None for "no tag restriction", or a tag-group name); not found is warned and skipped. More than
+    one bare anchor in a cell is unexpected: only the first is used, others are warned and ignored. A
+    bare anchor resolving to "no tag restriction" alongside real tags is a contradiction: warned and
+    skipped.
+
+    Yields:
+        (tag, tag_url) pairs; tag is None (no restriction), a tag-group name, or a real tag name
+    """
+    real_tags: list[tuple[str, str]] = []
+    bare_anchors: list[element.Tag] = []
+    for a in cell.find_all('a'):
+        if a.find_parent('code') is not None:
+            real_tags.append((a.get_text().strip(), normalize_url(a['href'].strip(), _SPEC_BASE_URL)))
+        else:
+            bare_anchors.append(a)
+
+    yield from real_tags
+
+    if not bare_anchors:
+        return
+
+    chosen = bare_anchors[0]
+    if len(bare_anchors) > 1:
+        ignored = ', '.join(repr(a.get_text().strip()) for a in bare_anchors[1:])
+        logger.warning(
+            '⚠️ Attribute %r: multiple tag-group anchors in one cell; using %r, ignoring: %s',
+            name, chosen.get_text().strip(), ignored,
+        )
+
+    text = chosen.get_text().strip()
+    if text not in _SPECIAL_SCOPES:
+        logger.warning('⚠️ Attribute %r: unrecognized tag-group phrase %r', name, text)
+        return
+
+    scope = _SPECIAL_SCOPES[text]
+    if scope is None and real_tags:
+        logger.warning(
+            "⚠️ Attribute %r: bare anchor %r resolves to 'no tag restriction' alongside real tags; skipping it",
+            name, text,
         )
         return
 
-    url_by_tag = _parse_attribute_urls(urls, tags)
-    for tag in sorted(tags):
+    yield scope, normalize_url(chosen['href'].strip(), _SPEC_BASE_URL)
+
+
+def _parse_attribute_cells(
+    name: str, elements_cell: element.Tag, description_cell: element.Tag, value_cell: element.Tag
+) -> Iterator[AttributeData]:
+    """Parse one attribute row's cells into one or more AttributeData entries, split by tag/scope.
+
+    `description` and `value_info` are decomposed via _gen_cell_nodes() into (text, url) node lists.
+    A leading '*' marker on the value cell is stripped and sets `is_more_value_info_required` (see
+    _apply_value_info_marker()). value_type/value_enum/separator are classified from the value cell's
+    joined node text; `value_info` is reset to [] when value_enum ends up populated.
+
+    Yields:
+        One AttributeData per (tag, tag_url) scope found in the elements cell (see
+        _parse_attribute_scopes()); nothing if the elements cell yields no scope at all
+    """
+    description = list(_gen_cell_nodes(description_cell))
+
+    value_nodes, is_more_value_info_required = _apply_value_info_marker(list(_gen_cell_nodes(value_cell)))
+    value_type_str = ' '.join(text for text, _ in value_nodes).strip()
+
+    value_enum = set(gen_attribute_value_enums(value_type_str))
+    if value_enum:
+        value_type, separator, value_info = 'enum', '', []
+    else:
+        value_type, separator = _parse_attribute_value(value_type_str)
+        value_info = value_nodes
+
+    scopes = list(_parse_attribute_scopes(elements_cell, name))
+    if not scopes:
+        logger.warning('⚠️ Attribute %r: no tag or scope found in elements cell; row skipped', name)
+        return
+
+    for tag, tag_url in scopes:
         yield AttributeData(
             name=name,
             tag=tag,
-            description=description,
             value_type=value_type,
             value_enum=value_enum,
-            value_info=value_info,
-            is_more_value_info_required=is_more_value_info_required,
             separator=separator,
-            urls=set(url_by_tag[tag]),
+            tag_url=tag_url,
+            value_info=value_info,
+            description=description,
+            is_more_value_info_required=is_more_value_info_required,
         )
-
-
-def _parse_attribute_urls(urls: list[str], tags: set[str]) -> dict[str, list[str]]:
-    """Partition a row's shared URL list across its tags.
-
-    A URL goes to every tag whose keyword (its own name, plus an _URL_BY_STRING override if one exists)
-    appears as an exact segment of the URL's fragment (the part after '#').
-    A URL matching no tag's keyword is shared by every tag in the row.
-
-    Returns:
-        Dict of URL lists, indexed by tag
-    """
-    keywords = {tag: {tag, _URL_BY_STRING[tag]} if tag in _URL_BY_STRING else {tag} for tag in tags}
-    result: dict[str, list[str]] = {tag: [] for tag in tags}
-    for url in urls:
-        fragment = url.split('#', 1)[-1] if '#' in url else ''
-        segments = set(re.split(r'[^a-z0-9]+', fragment.lower()))
-        matched = {tag for tag, kws in keywords.items() if kws & segments}
-        for tag in matched or tags:
-            result[tag].append(url)  # URL matches multiple tags; adding it to all matches.
-    return result
 
 
 def _parse_attribute_value(value_type_str: str) -> tuple[str, str]:
@@ -456,13 +481,12 @@ def parse_attributes(soup: BeautifulSoup) -> Iterator[AttributeData]:
     rows = soup.find('table', {'id': 'attributes-1'}).find_next('tbody').find_all('tr')
     count = _HTML_CELL_COUNT['attributes']
     for row in rows:
-        cells = [x.get_text().strip() for x in row.find_all(['th', 'td'])]
+        cells = row.find_all(['th', 'td'])
         if len(cells) != count:
             logger.error('❌ Expected %s cells, got %s. Skipping row: %s', count, len(cells), row)
             continue
-        attribute, elements, description, value = cells
-        urls = deduplicate(normalize_url(x['href'].strip(), _SPEC_BASE_URL) for x in row.find_all('a'))
-        yield from _parse_attribute_cells(attribute, elements, description, value, urls)
+        name_cell, elements_cell, description_cell, value_cell = cells
+        yield from _parse_attribute_cells(name_cell.get_text().strip(), elements_cell, description_cell, value_cell)
 
 
 def parse_content_categories(soup: BeautifulSoup) -> Iterator[ContentCategoryData]:
@@ -609,9 +633,10 @@ def dictify_attributes(attribute_list: list[AttributeData]) -> dict[str, dict[st
         tag_key = _ALL_TAGS if attribute.tag is None else attribute.tag
         by_tag = result.setdefault(attribute.name, {})
         if tag_key in by_tag:
-            # (name, tag) collision (indicates a parsing bug rather than legitimate data)
-            logger.warning('⚠️ Duplicate attribute name + tag pair: (%r, %r)', attribute.name, tag_key)
-        by_tag[tag_key] = r
+            logger.debug('Duplicate attribute name + tag pair: (%r, %r)', attribute.name, tag_key)
+            dict_merge(by_tag[tag_key], r, concat_fields=('description', 'value_info'))
+        else:
+            by_tag[tag_key] = r
     return result
 
 

@@ -1,10 +1,13 @@
 import dataclasses
 import json
+import logging
 from collections.abc import Iterable
 from pathlib import Path
-from typing import Any, TypeAlias, TypeVar
+from typing import Any, TypeAlias, TypeVar, get_args, get_origin
 
 from config import DUMP_NDJSON_KWARGS, PROJECT_ROOT
+
+logger = logging.getLogger(__name__)
 
 R = TypeVar('R')
 T = TypeVar('T')
@@ -46,6 +49,21 @@ def dictify(xs: list[Any]) -> dict[str, Any]:
     return result
 
 
+def dict_merge(existing: dict, new: dict, concat_fields: Iterable[str] = ()) -> None:
+    """Merge `new` into `existing` in place, for resolving a key collision in dictify()-style output.
+
+    Fields named in `concat_fields` are concatenated (list + list, preserving order and duplicates).
+    Every other field keeps its first-seen (`existing`) value; a differing `new` value is discarded
+    and logged.
+    """
+    concat_fields = set(concat_fields)
+    for key, value in new.items():
+        if key in concat_fields:
+            existing[key] += value
+        elif existing[key] != value:
+            logger.warning('⚠️ Merge conflict for field %r: keeping %r, discarding %r', key, existing[key], value)
+
+
 def sort_top_level(d: dict) -> dict:
     """Sort the input dict by the top-level keys (inner key order is left untouched).
 
@@ -80,7 +98,11 @@ def dataclass_to_dict(obj: T) -> dict:
 
 
 def dict_to_dataclass(cls: type[T], d: dict) -> T:
-    """Reconstruct a `cls` instance from a plain dict, restoring set-typed fields from lists.
+    """Reconstruct a `cls` instance from a plain dict, restoring set- and tuple-list-typed fields.
+
+    Set-typed fields (default_factory produces a set) are restored from their JSON list form. Fields
+    annotated `list[tuple[...]]` are restored from JSON's list-of-lists form (JSON has no tuple type):
+    each inner list is converted back to a tuple.
 
     Returns:
         Dataclass object
@@ -89,6 +111,8 @@ def dict_to_dataclass(cls: type[T], d: dict) -> T:
     for f in dataclasses.fields(cls):
         if f.default_factory is not dataclasses.MISSING and isinstance(f.default_factory(), set):
             kwargs[f.name] = set(kwargs[f.name])
+        elif get_origin(f.type) is list and get_origin(next(iter(get_args(f.type)), None)) is tuple:
+            kwargs[f.name] = [tuple(x) for x in kwargs[f.name]]
     return cls(**kwargs)
 
 
