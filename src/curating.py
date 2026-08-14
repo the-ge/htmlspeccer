@@ -344,6 +344,23 @@ def _gen_cell_nodes(cell: element.Tag) -> Iterator[tuple[str, str]]:
     yield from _gen_nodes(cell.children)
 
 
+def _concat_text_nodes(nodes: list[tuple[str, str]]) -> list[tuple[str, str]]:
+    """Merge contiguous (text, '') tuples in `nodes` into a single tuple, joined by a single space.
+
+    Linked (text, url) tuples (url != '') are left as-is and break up merge runs.
+
+    Returns:
+        `nodes` with contiguous plain-text runs merged
+    """
+    result: list[tuple[str, str]] = []
+    for text, url in nodes:
+        if not url and result and not result[-1][1]:
+            result[-1] = (f'{result[-1][0]} {text}', '')
+        else:
+            result.append((text, url))
+    return result
+
+
 def _apply_value_info_marker(nodes: list[tuple[str, str]]) -> tuple[list[tuple[str, str]], bool]:
     """Strip a leading '*' marker (meaning "more info needed") from a value-info node list.
 
@@ -384,9 +401,10 @@ def _parse_attribute_cells(
         One AttributeData per (scope, scope_url) scope found in the elements cell (see
         _parse_attribute_scopes()); nothing if the elements cell yields no scope at all
     """
-    description = list(_gen_cell_nodes(description_cell))
+    description = _concat_text_nodes(list(_gen_cell_nodes(description_cell)))
 
     value_nodes, is_more_value_info_required = _apply_value_info_marker(list(_gen_cell_nodes(value_cell)))
+    value_nodes = _concat_text_nodes(value_nodes)
     value_type_str = ' '.join(text for text, _ in value_nodes).strip()
 
     value_enum = set(gen_attribute_value_enums(value_type_str))
@@ -609,13 +627,113 @@ def _strip_condition_wrapper(nodes: list) -> list:
     return nodes
 
 
+def _is_link(node: tuple[str, str]) -> bool:
+    return bool(node[1])
+
+
+def _is_text(node: tuple[str, str], text: str) -> bool:
+    return node[1] == '' and node[0] == text
+
+
+def _simplify_condition_descendant(nodes: list[tuple[str, str]]) -> list[tuple[str, str]] | None:
+    # ["it is a descendant of a", link, "element"] -> ["descendant of", link]
+    if (
+        len(nodes) == 3  # noqa: PLR2004 (expected node count for this rule)
+        and _is_text(nodes[0], 'it is a descendant of a')
+        and _is_link(nodes[1])
+        and _is_text(nodes[2], 'element')
+    ):
+        return [('descendant of', ''), nodes[1]]
+    return None
+
+
+def _simplify_condition_bare_link(nodes: list[tuple[str, str]]) -> list[tuple[str, str]] | None:
+    # ["it is" | "it is a", link] -> [link]
+    if len(nodes) == 2 and _is_link(nodes[1]) and nodes[0][1] == '' and nodes[0][0] in {'it is', 'it is a'}:  # noqa: PLR2004 (expected node count for this rule)
+        return [nodes[1]]
+    return None
+
+
+def _simplify_condition_attribute_present(nodes: list[tuple[str, str]]) -> list[tuple[str, str]] | None:
+    # ["the", link (, "or", link)*, "attribute is present"] -> ["attribute is present", link, link, ...]
+    if len(nodes) < 3 or not _is_text(nodes[0], 'the') or not _is_text(nodes[-1], 'attribute is present'):  # noqa: PLR2004 (expected node count for this rule)
+        return None
+    links = []
+    middle = nodes[1:-1]
+    i = 0
+    while i < len(middle):
+        if not _is_link(middle[i]):
+            return None
+        links.append(middle[i])
+        i += 1
+        if i < len(middle):
+            if not _is_text(middle[i], 'or'):
+                return None
+            i += 1
+    return [('attribute is present', ''), *links] if links else None
+
+
+def _simplify_condition_input_state(nodes: list[tuple[str, str]]) -> list[tuple[str, str]] | None:
+    # ["the", link, "attribute is", "not", "in the", link, "state"] -> ["attribute is not in state", link, link]
+    if (
+        len(nodes) == 7  # noqa: PLR2004 (expected node count for this rule)
+        and _is_text(nodes[0], 'the')
+        and _is_link(nodes[1])
+        and _is_text(nodes[2], 'attribute is')
+        and _is_text(nodes[3], 'not')
+        and _is_text(nodes[4], 'in the')
+        and _is_link(nodes[5])
+        and _is_text(nodes[6], 'state')
+    ):
+        return [('attribute is not in state', ''), nodes[1], nodes[5]]
+    return None
+
+
+def _simplify_condition_child_element(nodes: list[tuple[str, str]]) -> list[tuple[str, str]] | None:
+    # ["the element's children include at least one", link, "element"] -> ["at least one child", link]
+    if (
+        len(nodes) == 3  # noqa: PLR2004 (expected node count for this rule)
+        and _is_text(nodes[0], "the element's children include at least one")
+        and _is_link(nodes[1])
+        and _is_text(nodes[2], 'element')
+    ):
+        return [('at least one child', ''), nodes[1]]
+    return None
+
+
+# Literal structural condition-simplification rules, tried in order; first match wins. Each rule
+# matches an exact lead/tail text shape observed in the source's exception prose; an unmatched shape
+# passes through untouched. Rules are mutually exclusive by construction (distinct lead/tail literals
+# and/or tuple counts), so match order doesn't affect the result.
+_CONDITION_SIMPLIFY_RULES = (
+    _simplify_condition_descendant,
+    _simplify_condition_bare_link,
+    _simplify_condition_attribute_present,
+    _simplify_condition_input_state,
+    _simplify_condition_child_element,
+)
+
+
+def _simplify_condition(nodes: list[tuple[str, str]]) -> list[tuple[str, str]]:
+    """Apply the first matching rule in _CONDITION_SIMPLIFY_RULES to a condition node list.
+
+    Returns:
+        The simplified node list, or `nodes` unchanged if no rule matches
+    """
+    for rule in _CONDITION_SIMPLIFY_RULES:
+        result = rule(nodes)
+        if result is not None:
+            return result
+    return nodes
+
+
 def _parse_content_category_elements_if(cell: element.Tag) -> list[tuple[str, str, list[tuple[str, str]]]]:
     """Parse a content-category "Elements with exceptions" cell into (tag, url, condition) triples.
 
     Each item's subject (real tag or special node, resolved the same way as the "Elements" column) is
     followed by an optional condition, decomposed into (text, url) node pairs the same way as
-    AttributeData.description (see _gen_nodes()). A cell containing only '—' (no exceptions) yields
-    nothing.
+    AttributeData.description (see _gen_nodes()), then run through _simplify_condition() and
+    _concat_text_nodes(), in that order. A cell containing only '—' (no exceptions) yields nothing.
 
     Returns:
         List of (tag, url, condition) triples; items with an unrecognized subject are skipped (warned)
@@ -631,7 +749,7 @@ def _parse_content_category_elements_if(cell: element.Tag) -> list[tuple[str, st
         if subject is None:
             logger.warning('⚠️ Content category exception: unrecognized subject node; item skipped: %s', group[0])
             continue
-        condition = list(_gen_nodes(_strip_condition_wrapper(group[1:])))
+        condition = _concat_text_nodes(_simplify_condition(list(_gen_nodes(_strip_condition_wrapper(group[1:])))))
         result.append((*subject, condition))
     return result
 
