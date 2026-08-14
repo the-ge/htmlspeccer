@@ -58,10 +58,9 @@ class AttributeData:
 @dataclass(frozen=True, slots=True)
 class ContentCategoryData:
     name: str
-    elements: set[str] = field(default_factory=set)
-    elements_maybe: list[str] = field(default_factory=list)
-    exceptions: str = ''
     url: str = ''
+    elements: list[tuple[str, str]] = field(default_factory=list)
+    elements_if: list[tuple[str, str, list[tuple[str, str]]]] | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -147,8 +146,18 @@ _SPEC_BASE_URL = 'https://html.spec.whatwg.org/multipage/'
 # None for "no tag restriction". Any other bare anchor text is unrecognized (warned and skipped).
 _SPECIAL_NODES = {'HTML elements': None, 'form-associated custom elements': 'formcustom'}
 
+# Bare (non-<code>-wrapped, non-MathML/SVG) anchor text found in a content-category elements/exceptions
+# cell -> pseudo-tag name. The leading '_' guarantees no collision with any real HTML/SVG/MathML tag
+# name (which must start with a letter) or with a hyphenated custom element tag name. Any other bare
+# anchor text is unrecognized (warned and skipped).
+_CONTENT_CATEGORY_SPECIAL_TAGS = {
+    'autonomous custom elements': '_custom-autonomous',
+    'form-associated custom elements': '_custom-form-associated',
+    'Text': '_text',
+}
+
 # Special cases: phrase -> list of yielded tokens (empty list yields nothing). Used by gen_tags(), which
-# still serves parse_content_categories() and parse_elements(); parse_attributes() no longer uses gen_tags().
+# still serves parse_elements(); parse_attributes() and parse_content_categories() no longer use gen_tags().
 _TAGS_BY_STRING = {
     'autonomous custom elements': [],
     'HTML elements': [],
@@ -172,9 +181,6 @@ _TYPE_BY_PREFIX = {
 
 # Match a list of one-or-more keywords such as `"foo"; "bar"; "the empty string"`
 _ATTRIBUTE_VALUE_REGEX = re.compile(r'^(?:"[a-zA-Z0-9/-]*"|the empty string)(?:; (?:"[a-zA-Z0-9/-]*"|the empty string))*$')
-
-# Match element exceptions like "element (if ...)"
-_TAG_IF_REGEX = re.compile(r'([a-zA-Z0-9-]+) \(if [a-zA-Z0-9\' -]+\)')
 
 
 # ---- Generators for splitting spec strings ----
@@ -220,16 +226,6 @@ def gen_tags(input_str: str) -> Iterator[str]:
             yield from gen_tags(e)
     else:
         yield input_str
-
-
-def gen_tag_ifs(input_str: str) -> Iterator[str]:
-    if not input_str:
-        return
-    parts = input_str.split(';') if ';' in input_str else [input_str]
-    for x in parts:
-        matches = _TAG_IF_REGEX.fullmatch(x.strip())
-        if matches:
-            yield matches.group(1)
 
 
 # ---- Per-section extract-and-parse functions ----
@@ -314,29 +310,38 @@ def parse_aria_roles(soup: BeautifulSoup) -> Iterator[AriaRoleData]:
         logger.error('❌ Trailing <dt> with no following <dd>: %s', name)
 
 
-def _gen_cell_nodes(cell: element.Tag) -> Iterator[tuple[str, str]]:
-    """Recursively decompose `cell` into (text, url) leaf nodes.
+def _gen_nodes(nodes: Iterator) -> Iterator[tuple[str, str]]:
+    """Recursively decompose a node stream into (text, url) leaf nodes.
 
     An <a> tag is an atomic (text, url) leaf using its own href, not descended into. Any other tag is
     transparent: recurse into its children instead of emitting a node for it. Bare text runs become
     (text, '') nodes; whitespace-only text nodes are dropped. Concatenating the first elements with
-    spaces approximately restores the cell's text (whitespace is not preserved exactly).
+    spaces approximately restores the source text (whitespace is not preserved exactly).
 
     Yields:
         (text, url) tuples in document order
     """
-    for child in cell.children:
+    for child in nodes:
         if isinstance(child, element.Tag):
             if child.name == 'a':
                 text = child.get_text().strip()
                 if text:
                     yield text, normalize_url(child['href'].strip(), _SPEC_BASE_URL)
             else:
-                yield from _gen_cell_nodes(child)
+                yield from _gen_nodes(child.children)
         else:
             text = str(child).strip()
             if text:
                 yield text, ''
+
+
+def _gen_cell_nodes(cell: element.Tag) -> Iterator[tuple[str, str]]:
+    """Recursively decompose `cell` into (text, url) leaf nodes; see _gen_nodes() for the rules.
+
+    Yields:
+        (text, url) tuples in document order
+    """
+    yield from _gen_nodes(cell.children)
 
 
 def _apply_value_info_marker(nodes: list[tuple[str, str]]) -> tuple[list[tuple[str, str]], bool]:
@@ -496,35 +501,162 @@ def parse_attributes(soup: BeautifulSoup) -> Iterator[AttributeData]:
         yield from _parse_attribute_cells(name_cell.get_text().strip(), elements_cell, description_cell, value_cell)
 
 
+def _parse_content_category_tag(a: element.Tag) -> tuple[str, str] | None:
+    """Resolve one <a> node from a content-category cell into (tag, url).
+
+    A <code>-wrapped anchor is a real tag: its own text is the tag name, its own href is the url. A
+    bare anchor with a <code> child (e.g. "MathML <code>math</code>") uses the <code> text as the tag
+    name and the anchor's own href as the url. Any other bare anchor is looked up in
+    _CONTENT_CATEGORY_SPECIAL_TAGS; not found is warned and skipped.
+
+    Returns:
+        (tag, url), or None if the anchor is an unrecognized bare anchor
+    """
+    url = normalize_url(a['href'].strip(), _SPEC_BASE_URL)
+    if a.find_parent('code') is not None:
+        return a.get_text().strip(), url
+    code = a.find('code')
+    if code is not None:
+        return code.get_text().strip(), url
+    text = a.get_text().strip()
+    tag = _CONTENT_CATEGORY_SPECIAL_TAGS.get(text)
+    if tag is None:
+        logger.warning('⚠️ Content category: unrecognized special element phrase %r', text)
+        return None
+    return tag, url
+
+
+def _parse_content_category_elements(cell: element.Tag) -> list[tuple[str, str]]:
+    """Parse a content-category "Elements" cell into (tag, url) pairs, in document order.
+
+    Returns:
+        List of (tag, url) pairs; unrecognized bare anchors are skipped (warned)
+    """
+    result = []
+    for a in cell.find_all('a'):
+        parsed = _parse_content_category_tag(a)
+        if parsed is not None:
+            result.append(parsed)
+    return result
+
+
+def _gen_content_category_groups(cell: element.Tag) -> Iterator[list]:
+    """Split a content-category "Elements with exceptions" cell into per-item node groups.
+
+    Items are delimited by a ';' inside a top-level text node; the ';' itself and surrounding
+    whitespace are dropped. Nested tags (e.g. an <a> spanning "hierarchically correct main element")
+    are never split, since only the cell's direct children stream is scanned for the boundary.
+
+    Yields:
+        Lists of nodes (Tag objects and stripped str fragments) making up one item
+    """
+    group: list = []
+    for child in cell.children:
+        if isinstance(child, element.Tag):
+            group.append(child)
+            continue
+        text = str(child)
+        while ';' in text:
+            before, text = text.split(';', 1)
+            before = before.strip()
+            if before:
+                group.append(before)
+            if group:
+                yield group
+            group = []
+        text = text.strip()
+        if text:
+            group.append(text)
+    if group:
+        yield group
+
+
+def _parse_content_category_subject(node: object) -> tuple[str, str] | None:
+    """Resolve a content-category exception item's subject node into (tag, url).
+
+    Returns:
+        (tag, url), or None if `node` isn't a recognized <code> or <a> subject
+    """
+    if not isinstance(node, element.Tag):
+        return None
+    if node.name == 'code':
+        a = node.find('a')
+        return None if a is None else (a.get_text().strip(), normalize_url(a['href'].strip(), _SPEC_BASE_URL))
+    if node.name == 'a':
+        return _parse_content_category_tag(node)
+    return None
+
+
+def _strip_condition_wrapper(nodes: list) -> list:
+    """Strip an optional leading '(' + 'if ' and an optional trailing ')' from an exception's condition.
+
+    Some conditions are wrapped, e.g. "(if it is a descendant of a map element)"; others are bare
+    prose with no parens or 'if' at all, e.g. "that is not inter-element whitespace". Only present
+    wrapper characters are stripped; `nodes` is otherwise returned unchanged.
+
+    Returns:
+        `nodes` with any wrapping '(' + 'if ' / ')' stripped
+    """
+    nodes = list(nodes)
+    if nodes and isinstance(nodes[0], str) and nodes[0].startswith('('):
+        nodes[0] = nodes[0].removeprefix('(').strip().removeprefix('if ').strip()
+        if not nodes[0]:
+            nodes = nodes[1:]
+    if nodes and isinstance(nodes[-1], str) and nodes[-1].endswith(')'):
+        nodes[-1] = nodes[-1].removesuffix(')').strip()
+        if not nodes[-1]:
+            nodes = nodes[:-1]
+    return nodes
+
+
+def _parse_content_category_elements_if(cell: element.Tag) -> list[tuple[str, str, list[tuple[str, str]]]]:
+    """Parse a content-category "Elements with exceptions" cell into (tag, url, condition) triples.
+
+    Each item's subject (real tag or special node, resolved the same way as the "Elements" column) is
+    followed by an optional condition, decomposed into (text, url) node pairs the same way as
+    AttributeData.description (see _gen_nodes()). A cell containing only '—' (no exceptions) yields
+    nothing.
+
+    Returns:
+        List of (tag, url, condition) triples; items with an unrecognized subject are skipped (warned)
+    """
+    if cell.get_text().strip() == '—':
+        return []
+
+    result = []
+    for group in _gen_content_category_groups(cell):
+        if not group:
+            continue
+        subject = _parse_content_category_subject(group[0])
+        if subject is None:
+            logger.warning('⚠️ Content category exception: unrecognized subject node; item skipped: %s', group[0])
+            continue
+        condition = list(_gen_nodes(_strip_condition_wrapper(group[1:])))
+        result.append((*subject, condition))
+    return result
+
+
 def parse_content_categories(soup: BeautifulSoup) -> Iterator[ContentCategoryData]:
     # https://html.spec.whatwg.org/multipage/indices.html#element-content-categories
     rows = soup.find('h3', {'id': 'element-content-categories'}).find_next('tbody').find_all('tr')
     count = _HTML_CELL_COUNT['content_categories']
     for row in rows:
-        cells = [x.get_text().strip() for x in row.find_all(['th', 'td'])]
+        cells = row.find_all(['th', 'td'])
         if len(cells) != count:
             logger.error('❌ Expected %s cells, got %s. Skipping row: %s', count, len(cells), row)
             continue
-        category, elements, exceptions = cells
-        url = f'https://html.spec.whatwg.org/multipage/{row.td.a['href']}'
+        name_cell, elements_cell, exceptions_cell = cells
+        category = ' '.join(name_cell.get_text().strip().split())
+        url = f'https://html.spec.whatwg.org/multipage/{name_cell.a['href']}'
 
-        category = ' '.join(category.split())
-        exceptions = '; '.join(x.strip() for x in exceptions.split(';'))
-        if exceptions == '—':
-            exceptions = ''
-        if category.endswith('*'):
-            exceptions += '; The tabindex attribute can also make any element into interactive content.'
-        category = category.rstrip('*').strip()
-
-        elements_set = set(gen_tags(elements))
-        elements_maybe = list(gen_tag_ifs(exceptions))
+        elements = _parse_content_category_elements(elements_cell)
+        elements_if = _parse_content_category_elements_if(exceptions_cell) or None
 
         yield ContentCategoryData(
             name=category,
             url=url,
-            elements=elements_set,
-            elements_maybe=elements_maybe,
-            exceptions=exceptions,
+            elements=elements,
+            elements_if=elements_if,
         )
 
 
