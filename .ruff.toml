@@ -3,8 +3,9 @@ cache-dir = ".dev/tmp/ruff"
 
 [lint]
 ignore = [
+	"implicit-namespace-package",  # INP001
     # --- temporary ---
-    "missing-copyright-notice",         # CPY001
+    "missing-copyright-notice",    # CPY001
 ]
 
 [lint.per-file-ignores]
