@@ -9,8 +9,9 @@ from config import (
     LOG_LEVEL,
     RAW_DATA_DIR,
 )
-from curating import Curator
-from util import short_path, write_ndjson
+from curating.handler import Curator
+from util.serializing import write_ndjson
+from util.transforming import short_path
 
 logging.basicConfig(level=LOG_LEVEL, format='%(levelname)s: %(message)s')
 logger = logging.getLogger(__name__)

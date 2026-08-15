@@ -10,15 +10,11 @@ from config import (
     DUMP_JSON_KWARGS,
     LOG_LEVEL,
 )
-from publishing import (
-    DIST_COPYRIGHT_FILE,
-    DIST_W3C_LICENSE_FILE,
-    Publisher,
-    build_manifest,
-    copy_licenses,
-    hash_update,
-)
-from util import short_path
+from publishing.handler import Publisher
+from publishing.hash import hash_update
+from publishing.license import DIST_COPYRIGHT_FILE, DIST_W3C_LICENSE_FILE, copy_licenses
+from publishing.output import build_manifest
+from util.transforming import short_path
 
 logging.basicConfig(level=LOG_LEVEL, format='%(levelname)s: %(message)s')
 logger = logging.getLogger(__name__)

@@ -1,6 +1,6 @@
 from config import NORMALIZED_DATA_DIR
-from curating import AriaRoleData, AttributeData
-from util import read_ndjson
+from schema import AriaRoleData, AttributeData
+from util.serializing import read_ndjson
 
 description = "add the 'role' attribute"
 

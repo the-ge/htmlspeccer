@@ -1,8 +1,8 @@
 import dataclasses
 
 from config import NORMALIZED_DATA_DIR
-from curating import InputTypeData
-from util import read_ndjson
+from schema import InputTypeData
+from util.serializing import read_ndjson
 
 description = "add values to 'type'/'input' value enum"
 

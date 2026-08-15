@@ -4,6 +4,9 @@ from pathlib import Path
 # ---- Project root ----
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
+# ---- Known recoverable errors ----
+RECOVERABLE_ERRORS = (AttributeError, ValueError, OSError)
+
 # ---- Directories ----
 DATA_DIR = PROJECT_ROOT / '.dev/data'
 RAW_DATA_DIR = DATA_DIR / 'raw'  # raw spec HTML files
@@ -45,3 +48,6 @@ DUMP_YAML_KWARGS = {'sort_keys': False, 'indent': 2, 'allow_unicode': True, 'wid
 
 # ---- Content hash for published data ----
 DIST_HASH_FILE = DIST_DATA_DIR / 'dist_content.sha256'  # detects real data changes across publish runs
+
+# ---- URLs ----
+SPEC_BASE_URL = 'https://html.spec.whatwg.org/multipage/'  # Base URL for relative spec links
