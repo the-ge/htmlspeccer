@@ -21,10 +21,6 @@ def concat_text_nodes(nodes: list[tuple[str, str]]) -> list[tuple[str, str]]:
         `nodes` with contiguous plain-text runs merged
     """
     result: list[tuple[str, str]] = []
-    if nodes[0][0] in {'A', 'An'}:
-        del nodes[0]  # remove leading common sentece parts
-    if nodes[-1][0] == '.':
-        del nodes[-1]  # remove last dot
     for text, url in nodes:
         stripped = re.sub(_WHITESPACE_REGEX, ' ', text)
         if not url and result and not result[-1][1]:
@@ -35,7 +31,20 @@ def concat_text_nodes(nodes: list[tuple[str, str]]) -> list[tuple[str, str]]:
     return result
 
 
-def gen_nodes(nodes: Iterator) -> Iterator[tuple[str, str]]:
+def _normalize_spec_info(nodes: list[tuple[str, str]]) -> list[tuple[str, str]]:
+    """Remove redundant nodes from the parsed info.
+
+    Returns:
+        `nodes` with the redundant nodes stripped
+    """
+    if nodes and nodes[0][0] in {'A', 'An'}:
+        nodes = nodes[1:]
+    if nodes and nodes[-1][0] == '.':
+        nodes = nodes[:-1]
+    return nodes
+
+
+def _gen_nodes(nodes: Iterator) -> Iterator[tuple[str, str]]:
     """Recursively decompose a node stream into (text, url) leaf nodes.
 
     An <a> tag is an atomic (text, url) leaf using its own href, not descended into. Any other tag is
@@ -53,20 +62,31 @@ def gen_nodes(nodes: Iterator) -> Iterator[tuple[str, str]]:
                 if text:
                     yield text, normalize_url(child['href'].strip(), SPEC_BASE_URL)
             else:
-                yield from gen_nodes(child.children)
+                yield from _gen_nodes(child.children)
         else:
             text = str(child).strip()
             if text:
                 yield text, ''
 
 
-def gen_cell_nodes(cell: element.Tag) -> Iterator[tuple[str, str]]:
-    """Recursively decompose `cell` into (text, url) leaf nodes; see gen_nodes() for the rules.
+def get_nodes(nodes: Iterator) -> list[tuple[str, str]]:
+    """Recursively decompose a node stream into (text, url) leaf nodes; see _gen_nodes() for the rules.
 
-    Yields:
-        (text, url) tuples in document order
+    The result is run through _normalize_spec_info() once, after the full recursive decomposition.
+
+    Returns:
+        (text, url) tuples in document order, normalized
     """
-    yield from gen_nodes(cell.children)
+    return _normalize_spec_info(list(_gen_nodes(nodes)))
+
+
+def get_cell_nodes(cell: element.Tag) -> list[tuple[str, str]]:
+    """Recursively decompose `cell` into (text, url) leaf nodes; see get_nodes() for the rules.
+
+    Returns:
+        (text, url) tuples in document order, normalized
+    """
+    return get_nodes(cell.children)
 
 
 def is_link(node: tuple[str, str]) -> bool:

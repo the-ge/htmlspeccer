@@ -4,7 +4,7 @@ from collections.abc import Iterator
 from bs4 import BeautifulSoup, element
 
 from config import SPEC_BASE_URL
-from curating.nodes import concat_text_nodes, gen_nodes, is_link, is_text
+from curating.nodes import concat_text_nodes, get_nodes, is_link, is_text
 from schema import ContentCategoryData
 from util.transforming import normalize_url
 
@@ -248,7 +248,7 @@ def _parse_content_category_elements_if(cell: element.Tag) -> list[tuple[str, st
 
     Each item's subject (real tag or special node, resolved the same way as the "Elements" column) is
     followed by an optional condition, decomposed into (text, url) node pairs the same way as
-    AttributeData.description (see gen_nodes()), then run through concat_text_nodes() and
+    AttributeData.description (see get_nodes()), then run through concat_text_nodes() and
     _simplify_condition(), in that order. A cell containing only '—' (no exceptions) yields nothing.
 
     Returns:
@@ -265,7 +265,7 @@ def _parse_content_category_elements_if(cell: element.Tag) -> list[tuple[str, st
         if subject is None:
             logger.warning('⚠️ Content category exception: unrecognized subject node; item skipped: %s', group[0])
             continue
-        condition = _simplify_condition(concat_text_nodes(list(gen_nodes(_strip_condition_wrapper(group[1:])))))
+        condition = _simplify_condition(concat_text_nodes(get_nodes(_strip_condition_wrapper(group[1:]))))
         result.append((*subject, condition))
     return result
 

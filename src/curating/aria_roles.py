@@ -4,7 +4,7 @@ from collections.abc import Iterator
 
 from bs4 import BeautifulSoup, element
 
-from curating.nodes import concat_text_nodes, gen_cell_nodes
+from curating.nodes import concat_text_nodes, get_cell_nodes
 from schema import AriaRoleData
 
 logger = logging.getLogger(__name__)
@@ -29,7 +29,7 @@ def parse_aria_roles(soup: BeautifulSoup) -> Iterator[AriaRoleData]:
             if prev != 'dt':
                 logger.error('❌ <dd> not preceded by a <dt>: %s', row)
                 continue
-            description = concat_text_nodes(list(gen_cell_nodes(row)))
+            description = concat_text_nodes(get_cell_nodes(row))
             prev = 'dd'
 
             role_section = soup.find('section', {'id': role_id})

@@ -5,7 +5,7 @@ from collections.abc import Iterator
 from bs4 import BeautifulSoup, element
 
 from config import SPEC_BASE_URL
-from curating.nodes import concat_text_nodes, gen_cell_nodes
+from curating.nodes import concat_text_nodes, get_cell_nodes
 from schema import AttributeData
 from util.transforming import normalize_url
 
@@ -92,7 +92,7 @@ def _parse_attribute_cells(
 ) -> Iterator[AttributeData]:
     """Parse one attribute row's cells into one or more AttributeData entries, split by scope.
 
-    `description` and `value_info` are decomposed via gen_cell_nodes() into (text, url) node lists.
+    `description` and `value_info` are decomposed via get_cell_nodes() into (text, url) node lists.
     A leading '*' marker on the value cell is stripped and sets `is_more_value_info_required` (see
     _apply_value_info_marker()). value_type/value_enum/separator are classified from the value cell's
     joined node text; `value_info` is reset to [] when value_enum ends up populated.
@@ -101,9 +101,9 @@ def _parse_attribute_cells(
         One AttributeData per (scope, scope_url) scope found in the elements cell (see
         _parse_attribute_scopes()); nothing if the elements cell yields no scope at all
     """
-    description = concat_text_nodes(list(gen_cell_nodes(description_cell)))
+    description = concat_text_nodes(get_cell_nodes(description_cell))
 
-    value_nodes, is_more_value_info_required = _apply_value_info_marker(list(gen_cell_nodes(value_cell)))
+    value_nodes, is_more_value_info_required = _apply_value_info_marker(get_cell_nodes(value_cell))
     value_nodes = concat_text_nodes(value_nodes)
     value_type_str = ' '.join(text for text, _ in value_nodes).strip()
 
