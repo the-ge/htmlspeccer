@@ -52,7 +52,8 @@ class ElementData:
 @dataclass(frozen=True, slots=True)
 class ElementKindData:
     name: str
-    tags: set[str] = field(default_factory=set)
+    title: str
+    tags: dict[str, str] = field(default_factory=dict)
     info: str = ''
 
 
