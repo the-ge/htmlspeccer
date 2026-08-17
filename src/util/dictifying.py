@@ -31,15 +31,16 @@ def dictify(xs: list[Any]) -> dict[str, Any]:
             # Merge each value with existing entry
             t = result[key]
             for subkey in t:
-                if isinstance(t[subkey], str):
-                    t[subkey] += '. ' + r[subkey]
-                elif isinstance(t[subkey], set):
-                    t[subkey] = t[subkey].union(r[subkey])
-                elif isinstance(t[subkey], list):
-                    t[subkey].extend(r[subkey])
-                else:
-                    msg = f"Don't know how to merge type '{type(t[subkey]).__name__}' for '{type(x).__name__}.{subkey}' "
-                    raise NotImplementedError(msg)
+                match t[subkey]:
+                    case str():
+                        t[subkey] += '. ' + r[subkey]
+                    case set():
+                        t[subkey] = t[subkey].union(r[subkey])
+                    case list():
+                        t[subkey].extend(r[subkey])
+                    case _:
+                        msg = f"Don't know how to merge type '{type(t[subkey]).__name__}' for '{type(x).__name__}.{subkey}' "
+                        raise NotImplementedError(msg)
         else:
             result[key] = r
 
