@@ -76,18 +76,73 @@ def _gen_nodes(nodes: Iterator) -> Iterator[tuple[str, str]]:
                 yield text, ''
 
 
-def prune_nodes(nodes: list[tuple[str, str]], prunings: dict[int, set[str]]) -> list[tuple[str, str]]:
-    """Remove redundant nodes from the parsed info.
+def prune_nodes(
+    nodes: list[tuple[str, str]],
+    prunings: dict[int | str, set[str]],
+    match_mode: str = 'all',
+) -> list[tuple[str, str]]:
+    """Remove nodes from the parsed info nodes.
+
+    `prunings` keys are either an int (positional: prune the node at that index if its text is in the
+    paired set) or the literal string 'match' (prune by text value, anywhere in `nodes`, regardless of
+    position). Positional entries are applied first, in dict order; 'match' (if present) is applied
+    last, against whatever remains after positional pruning.
+
+    `match_mode` controls 'match' pruning: 'all' drops every node whose text is in the paired set;
+    'first' drops only the first (document-order) matching node.
 
     Returns:
         `nodes` with the redundant nodes stripped
+
+    Raises:
+        ValueError: if `prunings` has a key other than an int or 'match'
     """
     for index, values in prunings.items():
+        if not isinstance(index, int) and index != 'match':
+            msg = f'prunings keys must be an int or "match", got {index!r}'
+            raise ValueError(msg)
+        if index == 'match':
+            continue
         if not nodes:
             continue
         i = index if index >= 0 else len(nodes) + index  # negative index: upper-bounded by len(nodes) above
         if 0 <= i < len(nodes) and nodes[i][0] in values:
             nodes = nodes[:i] + nodes[i + 1:]
+
+    if 'match' in prunings:
+        nodes = prune_matched_nodes(nodes, prunings['match'], match_mode)
+
+    return nodes
+
+
+def prune_matched_nodes(
+    nodes: list[tuple[str, str]],
+    cases: set[str],
+    match_mode: str = 'all',
+) -> list[tuple[str, str]]:
+    """Remove nodes by text value, anywhere in `nodes`, regardless of position.
+
+    `match_mode` controls 'match' pruning: 'all' drops every node whose text is in the paired set;
+    'first' drops only the first (document-order) matching node.
+
+    Returns:
+        `nodes` with the matched nodes stripped
+
+    Raises:
+        ValueError: if `match_mode` is not 'all' or 'first'
+    """
+    if match_mode not in {'all', 'first'}:
+        msg = f'match_mode must be "all" or "first", got {match_mode!r}'
+        raise ValueError(msg)
+
+    if match_mode == 'all':
+        nodes = [n for n in nodes if n[0] not in cases]
+    else:
+        for i, n in enumerate(nodes):
+            if n[0] in cases:
+                nodes = nodes[:i] + nodes[i + 1:]
+                break
+
     return nodes
 
 
