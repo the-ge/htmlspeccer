@@ -10,6 +10,7 @@ logger = logging.getLogger(__name__)
 # Expected cell count in each domain of the online HTML sources
 _HTML_CELL_COUNT = 4
 
+_INPUT_BASE_URL = 'https://html.spec.whatwg.org/dev/input.html'
 
 # ---- Per-section extract-and-parse functions ----
 # Each function takes the soup for its source page and yields typed entities directly. Extraction
@@ -26,10 +27,11 @@ def parse_input_types(soup: BeautifulSoup) -> Iterator[InputTypeData]:
         if len(cells) != count:
             logger.error('❌ Expected %s cells, got %s. Skipping row: %s', count, len(cells), row)
             continue
-        keyword, _, data_type, control_type = cells
+        keyword, state, data_type, control_type = cells
         yield InputTypeData(
             name=keyword,
+            url=f'{_INPUT_BASE_URL}#{row.dfn['id']}',
+            state={'name': state, 'url': f'{_INPUT_BASE_URL}{row.a['href'].strip()}'},
             value_type=data_type,
             control_type=control_type,
-            url=f'https://html.spec.whatwg.org/dev/input.html{row.a['href'].strip()}',
         )

@@ -72,9 +72,10 @@ class GlobalAttributeData:
 @dataclass(frozen=True, slots=True)
 class InputTypeData:
     name: str
+    url: str = ''
+    state: dict[str, str] = field(default_factory=dict)
     value_type: str = ''
     control_type: str = ''
-    url: str = ''
 
 
 # section name -> (page, entity dataclass); drives Curator.get_all() and Publisher.read_data_domains().
