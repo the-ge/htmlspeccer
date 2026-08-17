@@ -35,6 +35,7 @@ class AttributeData:
 @dataclass(frozen=True, slots=True)
 class ContentCategoryData:
     name: str
+    title: str
     url: str = ''
     elements: list[tuple[str, str]] = field(default_factory=list)
     elements_if: list[tuple[str, str, list[tuple[str, str]]]] | None = None

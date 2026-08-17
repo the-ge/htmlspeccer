@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup, element
 from config import SPEC_BASE_URL
 from curating.nodes import concat_text_nodes, get_nodes, is_link, is_text
 from schema import ContentCategoryData
-from util.transforming import normalize_url
+from util.transforming import normalize_url, slugify_by_vocabulary
 
 logger = logging.getLogger(__name__)
 
@@ -274,20 +274,39 @@ def parse_content_categories(soup: BeautifulSoup) -> Iterator[ContentCategoryDat
     # https://html.spec.whatwg.org/multipage/indices.html#element-content-categories
     rows = soup.find('h3', {'id': 'element-content-categories'}).find_next('tbody').find_all('tr')
     count = _HTML_CELL_COUNT
+    slug = None
     for row in rows:
         cells = row.find_all(['th', 'td'])
         if len(cells) != count:
             logger.error('❌ Expected %s cells, got %s. Skipping row: %s', count, len(cells), row)
             continue
         name_cell, elements_cell, exceptions_cell = cells
-        category = ' '.join(name_cell.get_text().strip().split())
+        title = ' '.join(name_cell.get_text().strip().split())
+        slug = slugify_by_vocabulary(title, {
+            'Autocapitalize-and-autocorrect inheriting elements': 'auto-inheriting',
+            'Embedded content': 'embedded',
+            'Flow content': 'flow',
+            'Form-associated elements': 'form-associated',
+            'Heading content': 'heading',
+            'Interactive content': 'interactive',
+            'Labelable elements': 'labelable',
+            'Listed elements': 'listed',
+            'Metadata content': 'metadata',
+            'Palpable content': 'palpable',
+            'Phrasing content': 'phrasing',
+            'Resettable elements': 'resettable',
+            'Script-supporting elements': 'script-supporting',
+            'Sectioning content': 'sectioning',
+            'Submittable elements': 'submittable',
+        })
         url = f'https://html.spec.whatwg.org/multipage/{name_cell.a['href']}'
 
         elements = _parse_content_category_elements(elements_cell)
         elements_if = _parse_content_category_elements_if(exceptions_cell) or None
 
         yield ContentCategoryData(
-            name=category,
+            name=slug,
+            title=title,
             url=url,
             elements=elements,
             elements_if=elements_if,
