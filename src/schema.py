@@ -60,8 +60,8 @@ class ElementKindData:
 @dataclass(frozen=True, slots=True)
 class EventHandlerData:
     name: str
-    applies_to: str = ''
-    urls: set[str] = field(default_factory=set)
+    scope: dict[str, str] = field(default_factory=dict)
+    description: list[tuple[str, str]] = field(default_factory=list)
 
 
 @dataclass(frozen=True, slots=True)

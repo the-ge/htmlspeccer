@@ -3,9 +3,8 @@ from collections.abc import Iterator
 
 from bs4 import BeautifulSoup
 
-from config import SPEC_BASE_URL
+from curating.nodes import concat_text_nodes, get_cell_nodes
 from schema import EventHandlerData
-from util.transforming import deduplicate, normalize_url
 
 logger = logging.getLogger(__name__)
 
@@ -25,14 +24,13 @@ def parse_event_handlers(soup: BeautifulSoup) -> Iterator[EventHandlerData]:
     rows = soup.find('table', {'id': 'ix-event-handlers'}).find_next('tbody').find_all('tr')
     count = _HTML_CELL_COUNT
     for row in rows:
-        cells = [x.get_text().strip() for x in row.find_all(['th', 'td'])]
+        cells = row.find_all(['th', 'td'])
         if len(cells) != count:
             logger.error('❌ Expected %s cells, got %s. Skipping row: %s', count, len(cells), row)
             continue
-        attribute, elements, _, _ = cells
-        urls = deduplicate(normalize_url(x['href'].strip(), SPEC_BASE_URL) for x in row.find_all('a'))
+        name_cell, scope_cell, description_cell, _ = cells
         yield EventHandlerData(
-            name=attribute,
-            applies_to=elements,
-            urls=set(urls),
+            name=name_cell.get_text().strip(),
+            scope={a.get_text().strip(): a['href'].strip() for a in scope_cell.find_all('a')},
+            description=concat_text_nodes(get_cell_nodes(description_cell))
         )
