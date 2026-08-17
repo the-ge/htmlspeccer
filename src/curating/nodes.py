@@ -31,17 +31,24 @@ def concat_text_nodes(nodes: list[tuple[str, str]]) -> list[tuple[str, str]]:
     return result
 
 
-def _normalize_spec_info(nodes: list[tuple[str, str]]) -> list[tuple[str, str]]:
-    """Remove redundant nodes from the parsed info.
+def get_cell_nodes(cell: element.Tag) -> list[tuple[str, str]]:
+    """Recursively decompose `cell` into (text, url) leaf nodes; see get_nodes() for the rules.
 
     Returns:
-        `nodes` with the redundant nodes stripped
+        (text, url) tuples in document order, normalized
     """
-    if nodes and nodes[0][0] in {'A', 'An'}:
-        nodes = nodes[1:]
-    if nodes and nodes[-1][0] == '.':
-        nodes = nodes[:-1]
-    return nodes
+    return get_nodes(cell.children)
+
+
+def get_nodes(nodes: Iterator) -> list[tuple[str, str]]:
+    """Recursively decompose a node stream into (text, url) leaf nodes; see _gen_nodes() for the rules.
+
+    The result is run through _normalize_spec_info() once, after the full recursive decomposition.
+
+    Returns:
+        (text, url) tuples in document order, normalized
+    """
+    return _normalize_spec_info(list(_gen_nodes(nodes)))
 
 
 def _gen_nodes(nodes: Iterator) -> Iterator[tuple[str, str]]:
@@ -69,24 +76,17 @@ def _gen_nodes(nodes: Iterator) -> Iterator[tuple[str, str]]:
                 yield text, ''
 
 
-def get_nodes(nodes: Iterator) -> list[tuple[str, str]]:
-    """Recursively decompose a node stream into (text, url) leaf nodes; see _gen_nodes() for the rules.
-
-    The result is run through _normalize_spec_info() once, after the full recursive decomposition.
+def _normalize_spec_info(nodes: list[tuple[str, str]]) -> list[tuple[str, str]]:
+    """Remove redundant nodes from the parsed info.
 
     Returns:
-        (text, url) tuples in document order, normalized
+        `nodes` with the redundant nodes stripped
     """
-    return _normalize_spec_info(list(_gen_nodes(nodes)))
-
-
-def get_cell_nodes(cell: element.Tag) -> list[tuple[str, str]]:
-    """Recursively decompose `cell` into (text, url) leaf nodes; see get_nodes() for the rules.
-
-    Returns:
-        (text, url) tuples in document order, normalized
-    """
-    return get_nodes(cell.children)
+    if nodes and nodes[0][0] in {'A', 'An'}:
+        nodes = nodes[1:]
+    if nodes and nodes[-1][0] == '.':
+        nodes = nodes[:-1]
+    return nodes
 
 
 def is_link(node: tuple[str, str]) -> bool:
