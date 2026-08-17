@@ -38,8 +38,8 @@ def dictify(xs: list[Any]) -> dict[str, Any]:
                 elif isinstance(t[subkey], list):
                     t[subkey].extend(r[subkey])
                 else:
-                    msg = "Don't know how to merge type %s for key %s"
-                    raise NotImplementedError(msg, type(t[subkey]).__name__, subkey)
+                    msg = f"Don't know how to merge type '{type(t[subkey]).__name__}' for key '{subkey}'"
+                    raise NotImplementedError(msg)
         else:
             result[key] = r
 
