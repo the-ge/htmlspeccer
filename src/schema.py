@@ -35,7 +35,7 @@ class AttributeData:
 @dataclass(frozen=True, slots=True)
 class ContentCategoryData:
     name: str
-    title: str
+    title: str = ''
     url: str = ''
     elements: list[tuple[str, str]] = field(default_factory=list)
     elements_if: list[tuple[str, str, list[tuple[str, str]]]] | None = None
@@ -53,7 +53,7 @@ class ElementData:
 @dataclass(frozen=True, slots=True)
 class ElementKindData:
     name: str
-    title: str
+    title: str = ''
     tags: dict[str, str] = field(default_factory=dict)
     info: str = ''
 
