@@ -1,7 +1,12 @@
+import logging
 from collections.abc import Iterable
 from pathlib import Path
 
+from slugify import slugify
+
 from config import PROJECT_ROOT
+
+logger = logging.getLogger(__name__)
 
 
 def deduplicate(items: Iterable[str]) -> list[str]:
@@ -32,6 +37,19 @@ def short_path(path: Path) -> str:
         return str(path.relative_to(PROJECT_ROOT))
     except ValueError:
         return str(path)
+
+
+def slugify_by_vocabulary(text: str, slugified: dict[str, str]) -> str:
+    """Slugify text, first by looking into the provided vocabulary, then via the slugify module.
+
+    Returns:
+        The slugified text
+    """
+    if text in slugified:
+        return slugified[text]
+
+    logger.warning("⚠️ not found in vocabulary: '%s'", text)
+    return slugify(text)
 
 
 def sort_top_level(d: dict) -> dict:

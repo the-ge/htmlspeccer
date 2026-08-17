@@ -2,20 +2,11 @@ import logging
 from collections.abc import Iterator
 
 from bs4 import BeautifulSoup
-from slugify import slugify
 
 from schema import ElementKindData
+from util.transforming import slugify_by_vocabulary
 
 logger = logging.getLogger(__name__)
-
-_SLUGS = {
-    'Escapable raw text elements': 'escapable',
-    'Foreign elements': 'foreign',
-    'Normal elements': 'normal',
-    'Raw text elements': 'raw',
-    'The template element': 'template',
-    'Void elements': 'void',
-}
 
 
 # ---- Per-section extract-and-parse functions ----
@@ -35,11 +26,14 @@ def parse_element_kinds(soup: BeautifulSoup) -> Iterator[ElementKindData]:
             if prev not in {None, 'dd'}:
                 logger.error('❌ <dt> not preceded by a <dd>: %s', row)
             title = row.dfn.get_text().strip()  # literal text; slugify() happens below
-            if title in _SLUGS:
-                slug = _SLUGS[title]
-            else:
-                logger.warning('⚠️ title not in _SLUGS dict: %s', title)
-                slug = slugify(title)
+            slug = slugify_by_vocabulary(title, {
+                'Escapable raw text elements': 'escapable',
+                'Foreign elements': 'foreign',
+                'Normal elements': 'normal',
+                'Raw text elements': 'raw',
+                'The template element': 'template',
+                'Void elements': 'void',
+            })
             prev = 'dt'
         elif row.name == 'dd':
             if prev != 'dt':
