@@ -44,10 +44,14 @@ class ContentCategoryData:
 @dataclass(frozen=True, slots=True)
 class ElementData:
     name: str
+    summary_url: str = ''
+    semantics_url: str = ''
     description: str = ''
-    categories: set[str] = field(default_factory=set)
-    attributes: set[str] = field(default_factory=set)
-    children: set[str] = field(default_factory=set)
+    categories: dict[str, str] = field(default_factory=dict)
+    parents: dict[str, str] = field(default_factory=dict)
+    children: dict[str, str] = field(default_factory=dict)
+    attributes: dict[str, str] = field(default_factory=dict)
+    interface: dict[str, str] = field(default_factory=dict)
 
 
 @dataclass(frozen=True, slots=True)
