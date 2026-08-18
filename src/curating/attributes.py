@@ -45,19 +45,6 @@ _VALUE_TYPE_BY_STRING = {
 }
 
 
-# ---- Generators for splitting spec strings ----
-
-
-def gen_attribute_value_enums(input_str: str) -> Iterator[str]:
-    if _VALUE_REGEX.fullmatch(input_str):
-
-        def process_keyword(keyword: str) -> str:
-            keyword = keyword.strip()
-            return '' if keyword == 'the empty string' else keyword.strip('"')
-
-        yield from map(process_keyword, input_str.split(';'))
-
-
 # ---- Per-section extract-and-parse functions ----
 # Each function takes the soup for its source page and yields typed entities directly. Extraction
 # (cell/anchor text out of the soup, stripped of surrounding whitespace only) and interpretation
@@ -97,7 +84,7 @@ def _parse_attribute_cells(
     value_nodes = concat_text_nodes(value_nodes)
     value_type_str = ' '.join(text for text, _ in value_nodes).strip()
 
-    value_enum = set(gen_attribute_value_enums(value_type_str))
+    value_enum = set(_gen_attribute_value_enums(value_type_str))
     if value_enum:
         value_type, separator, value_info = 'enum', '', []
     else:
@@ -220,3 +207,16 @@ def _apply_value_info_marker(nodes: list[tuple[str, str]]) -> tuple[list[tuple[s
         result.append((text, url))
         prev_was_anchor = bool(url)
     return result, found
+
+
+# ---- Generators for splitting spec strings ----
+
+
+def _gen_attribute_value_enums(input_str: str) -> Iterator[str]:
+    if _VALUE_REGEX.fullmatch(input_str):
+
+        def process_keyword(keyword: str) -> str:
+            keyword = keyword.strip()
+            return '' if keyword == 'the empty string' else keyword.strip('"')
+
+        yield from map(process_keyword, input_str.split(';'))

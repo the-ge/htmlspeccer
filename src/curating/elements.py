@@ -46,7 +46,7 @@ def parse_elements(soup: BeautifulSoup) -> Iterator[ElementData]:
             continue
         name_cell, description_cell, categories_cell, parents_cell, children_cell, attributes_cell, interface_cell = cells
 
-        names = list(gen_tags(name_cell.get_text().strip()))
+        names = list(_gen_tags(name_cell.get_text().strip()))
         urls_by_name = dict(zip(names, _parse_element_name_urls(name_cell, names), strict=True))
 
         attributes = _cell_dict(attributes_cell)
@@ -140,7 +140,7 @@ def _cell_dict(cell: element.Tag) -> dict[str, str]:
 # ---- Generators for splitting spec strings ----
 
 
-def gen_tags(input_str: str) -> Iterator[str]:
+def _gen_tags(input_str: str) -> Iterator[str]:
     input_str = input_str.strip()
     if not input_str:
         return
@@ -152,9 +152,9 @@ def gen_tags(input_str: str) -> Iterator[str]:
 
     if ';' in input_str:
         for e in re.split(r'\s*;\s*', input_str.strip(string.whitespace + ';')):
-            yield from gen_tags(e.strip())
+            yield from _gen_tags(e.strip())
     elif ',' in input_str:
         for e in re.split(r'\s*,\s*', input_str.strip(string.whitespace + ',')):
-            yield from gen_tags(e)
+            yield from _gen_tags(e)
     else:
         yield input_str
