@@ -1,14 +1,15 @@
-extend = "$RUFF_SHARED_CFGFILE"
+[tool.ruff]
+extend = "$DEFAULT_PROJECT_CFG"
 cache-dir = ".dev/tmp/ruff"
 
-[lint]
+[tool.ruff.lint]
 ignore = [
 	"implicit-namespace-package",  # INP001
     # --- temporary ---
     "missing-copyright-notice",    # CPY001
 ]
 
-[lint.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "**/.dev/emendations/*/*.py" = [
 	"invalid-module-name",        # N999
 	"implicit-namespace-package", # INP001
