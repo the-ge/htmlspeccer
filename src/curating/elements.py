@@ -29,56 +29,45 @@ _TAGS_BY_STRING = {
 }
 
 
-# ---- Generators for splitting spec strings ----
+# ---- Per-section extract-and-parse functions ----
+# Each function takes the soup for its source page and yields typed entities directly. Extraction
+# (cell/anchor text out of the soup, stripped of surrounding whitespace only) and interpretation
+# (splitting, typing, spec-specific logic) are no longer separate stages.
 
 
-def gen_tags(input_str: str) -> Iterator[str]:
-    input_str = input_str.strip()
-    if not input_str:
-        return
+def parse_elements(soup: BeautifulSoup) -> Iterator[ElementData]:
+    # https://html.spec.whatwg.org/multipage/indices.html#elements-3
+    rows = soup.find('h3', {'id': 'elements-3'}).find_next('tbody').find_all('tr')
+    count = _HTML_CELL_COUNT
+    for row in rows:
+        cells = row.find_all(['th', 'td'])
+        if len(cells) != count:
+            logger.error('❌ Expected %s cells, got %s. Skipping row: %s', count, len(cells), row)
+            continue
+        name_cell, description_cell, categories_cell, parents_cell, children_cell, attributes_cell, interface_cell = cells
 
-    # 1) Handle known special phrases
-    if input_str in _TAGS_BY_STRING:
-        yield from _TAGS_BY_STRING[input_str]
-        return
+        names = list(gen_tags(name_cell.get_text().strip()))
+        urls_by_name = dict(zip(names, _parse_element_name_urls(name_cell, names), strict=True))
 
-    if ';' in input_str:
-        for e in re.split(r'\s*;\s*', input_str.strip(string.whitespace + ';')):
-            yield from gen_tags(e.strip())
-    elif ',' in input_str:
-        for e in re.split(r'\s*,\s*', input_str.strip(string.whitespace + ',')):
-            yield from gen_tags(e)
-    else:
-        yield input_str
+        attributes = _cell_dict(attributes_cell)
+        attributes.pop('globals', None)
+
+        for e in sorted(names):
+            summary_url, semantics_url = urls_by_name[e]
+            yield ElementData(
+                name=e,
+                summary_url=summary_url,
+                semantics_url=semantics_url,
+                description=description_cell.get_text().strip(),
+                categories=_cell_dict(categories_cell),
+                parents=_cell_dict(parents_cell),
+                children=_cell_dict(children_cell),
+                attributes=attributes,
+                interface=_cell_dict(interface_cell),
+            )
 
 
 # ---- Cell parsing helpers ----
-
-
-def _cell_dict(cell: element.Tag) -> dict[str, str]:
-    """Build a {name: url} dict from a cell's nodes, via get_cell_nodes().
-
-    A cell with no linked node at all (e.g. a literal 'none'/'empty'/'—' parents/content-model cell)
-    yields {}. Otherwise every node is kept: linked nodes as (text, url); bare nodes (footnote
-    markers, ';' separators, or genuine bare keywords like embed's attributes cell 'any') as
-    (text, '') once stripped of surrounding whitespace/';'/'*' noise, dropped only if nothing
-    remains after that strip.
-
-    Returns:
-        {name: url} dict, in document order
-    """
-    nodes = get_cell_nodes(cell)
-    if not any(url for _, url in nodes):
-        return {}
-
-    result = {}
-    for text, url in nodes:
-        if not url:
-            text = text.strip(string.whitespace + ';*')  # noqa: PLW2901
-            if not text:
-                continue
-        result[text] = url
-    return result
 
 
 def _parse_element_name_urls(name_cell: element.Tag, names: list[str]) -> list[tuple[str, str]]:
@@ -122,39 +111,50 @@ def _parse_element_name_urls(name_cell: element.Tag, names: list[str]) -> list[t
     ] * len(names)
 
 
-# ---- Per-section extract-and-parse functions ----
-# Each function takes the soup for its source page and yields typed entities directly. Extraction
-# (cell/anchor text out of the soup, stripped of surrounding whitespace only) and interpretation
-# (splitting, typing, spec-specific logic) are no longer separate stages.
+def _cell_dict(cell: element.Tag) -> dict[str, str]:
+    """Build a {name: url} dict from a cell's nodes, via get_cell_nodes().
+
+    A cell with no linked node at all (e.g. a literal 'none'/'empty'/'—' parents/content-model cell)
+    yields {}. Otherwise every node is kept: linked nodes as (text, url); bare nodes (footnote
+    markers, ';' separators, or genuine bare keywords like embed's attributes cell 'any') as
+    (text, '') once stripped of surrounding whitespace/';'/'*' noise, dropped only if nothing
+    remains after that strip.
+
+    Returns:
+        {name: url} dict, in document order
+    """
+    nodes = get_cell_nodes(cell)
+    if not any(url for _, url in nodes):
+        return {}
+
+    result = {}
+    for text, url in nodes:
+        if not url:
+            text = text.strip(string.whitespace + ';*')  # noqa: PLW2901
+            if not text:
+                continue
+        result[text] = url
+    return result
 
 
-def parse_elements(soup: BeautifulSoup) -> Iterator[ElementData]:
-    # https://html.spec.whatwg.org/multipage/indices.html#elements-3
-    rows = soup.find('h3', {'id': 'elements-3'}).find_next('tbody').find_all('tr')
-    count = _HTML_CELL_COUNT
-    for row in rows:
-        cells = row.find_all(['th', 'td'])
-        if len(cells) != count:
-            logger.error('❌ Expected %s cells, got %s. Skipping row: %s', count, len(cells), row)
-            continue
-        name_cell, description_cell, categories_cell, parents_cell, children_cell, attributes_cell, interface_cell = cells
+# ---- Generators for splitting spec strings ----
 
-        names = list(gen_tags(name_cell.get_text().strip()))
-        urls_by_name = dict(zip(names, _parse_element_name_urls(name_cell, names), strict=True))
 
-        attributes = _cell_dict(attributes_cell)
-        attributes.pop('globals', None)
+def gen_tags(input_str: str) -> Iterator[str]:
+    input_str = input_str.strip()
+    if not input_str:
+        return
 
-        for e in sorted(names):
-            summary_url, semantics_url = urls_by_name[e]
-            yield ElementData(
-                name=e,
-                summary_url=summary_url,
-                semantics_url=semantics_url,
-                description=description_cell.get_text().strip(),
-                categories=_cell_dict(categories_cell),
-                parents=_cell_dict(parents_cell),
-                children=_cell_dict(children_cell),
-                attributes=attributes,
-                interface=_cell_dict(interface_cell),
-            )
+    # 1) Handle known special phrases
+    if input_str in _TAGS_BY_STRING:
+        yield from _TAGS_BY_STRING[input_str]
+        return
+
+    if ';' in input_str:
+        for e in re.split(r'\s*;\s*', input_str.strip(string.whitespace + ';')):
+            yield from gen_tags(e.strip())
+    elif ',' in input_str:
+        for e in re.split(r'\s*,\s*', input_str.strip(string.whitespace + ',')):
+            yield from gen_tags(e)
+    else:
+        yield input_str
