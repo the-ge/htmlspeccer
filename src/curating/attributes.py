@@ -30,16 +30,6 @@ _SEPARATOR_BY_SUBSTRING = {
 # None for "no tag restriction". Any other bare anchor text is unrecognized (warned and skipped).
 _SPECIAL_NODES = {'HTML elements': None, 'form-associated custom elements': 'formcustom'}
 
-# Special cases: phrase -> list of yielded tokens (empty list yields nothing). Used by gen_tags(), which
-# still serves parse_elements(); parse_attributes() and parse_content_categories() no longer use gen_tags().
-_TAGS_BY_STRING = {
-    'autonomous custom elements': [],
-    'HTML elements': [],
-    'form-associated custom elements': ['custom'],
-    'MathML math': ['math'],
-    'SVG svg': ['svg'],
-}
-
 # Match a list of one-or-more keywords such as `"foo"; "bar"; "the empty string"`
 _VALUE_REGEX = re.compile(r'^(?:"[a-zA-Z0-9/-]*"|the empty string)(?:; (?:"[a-zA-Z0-9/-]*"|the empty string))*$')
 
