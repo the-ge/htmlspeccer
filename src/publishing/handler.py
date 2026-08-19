@@ -6,11 +6,10 @@ from config import (
     DIST_JSON_DATA_DIR,
     DIST_YAML_DATA_DIR,
 )
-from publishing.output import write_json_file, write_yaml_file, write_yaml_files
+from publishing.output import write_domain
 from schema import CLASS_FROM_DOMAIN
-from util.dictifying import dictify, dictify_attributes
+from util.dictifying import dictify, dictify_attributes, segregate_by_datatype
 from util.serializing import make_serializable, read_ndjson
-from util.transforming import short_path
 
 logger = logging.getLogger(__name__)
 
@@ -22,49 +21,66 @@ class Publisher:
         self.input_data_dir = input_data_dir
         self.manifest_path = manifest_path
 
-    def read_data_domains(self) -> dict[str, dict]:
-        """Load each section's entities from CURATED_DATA_DIR.
+    def read_data_domains(self) -> tuple[dict[str, dict], dict[str, dict[str, dict]]]:
+        """Load each data domain's entities from CURATED_DATA_DIR, group into the published shape.
 
-        Is using its manifest as the index, and group them by name (and by scope, for attributes)
-        into the published shape.
+        Uses the data domain's manifest entry as the index. Entities are grouped by name (and by scope,
+        for attributes) into the published shape. 'aria_roles' is further segregated by property type
+        into 'spec'/'docs' datatypes rather than added to the flat `results` dict.
 
         Returns:
-            JSON-serializable dict (sets become sorted lists)
+            (results, segregated_results): `results` is a JSON-serializable dict of unsegregated data domains;
+            `segregated_results` is {domain: {datatype: JSON-serializable dict}} for segregated data domains
+            (sets become sorted lists in both)
         """
         manifest = json.loads(self.manifest_path.read_text(encoding='utf-8'))
         results = {}
-        for section in manifest:
-            cls = CLASS_FROM_DOMAIN[section]
-            entries = read_ndjson(self.input_data_dir / f'{section}.ndjson', cls)
-            dictifier = dictify_attributes if section == 'attributes' else dictify
-            results[section] = make_serializable(dictifier(entries))
-        return results
+        segregated_results = {}
+        for domain in manifest:
+            cls = CLASS_FROM_DOMAIN[domain]
+            entries = read_ndjson(self.input_data_dir / f'{domain}.ndjson', cls)
+
+            if domain == 'aria_roles':
+                by_datatype = {
+                    'spec': {
+                        'is_abstract', 'parents', 'children',
+                        'states.deprecated_since', 'properties.deprecated_since',
+                    },
+                    'docs': {'url', 'description', 'states.url', 'properties.url'},
+                }
+                segregated_domains = segregate_by_datatype(entries, by_datatype)
+                segregated_results[domain] = {
+                    datatype: make_serializable(dictify(domains[domain]))
+                    for datatype, domains in segregated_domains.items()
+                }
+                continue
+
+            dictifier = dictify_attributes if domain == 'attributes' else dictify
+            results[domain] = make_serializable(dictifier(entries))
+        return results, segregated_results
 
     def publish(self) -> dict[str, int]:
-        """Write dist JSON+YAML for each domain.
+        """Write dist JSON+YAML for each domain, segregated or not.
 
         Returns:
-            Per-domain item counts (manifest entries)
+            Per-domain item counts (manifest entries); segregated data domains get two entries each,
+            keyed f'{domain}_{datatype}' (e.g. 'aria_roles_spec', 'aria_roles_docs')
         """
         DIST_JSON_DATA_DIR.mkdir(parents=True, exist_ok=True)
         DIST_YAML_DATA_DIR.mkdir(parents=True, exist_ok=True)
 
-        results = self.read_data_domains()
+        results, segregated_results = self.read_data_domains()
         counts = {}
-        for name, data in results.items():
-            output_path = DIST_JSON_DATA_DIR / f'{name}.json'
-            write_json_file(data, output_path)
-            logger.info('📦 Published %s', short_path(output_path))
 
-            if isinstance(data, dict):
-                yaml_subdir = DIST_YAML_DATA_DIR / name
-                item_count = write_yaml_files(data, yaml_subdir)
-                counts[name] = item_count
-                logger.info('📦 Published %s individual YAML files to %s', item_count, short_path(yaml_subdir))
-            else:
-                yaml_path = DIST_YAML_DATA_DIR / f'{name}.yaml'
-                write_yaml_file(data, yaml_path)
-                counts[name] = len(data)
-                logger.info('📦 Published %s', short_path(yaml_path))
+        for name, data in results.items():
+            counts[name] = write_domain(name, data, DIST_JSON_DATA_DIR, DIST_YAML_DATA_DIR)
+
+        for domain, by_datatype in segregated_results.items():
+            for datatype, data in by_datatype.items():
+                json_dir = DIST_JSON_DATA_DIR / datatype
+                yaml_dir = DIST_YAML_DATA_DIR / datatype
+                json_dir.mkdir(parents=True, exist_ok=True)
+                yaml_dir.mkdir(parents=True, exist_ok=True)
+                counts[f'{domain}_{datatype}'] = write_domain(domain, data, json_dir, yaml_dir)
 
         return counts

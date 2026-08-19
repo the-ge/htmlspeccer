@@ -20,6 +20,25 @@ class AriaRoleData:
 
 
 @dataclass(frozen=True, slots=True)
+class AriaRoleDocs:
+    name: str
+    url: str = ''
+    description: list[tuple[str, str]] = field(default_factory=list)
+    states: dict[str, str] = field(default_factory=dict)
+    properties: dict[str, str] = field(default_factory=dict)
+
+
+@dataclass(frozen=True, slots=True)
+class AriaRoleSpec:
+    name: str
+    is_abstract: bool = False
+    parents: set[str] = field(default_factory=set)
+    children: set[str] = field(default_factory=set)
+    states: dict[str, str] = field(default_factory=dict)
+    properties: dict[str, str] = field(default_factory=dict)
+
+
+@dataclass(frozen=True, slots=True)
 class AttributeData:
     name: str
     scope: str | None = None
@@ -97,4 +116,7 @@ CURATION_MAP: dict[str, tuple[str, type]] = {
 }
 
 # Publishing data domain name -> entity dataclass.
-CLASS_FROM_DOMAIN: dict[str, type] = {domain: cls for domain, (_, cls) in CURATION_MAP.items()}
+CLASS_FROM_DOMAIN: dict[str, type] = {domain: cls for domain, (_, cls) in CURATION_MAP.items()} | {
+    'aria_role_spec': AriaRoleSpec,
+    'aria_role_docs': AriaRoleDocs,
+}

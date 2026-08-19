@@ -37,7 +37,30 @@ def build_manifest(counts: dict[str, int]) -> dict:
     }
 
 
-def write_json_file(data: dict, path: Path) -> None:
+def write_domain(name: str, data: dict | list, json_dir: Path, yaml_dir: Path) -> int:
+    """Write one domain's dist JSON (and per-item or single YAML) into `json_dir`/`yaml_dir`.
+
+    Returns:
+        Item count for the manifest
+    """
+    output_path = json_dir / f'{name}.json'
+    _write_json_file(data, output_path)
+    logger.info('📦 Published %s', short_path(output_path))
+
+    if isinstance(data, dict):
+        yaml_subdir = yaml_dir / name
+        item_count = _write_yaml_files(data, yaml_subdir)
+        logger.info('📦 Published %s individual YAML files to %s', item_count, short_path(yaml_subdir))
+    else:
+        yaml_path = yaml_dir / f'{name}.yaml'
+        _write_yaml_file(data, yaml_path)
+        item_count = len(data)
+        logger.info('📦 Published %s', short_path(yaml_path))
+
+    return item_count
+
+
+def _write_json_file(data: dict, path: Path) -> None:
     """Write the aggregate result for one category as JSON. Data is already JSON-serializable."""
     if isinstance(data, dict):
         data = sort_top_level(data)
@@ -47,7 +70,7 @@ def write_json_file(data: dict, path: Path) -> None:
     )
 
 
-def write_yaml_file(data: list, path: Path) -> None:
+def _write_yaml_file(data: list, path: Path) -> None:
     """Write a list category (global_attributes) to a single YAML file."""
     path.write_text(
         yaml.dump(data, **DUMP_YAML_KWARGS),
@@ -55,7 +78,7 @@ def write_yaml_file(data: list, path: Path) -> None:
     )
 
 
-def write_yaml_files(data: dict, dir_path: Path) -> int:
+def _write_yaml_files(data: dict, dir_path: Path) -> int:
     """Write each item as its own YAML file, named after its key, e.g. dir_path/abbr.yaml.
 
     Returns:
