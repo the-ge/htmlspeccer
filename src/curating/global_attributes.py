@@ -24,7 +24,7 @@ def parse_global_attributes(soup: BeautifulSoup) -> Iterator[GlobalAttributeData
 
     Data source page: https://html.spec.whatwg.org/multipage/dom.html#global-attributes.
 
-    Returns:
+    Yields:
         Typed entities
     """
     for name, url in _SUPER_GLOBALS.items():

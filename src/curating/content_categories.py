@@ -28,7 +28,7 @@ def parse_content_categories(soup: BeautifulSoup) -> Iterator[ContentCategoryDat
 
     Data source page: https://html.spec.whatwg.org/multipage/indices.html#element-content-categories.
 
-    Returns:
+    Yields:
         Typed entities
     """
     rows = soup.find('h3', {'id': 'element-content-categories'}).find_next('tbody').find_all('tr')

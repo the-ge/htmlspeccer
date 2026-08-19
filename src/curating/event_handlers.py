@@ -18,7 +18,7 @@ def parse_event_handlers(soup: BeautifulSoup) -> Iterator[EventHandlerData]:
 
     Data source page: https://html.spec.whatwg.org/multipage/indices.html#ix-event-handlers.
 
-    Returns:
+    Yields:
         Typed entities
     """
     rows = soup.find('table', {'id': 'ix-event-handlers'}).find_next('tbody').find_all('tr')

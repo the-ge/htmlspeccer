@@ -14,7 +14,7 @@ def parse_element_kinds(soup: BeautifulSoup) -> Iterator[ElementKindData]:
 
     Data source page: https://html.spec.whatwg.org/dev/syntax.html#elements-2.
 
-    Returns:
+    Yields:
         Typed entities
     """
     rows = soup.find('h4', {'id': 'elements-2'}).find_next('dl').find_all(['dt', 'dd'], recursive=False)

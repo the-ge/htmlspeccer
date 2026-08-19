@@ -34,7 +34,7 @@ def parse_elements(soup: BeautifulSoup) -> Iterator[ElementData]:
 
     Data source page: https://html.spec.whatwg.org/multipage/indices.html#elements-3.
 
-    Returns:
+    Yields:
         Typed entities
     """
     rows = soup.find('h3', {'id': 'elements-3'}).find_next('tbody').find_all('tr')

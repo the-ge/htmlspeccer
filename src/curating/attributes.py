@@ -50,7 +50,7 @@ def parse_attributes(soup: BeautifulSoup) -> Iterator[AttributeData]:
 
     Data source page: https://html.spec.whatwg.org/multipage/indices.html#attributes-1.
 
-    Returns:
+    Yields:
         Typed entities
     """
     rows = soup.find('table', {'id': 'attributes-1'}).find_next('tbody').find_all('tr')

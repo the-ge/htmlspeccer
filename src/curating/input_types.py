@@ -18,7 +18,7 @@ def parse_input_types(soup: BeautifulSoup) -> Iterator[InputTypeData]:
 
     Data source page: https://html.spec.whatwg.org/dev/input.html#attr-input-type-keywords.
 
-    Returns:
+    Yields:
         Typed entities
     """
     rows = soup.find('table', {'id': 'attr-input-type-keywords'}).find_next('tbody').find_all('tr')
