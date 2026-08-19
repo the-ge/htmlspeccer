@@ -83,7 +83,7 @@ def write_ndjson(path: Path, rows: Iterable[Any]) -> int:
     return count
 
 
-def _restore_tuple_lists(value: list | str | None, tp: Any) -> Any:  # noqa: ANN401 (@todo tighten types)
+def _restore_tuple_lists(value: list | str | None, tp: tuple) -> list[tuple]:
     """Recursively restore a list[tuple[...]] shape (optionally `| None`) from JSON's list-of-lists form.
 
     Each tuple element is itself recursively restored, so a nested shape like
@@ -102,7 +102,7 @@ def _restore_tuple_lists(value: list | str | None, tp: Any) -> Any:  # noqa: ANN
     return [tuple(starmap(_restore_tuple_lists, zip(item, elem_types, strict=True))) for item in value]
 
 
-def _tuple_list_item_type(tp: Any) -> Any:  # noqa: ANN401 (@todo tighten types)
+def _tuple_list_item_type(tp: tuple) -> tuple:
     """Return the tuple item type if `tp` (after unwrapping an Optional union) is list[tuple[...]].
 
     Returns:
@@ -115,7 +115,7 @@ def _tuple_list_item_type(tp: Any) -> Any:  # noqa: ANN401 (@todo tighten types)
     return item_type if get_origin(item_type) is tuple else None
 
 
-def _unwrap_optional(tp: Any) -> Any:  # noqa: ANN401 (@todo tighten types)
+def _unwrap_optional(tp: tuple) -> tuple:
     """Return X from `X | None` (or `Optional[X]`), unchanged if `tp` isn't such a two-member union.
 
     Returns:
