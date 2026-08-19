@@ -1,11 +1,10 @@
 name: Update README
 
 on:
-  push:
-    paths:
-      - ".dev/data/raw/*.time"
-
   workflow_dispatch:
+  workflow_run:
+    workflows: ["Publish data"]
+    types: [completed]
 
 permissions:
   contents: write
@@ -13,6 +12,7 @@ permissions:
 jobs:
   update_last_updated:
     runs-on: ubuntu-latest
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
 
     steps:
       - uses: actions/checkout@v5
@@ -20,6 +20,9 @@ jobs:
       - uses: actions/setup-node@v5
         with:
           node-version: 26
+
+      - name: Acquire specs
+        run: make acquire
 
       - name: Update README
         run: ./.dev/bin/update-readme-source-last-updated.js
