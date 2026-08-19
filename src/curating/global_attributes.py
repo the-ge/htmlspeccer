@@ -19,8 +19,10 @@ _HTML_CELL_COUNT = 4
 
 def parse_global_attributes(soup: BeautifulSoup) -> Iterator[GlobalAttributeData]:
     # https://html.spec.whatwg.org/dev/dom.html#global-attributes
-    for name in ('class', 'id', 'role', 'slot'):
-        yield GlobalAttributeData(name=name)
+    yield GlobalAttributeData(name='class', url='https://html.spec.whatwg.org/dev/dom.html#classes')
+    yield GlobalAttributeData(name='id', url='https://html.spec.whatwg.org/dev/dom.html#the-id-attribute')
+    yield GlobalAttributeData(name='role', url='https://w3c.github.io/aria/#introroles')
+    yield GlobalAttributeData(name='slot', url='https://html.spec.whatwg.org/dev/dom.html#attr-slot')
     anchors = soup.find('h4', {'id': 'global-attributes'}).find_next('ul', {'class': 'brief'}).find_all('a')
     for a in anchors:
         yield GlobalAttributeData(
