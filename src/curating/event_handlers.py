@@ -3,7 +3,7 @@ from collections.abc import Iterator
 
 from bs4 import BeautifulSoup
 
-from curating.nodes import concat_text_nodes, get_cell_nodes
+from curating.nodes import concat_text_nodes, get_cell_nodes, prune_nodes
 from schema import EventHandlerData
 
 logger = logging.getLogger(__name__)
@@ -32,5 +32,5 @@ def parse_event_handlers(soup: BeautifulSoup) -> Iterator[EventHandlerData]:
         yield EventHandlerData(
             name=name_cell.get_text().strip(),
             scope={a.get_text().strip(): a['href'].strip() for a in scope_cell.find_all('a')},
-            description=concat_text_nodes(get_cell_nodes(description_cell))
+            description=concat_text_nodes(prune_nodes(get_cell_nodes(description_cell), {'match': {'event handler'}}))
         )
