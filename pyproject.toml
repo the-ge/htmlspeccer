@@ -1,5 +1,5 @@
 [tool.ruff]
-extend = "$DEFAULT_PROJECT_CFG"
+extend = "$PYPROJECT_DEFAULT_CFG"
 cache-dir = ".dev/tmp/ruff"
 
 [tool.ruff.lint]
