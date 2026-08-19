@@ -7,7 +7,7 @@ from config import (
     DIST_YAML_DATA_DIR,
 )
 from publishing.output import write_json_file, write_yaml_file, write_yaml_files
-from schema import SECTION_SOURCES
+from schema import CLASS_FROM_DOMAIN
 from util.dictifying import dictify, dictify_attributes
 from util.serializing import make_serializable, read_ndjson
 from util.transforming import short_path
@@ -34,7 +34,7 @@ class Publisher:
         manifest = json.loads(self.manifest_path.read_text(encoding='utf-8'))
         results = {}
         for section in manifest:
-            cls = SECTION_SOURCES[section][1]
+            cls = CLASS_FROM_DOMAIN[section]
             entries = read_ndjson(self.input_data_dir / f'{section}.ndjson', cls)
             dictifier = dictify_attributes if section == 'attributes' else dictify
             results[section] = make_serializable(dictifier(entries))

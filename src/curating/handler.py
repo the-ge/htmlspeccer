@@ -16,7 +16,7 @@ from curating.event_handlers import parse_event_handlers  # noqa: F401 (dynmical
 from curating.global_attributes import parse_global_attributes  # noqa: F401 (dynmically called; @todo annotate)
 from curating.input_types import parse_input_types  # noqa: F401 (dynmically called; @todo annotate)
 from emending import Emender
-from schema import SECTION_SOURCES
+from schema import CURATION_MAP
 from util.serializing import dataclass_to_dict, dict_to_dataclass, write_ndjson
 
 logger = logging.getLogger(__name__)
@@ -50,7 +50,7 @@ class Curator:
         Returns:
             {section: [entities]} and the manifest
         """
-        results = {section: self._get_parsed_section(section) for section in SECTION_SOURCES}
+        results = {section: self._get_parsed_section(section) for section in CURATION_MAP}
 
         NORMALIZED_DATA_DIR.mkdir(parents=True, exist_ok=True)
         for section, entries in results.items():
@@ -94,12 +94,12 @@ class Curator:
         Raises:
             FileNotFoundError: if section raw source not found
         """
-        page, cls = SECTION_SOURCES[section]
+        page, cls = CURATION_MAP[section]
         soup = self._load_soup(page)
 
         try:
             if soup is None:
-                msg = f'No raw HTML available for page {SECTION_SOURCES[section][0]!r}'
+                msg = f'No raw HTML available for page {CURATION_MAP[section][0]!r}'
                 raise FileNotFoundError(msg)
 
             parser = getattr(sys.modules[__name__], f'parse_{section}')

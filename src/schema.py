@@ -84,8 +84,8 @@ class InputTypeData:
     control_type: str = ''
 
 
-# section name -> (page, entity dataclass); drives Curator.get_all() and Publisher.read_data_domains().
-SECTION_SOURCES: dict[str, tuple[str, type]] = {
+# Curation data domain name -> (page, entity dataclass).
+CURATION_MAP: dict[str, tuple[str, type]] = {
     'aria_roles': ('aria', AriaRoleData),
     'attributes': ('indices', AttributeData),
     'content_categories': ('indices', ContentCategoryData),
@@ -95,3 +95,6 @@ SECTION_SOURCES: dict[str, tuple[str, type]] = {
     'global_attributes': ('dom', GlobalAttributeData),
     'input_types': ('input', InputTypeData),
 }
+
+# Publishing data domain name -> entity dataclass.
+CLASS_FROM_DOMAIN: dict[str, type] = {domain: cls for domain, (_, cls) in CURATION_MAP.items()}
