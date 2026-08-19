@@ -1,4 +1,4 @@
-name: Publish data
+name: publish data
 
 on:
   push:
