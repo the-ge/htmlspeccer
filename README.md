@@ -10,11 +10,11 @@ This repository was originally a fork of [Tawesoft](https://github.com/tawesoft)
 
 | Page | Last Updated |
 | :--- | :--- |
-| [Semantics, structure, and APIs of HTML documents](https://html.spec.whatwg.org/multipage/dom.html) | <!-- DOM_LAST_UPDATED:START -->Mon, 20 Jul 2026 08:01:44 GMT<!-- DOM_LAST_UPDATED:END --> |
-| [WHATWG HTML Living Standard Index Page](https://html.spec.whatwg.org/multipage/indices.html) | <!-- INDICES_LAST_UPDATED:START -->Mon, 20 Jul 2026 08:01:46 GMT<!-- INDICES_LAST_UPDATED:END --> |
-| [The input element](https://html.spec.whatwg.org/multipage/input.html) | <!-- INPUT_LAST_UPDATED:START -->Mon, 20 Jul 2026 08:01:44 GMT<!-- INPUT_LAST_UPDATED:END --> |
-| [The HTML syntax](https://html.spec.whatwg.org/multipage/syntax.html) | <!-- SYNTAX_LAST_UPDATED:START -->Mon, 20 Jul 2026 08:01:45 GMT<!-- SYNTAX_LAST_UPDATED:END --> |
-| [Accessible Rich Internet Applications (WAI-ARIA)](https://w3c.github.io/aria/) | <!-- ARIA_LAST_UPDATED:START -->Wed, 05 Aug 2026 10:09:42 GMT<!-- ARIA_LAST_UPDATED:END --> |
+| [Semantics, structure, and APIs of HTML documents](https://html.spec.whatwg.org/multipage/dom.html) | <!-- DOM_LAST_UPDATED:START -->Tue, 18 Aug 2026 12:45:19 GMT<!-- DOM_LAST_UPDATED:END --> |
+| [WHATWG HTML Living Standard Index Page](https://html.spec.whatwg.org/multipage/indices.html) | <!-- INDICES_LAST_UPDATED:START -->Tue, 18 Aug 2026 12:45:21 GMT<!-- INDICES_LAST_UPDATED:END --> |
+| [The input element](https://html.spec.whatwg.org/multipage/input.html) | <!-- INPUT_LAST_UPDATED:START -->Tue, 18 Aug 2026 12:45:19 GMT<!-- INPUT_LAST_UPDATED:END --> |
+| [The HTML syntax](https://html.spec.whatwg.org/multipage/syntax.html) | <!-- SYNTAX_LAST_UPDATED:START -->Tue, 18 Aug 2026 12:45:20 GMT<!-- SYNTAX_LAST_UPDATED:END --> |
+| [Accessible Rich Internet Applications (WAI-ARIA)](https://w3c.github.io/aria/) | <!-- ARIA_LAST_UPDATED:START -->Mon, 10 Aug 2026 09:44:53 GMT<!-- ARIA_LAST_UPDATED:END --> |
 
 > [!CAUTION]
 > **I do not intend to keep any backwards compatibility whatsoever with the old [**html5spec** repository](https://github.com/tawesoft/html5spec/).** If you are relying on the old repository conventions, your best bet would be to fork it yourself. Sorry about that ¯\\\_\_(ツ)\_\_/¯.
@@ -27,7 +27,7 @@ If the following issues are not crossed of, they are not solved by the updates s
 
 | Location | Description | Last checked at |
 | :--- | :--- | :--- |
-| [**`controls`**](https://html.spec.whatwg.org/multipage/indices.html#attributes-3:attr-media-controls) table row | the "Element(s)" cell is missing a `;` between the `video` and `img` `<code>` elements. | <!-- INDICES_LAST_UPDATED:START -->Mon, 20 Jul 2026 08:01:46 GMT<!-- INDICES_LAST_UPDATED:END --> |
+| [**`controls`**](https://html.spec.whatwg.org/multipage/indices.html#attributes-3:attr-media-controls) table row | the "Element(s)" cell is missing a `;` between the `video` and `img` `<code>` elements. | <!-- INDICES_LAST_UPDATED:START -->Tue, 18 Aug 2026 12:45:21 GMT<!-- INDICES_LAST_UPDATED:END --> |
 
 ## Original README (minus the "Alternatives" section)
 
