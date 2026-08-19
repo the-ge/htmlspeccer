@@ -4,16 +4,14 @@ import types
 from collections.abc import Iterable
 from itertools import starmap
 from pathlib import Path
-from typing import Any, TypeAlias, TypeVar, Union, get_args, get_origin
+from typing import Any, Union, get_args, get_origin
 
 from config import DUMP_NDJSON_KWARGS
 
-R = TypeVar('R')
-T = TypeVar('T')
-JSONType: TypeAlias = bool | int | float | str | list['JSONType'] | dict[str, 'JSONType'] | None
+type JSONType = bool | int | float | str | list[JSONType] | dict[str, JSONType] | None
 
 
-def dataclass_to_dict(obj: T) -> dict:
+def dataclass_to_dict[T](obj: T) -> dict:
     """Convert a dataclass instance to a JSON-serializable dict (set fields become sorted lists).
 
     Returns:
@@ -22,7 +20,7 @@ def dataclass_to_dict(obj: T) -> dict:
     return make_serializable(dataclasses.asdict(obj))
 
 
-def dict_to_dataclass(cls: type[T], d: dict) -> T:
+def dict_to_dataclass[T](cls: type[T], d: dict) -> T:
     """Reconstruct a `cls` instance from a plain dict, restoring set- and tuple-list-typed fields.
 
     Set-typed fields (default_factory produces a set) are restored from their JSON list form. Fields
@@ -56,7 +54,7 @@ def make_serializable(obj: object) -> JSONType:
     return obj
 
 
-def read_ndjson(path: Path, cls: type[T]) -> list[T]:
+def read_ndjson[T](path: Path, cls: type[T]) -> list[T]:
     """Read an NDJSON file back into a list of `cls` instances.
 
     Returns:
