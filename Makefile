@@ -38,7 +38,7 @@ clear:
 	rm --force --recursive $(DATA_DIRS_RM)
 
 install:
-	python3 -m pip install -r requirements.txt
+	python3 -m pip install -e .
 
 # --- Phony entry points ---
 # These always run their recipe, giving a final "step complete" confirmation

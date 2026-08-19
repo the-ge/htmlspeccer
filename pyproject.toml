@@ -1,3 +1,16 @@
+[project]
+name = "htmlspeccer"
+version = "0.7.7"
+description = "Convertor of the WHATWG HTML Living Standard specification to machine-readable data"
+requires-python = ">=3.9"
+dependencies = [
+    "beautifulsoup4>=4.12.0",
+    "faust-cchardet>=2.1.20",
+    "lxml>=4.9.0",
+    "python-slugify>=8.0.4",
+    "pyyaml>=6.0",
+]
+
 [tool.ruff]
 extend = "$PYPROJECT_DEFAULT_CFG"
 cache-dir = ".dev/tmp/ruff"
@@ -14,3 +27,6 @@ ignore = [
 	"invalid-module-name",        # N999
 	"implicit-namespace-package", # INP001
 ]
+
+[tool.distutils.egg_info]
+egg_base = ".dev/tmp"
