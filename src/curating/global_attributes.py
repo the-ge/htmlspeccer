@@ -25,7 +25,7 @@ _SUPER_GLOBALS = {
 
 
 def parse_global_attributes(soup: BeautifulSoup) -> Iterator[GlobalAttributeData]:
-    # https://html.spec.whatwg.org/dev/dom.html#global-attributes
+    # https://html.spec.whatwg.org/multipage/dom.html#global-attributes
     for name, url in _SUPER_GLOBALS.items():
         yield GlobalAttributeData(name=name, url=url)
     anchors = soup.find('h4', {'id': 'global-attributes'}).find_next('ul', {'class': 'brief'}).find_all('a')
