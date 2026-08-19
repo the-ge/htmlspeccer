@@ -10,9 +10,9 @@ logger = logging.getLogger(__name__)
 @dataclass(frozen=True, slots=True)
 class AriaRoleData:
     name: str
+    is_abstract: bool = False
     url: str = ''
     description: str = ''
-    is_abstract: bool = False
     parents: dict[str, str] = field(default_factory=dict)
     children: dict[str, str] = field(default_factory=dict)
     states: dict[str, dict[str, str]] = field(default_factory=dict)

@@ -45,9 +45,9 @@ def parse_aria_roles(soup: BeautifulSoup) -> Iterator[AriaRoleData]:
 
             yield AriaRoleData(
                 name=name,
+                is_abstract=is_abstract,
                 url=url,
                 description=description,
-                is_abstract=is_abstract,
                 parents=_parse_aria_role_relations(table, 'role-parent'),
                 children=_parse_aria_role_relations(table, 'role-children'),
                 states=states,
