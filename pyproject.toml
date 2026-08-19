@@ -1,6 +1,6 @@
 [project]
 name = "htmlspeccer"
-version = "0.7.7"
+version = "0.7.8"
 description = "Convertor of the WHATWG HTML Living Standard specification to machine-readable data"
 requires-python = ">=3.12"
 dependencies = [
