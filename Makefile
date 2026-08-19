@@ -6,6 +6,7 @@ RAW_DATA_DIR           := .dev/data/raw/
 NORMALIZED_DATA_DIR    := .dev/data/normalized/
 CURATED_DATA_DIR       := .dev/data/curated/
 CURATED_DATA_CACHE_DIR := .dev/data/cache/
+TMP_DIR                := .dev/tmp/
 # Mirrors config.py: env var set -> <root>/data/ (root is a foreign checkout, e.g. htmlspec);
 # unset -> local .dev/data/dist/.
 DIST_DATA_DIR          := $(if $(DIST_DATA_DIR),$(DIST_DATA_DIR)/,.dev/data/dist/)
@@ -37,7 +38,7 @@ all: acquire curate publish
 clear:
 	rm --force --recursive $(DATA_DIRS_RM)
 
-install:
+install: | $(TMP_DIR)
 	python3 -m pip install -e .
 
 # --- Phony entry points ---
@@ -64,6 +65,9 @@ $(CURATED_DATA_DIR)manifest.json: $(RAW_DATA_DIR)manifest.json
 	@python3 src/curate.py
 
 $(DATA_DIRS): %/:
+	@mkdir -p $@
+
+$(TMP_DIR):
 	@mkdir -p $@
 
 $(RAW_DATA_DIR)aria.html: | $(RAW_DATA_DIR)
