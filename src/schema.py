@@ -85,7 +85,6 @@ class InputTypeData:
 
 
 # section name -> (page, entity dataclass); drives Curator.get_all() and Publisher.read_data_domains().
-# Keys match config.PAGE_SECTIONS values.
 SECTION_SOURCES: dict[str, tuple[str, type]] = {
     'aria_roles': ('aria', AriaRoleData),
     'attributes': ('indices', AttributeData),

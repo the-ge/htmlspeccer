@@ -21,18 +21,6 @@ DIST_DATA_DIR = DIST_ROOT_DIR / _dist_subfolder  # published json/yaml/manifest;
 DIST_JSON_DATA_DIR = DIST_DATA_DIR / 'json'  # final JSON output
 DIST_YAML_DATA_DIR = DIST_DATA_DIR / 'yaml'  # final YAML output
 
-# ---- Curating (stage 2: HTML -> CURATED_DATA_DIR/*.ndjson) ----
-# Maps each raw source page to the section names extracted from it. Keys match RAW_DATA_DIR/{page}.html;
-# each (page, section) pair has exactly one NDJSON file at CURATED_DATA_DIR/{section}.ndjson
-# and one entry in the 'input' half of CURATED_DATA_MANIFEST.
-PAGE_SECTIONS = {
-    'indices': ('elements', 'content_categories', 'attributes', 'event_handlers'),
-    'dom': ('global_attributes',),  # NOTE! to create a tuple with one element, it needs the trailing comma.
-    'input': ('input_types',),
-    'syntax': ('element_kinds',),
-    'aria': ('aria_roles',),
-}
-
 # ---- Manifest ----
 RAW_DATA_MANIFEST = RAW_DATA_DIR / 'manifest.json'  # raw per-source fetch timestamps
 CURATED_DATA_MANIFEST = CURATED_DATA_DIR / 'manifest.json'  # {section: {input_row_count, output_row_count, delta?}}
