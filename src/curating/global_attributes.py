@@ -18,14 +18,15 @@ _SUPER_GLOBALS = {
     'slot': 'https://html.spec.whatwg.org/dev/dom.html#attr-slot',
 }
 
-# ---- Per-section extract-and-parse functions ----
-# Each function takes the soup for its source page and yields typed entities directly. Extraction
-# (cell/anchor text out of the soup, stripped of surrounding whitespace only) and interpretation
-# (splitting, typing, spec-specific logic) are no longer separate stages.
-
 
 def parse_global_attributes(soup: BeautifulSoup) -> Iterator[GlobalAttributeData]:
-    # https://html.spec.whatwg.org/multipage/dom.html#global-attributes
+    """Takes the soup for its data source page and yields typed entities directly.
+
+    Data source page: https://html.spec.whatwg.org/multipage/dom.html#global-attributes.
+
+    Returns:
+        Typed entities
+    """
     for name, url in _SUPER_GLOBALS.items():
         yield GlobalAttributeData(name=name, url=url)
     anchors = soup.find('h4', {'id': 'global-attributes'}).find_next('ul', {'class': 'brief'}).find_all('a')

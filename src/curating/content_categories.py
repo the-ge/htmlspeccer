@@ -24,7 +24,13 @@ _HTML_CELL_COUNT = 3
 
 
 def parse_content_categories(soup: BeautifulSoup) -> Iterator[ContentCategoryData]:
-    # https://html.spec.whatwg.org/multipage/indices.html#element-content-categories
+    """Takes the soup for its data source page and yields typed entities directly.
+
+    Data source page: https://html.spec.whatwg.org/multipage/indices.html#element-content-categories.
+
+    Returns:
+        Typed entities
+    """
     rows = soup.find('h3', {'id': 'element-content-categories'}).find_next('tbody').find_all('tr')
     count = _HTML_CELL_COUNT
     slug = None

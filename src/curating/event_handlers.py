@@ -13,14 +13,14 @@ logger = logging.getLogger(__name__)
 _HTML_CELL_COUNT = 4
 
 
-# ---- Per-section extract-and-parse functions ----
-# Each function takes the soup for its source page and yields typed entities directly. Extraction
-# (cell/anchor text out of the soup, stripped of surrounding whitespace only) and interpretation
-# (splitting, typing, spec-specific logic) are no longer separate stages.
-
-
 def parse_event_handlers(soup: BeautifulSoup) -> Iterator[EventHandlerData]:
-    # https://html.spec.whatwg.org/multipage/indices.html#ix-event-handlers
+    """Takes the soup for its data source page and yields typed entities directly.
+
+    Data source page: https://html.spec.whatwg.org/multipage/indices.html#ix-event-handlers.
+
+    Returns:
+        Typed entities
+    """
     rows = soup.find('table', {'id': 'ix-event-handlers'}).find_next('tbody').find_all('tr')
     count = _HTML_CELL_COUNT
     for row in rows:
