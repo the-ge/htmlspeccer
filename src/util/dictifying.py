@@ -96,7 +96,7 @@ def segregate_by_datatype(entries: list[Any]) -> dict[str, dict[str, list[Any]]]
     each datatype's output. Each datatype's target class and field specifiers are read directly from
     schema.DATA_MAP[domain]['spec'|'docs']; a datatype absent there is skipped.
 
-    Each specifier in a datatype's field_specs is either a bare field name (copied from the entry,
+    Each specifier in a datatype's fieldset is either a bare field name (copied from the entry,
     coerced to the target field's declared type: a dict source narrowed to a set keeps its keys
     only, otherwise copied as-is) or a dotted `field.subkey` (extracts `subkey` from each value of
     a `dict[str, dict]`-typed source field into a flat `dict[str, subkey-value]`).
@@ -113,11 +113,11 @@ def segregate_by_datatype(entries: list[Any]) -> dict[str, dict[str, list[Any]]]
 
     result: dict[str, dict[str, list[Any]]] = {}
     for datatype in ('spec', 'docs'):
-        spec = DATA_MAP[domain].get(datatype)
-        if spec is None:
+        datatype_map = DATA_MAP[domain].get(datatype)
+        if datatype_map is None:
             continue
-        target_cls, field_specs = spec
-        result[datatype] = {domain: [_segregate_item_by_datatype(entry, target_cls, field_specs) for entry in entries]}
+        target_cls, fieldset = datatype_map
+        result[datatype] = {domain: [_segregate_item_by_datatype(entry, target_cls, fieldset) for entry in entries]}
 
     return result
 
