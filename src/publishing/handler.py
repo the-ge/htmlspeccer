@@ -30,13 +30,13 @@ class Publisher:
         DIST_JSON_DATA_DIR.mkdir(parents=True, exist_ok=True)
         DIST_YAML_DATA_DIR.mkdir(parents=True, exist_ok=True)
 
-        results, segregated_results = self.read_data_domains()
+        flat_results, results = self.read_data_domains()
         counts = {}
 
-        for name, data in results.items():
+        for name, data in flat_results.items():
             counts[name] = write_domain(name, data, DIST_JSON_DATA_DIR, DIST_YAML_DATA_DIR)
 
-        for domain, by_datatype in segregated_results.items():
+        for domain, by_datatype in results.items():
             for datatype, data in by_datatype.items():
                 json_dir = DIST_JSON_DATA_DIR / datatype
                 yaml_dir = DIST_YAML_DATA_DIR / datatype
@@ -52,24 +52,24 @@ class Publisher:
         Uses the data domain's manifest entry as the index. Entities are grouped by name (and by scope,
         for attributes) into the published shape. A data domain registered in schema.DATA_MAP with a
         'spec' and/or 'docs' entry is further segregated by property type into those datatypes rather
-        than added to the flat `results` dict.
+        than added to the `flat_results` dict.
 
         Returns:
-            (results, segregated_results): `results` is a JSON-serializable dict of unsegregated data domains;
-            `segregated_results` is {domain: {datatype: JSON-serializable dict}} for segregated data domains
+            (flat_results, results): `flat_results` is a JSON-serializable dict of unsegregated data domains;
+            `results` is {domain: {datatype: JSON-serializable dict}} for segregated data domains
             (sets become sorted lists in both)
         """
         manifest = json.loads(self.manifest_path.read_text(encoding='utf-8'))
+        flat_results = {}
         results = {}
-        segregated_results = {}
         for domain in manifest:
             data_map_entry = DATA_MAP.get(domain)
             cls = data_map_entry['source_cls'] if data_map_entry is not None else CLASS_FROM_DOMAIN[domain]
             entries = read_ndjson(self.input_data_dir / f'{domain}.ndjson', cls)
 
-            if data_map_entry is not None and ('spec' in data_map_entry or 'docs' in data_map_entry):
-                serialize_datatyped_domain(domain, entries)
-                continue
+            if data_map_entry is None:
+                flat_results[domain] = serialize_flat_domain(domain, entries)
+            else:
+                results[domain] = serialize_datatyped_domain(domain, entries)
 
-            results[domain] = serialize_flat_domain(domain, entries)
-        return results, segregated_results
+        return flat_results, results
