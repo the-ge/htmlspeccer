@@ -7,6 +7,8 @@ from pathlib import Path
 from typing import Any, Union, get_args, get_origin
 
 from config import DUMP_NDJSON_KWARGS
+from schema import InputData
+from util.dictifying import dictify, dictify_attributes, segregate_by_datatype
 
 type JSONType = bool | int | float | str | list[JSONType] | dict[str, JSONType] | None
 
@@ -52,6 +54,18 @@ def make_serializable(obj: object) -> JSONType:
     if isinstance(obj, dict):
         return {k: make_serializable(v) for k, v in obj.items()}
     return obj
+
+
+def serialize_datatyped_domain(domain: str, entries: list[InputData]) -> set(JSONType):
+    return {
+        datatype: serialize_flat_domain(domain, domains[domain])
+        for datatype, domains in segregate_by_datatype(entries).items()
+    }
+
+
+def serialize_flat_domain(domain: str, entries: list[InputData]) -> JSONType:
+    dictifier = dictify_attributes if domain == 'attributes' else dictify
+    return make_serializable(dictifier(entries))
 
 
 def read_ndjson[T](path: Path, cls: type[T]) -> list[T]:

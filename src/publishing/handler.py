@@ -8,8 +8,7 @@ from config import (
 )
 from publishing.output import write_domain
 from schema import CLASS_FROM_DOMAIN, DATA_MAP
-from util.dictifying import dictify, dictify_attributes, segregate_by_datatype
-from util.serializing import make_serializable, read_ndjson
+from util.serializing import read_ndjson, serialize_datatyped_domain, serialize_flat_domain
 
 logger = logging.getLogger(__name__)
 
@@ -69,13 +68,8 @@ class Publisher:
             entries = read_ndjson(self.input_data_dir / f'{domain}.ndjson', cls)
 
             if data_map_entry is not None and ('spec' in data_map_entry or 'docs' in data_map_entry):
-                segregated_domains = segregate_by_datatype(entries)
-                segregated_results[domain] = {
-                    datatype: make_serializable(dictify(domains[domain]))
-                    for datatype, domains in segregated_domains.items()
-                }
+                serialize_datatyped_domain(domain, entries)
                 continue
 
-            dictifier = dictify_attributes if domain == 'attributes' else dictify
-            results[domain] = make_serializable(dictifier(entries))
+            results[domain] = serialize_flat_domain(domain, entries)
         return results, segregated_results
