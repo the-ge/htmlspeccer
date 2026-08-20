@@ -7,7 +7,7 @@ from config import (
     DIST_YAML_DATA_DIR,
 )
 from publishing.output import write_domain
-from schema import CLASS_FROM_DOMAIN
+from schema import CLASS_FROM_DOMAIN, DATA_MAP
 from util.dictifying import dictify, dictify_attributes, segregate_by_datatype
 from util.serializing import make_serializable, read_ndjson
 
@@ -25,8 +25,9 @@ class Publisher:
         """Load each data domain's entities from CURATED_DATA_DIR, group into the published shape.
 
         Uses the data domain's manifest entry as the index. Entities are grouped by name (and by scope,
-        for attributes) into the published shape. 'aria_roles' is further segregated by property type
-        into 'spec'/'docs' datatypes rather than added to the flat `results` dict.
+        for attributes) into the published shape. A data domain registered in schema.DATA_MAP with a
+        'spec' and/or 'docs' entry is further segregated by property type into those datatypes rather
+        than added to the flat `results` dict.
 
         Returns:
             (results, segregated_results): `results` is a JSON-serializable dict of unsegregated data domains;
@@ -37,18 +38,12 @@ class Publisher:
         results = {}
         segregated_results = {}
         for domain in manifest:
-            cls = CLASS_FROM_DOMAIN[domain]
+            data_map_entry = DATA_MAP.get(domain)
+            cls = data_map_entry['source_cls'] if data_map_entry is not None else CLASS_FROM_DOMAIN[domain]
             entries = read_ndjson(self.input_data_dir / f'{domain}.ndjson', cls)
 
-            if domain == 'aria_roles':
-                by_datatype = {
-                    'spec': {
-                        'is_abstract', 'parents', 'children',
-                        'states.deprecated_since', 'properties.deprecated_since',
-                    },
-                    'docs': {'url', 'description', 'states.url', 'properties.url'},
-                }
-                segregated_domains = segregate_by_datatype(entries, by_datatype)
+            if data_map_entry is not None and ('spec' in data_map_entry or 'docs' in data_map_entry):
+                segregated_domains = segregate_by_datatype(entries)
                 segregated_results[domain] = {
                     datatype: make_serializable(dictify(domains[domain]))
                     for datatype, domains in segregated_domains.items()

@@ -103,7 +103,7 @@ class InputTypeData:
     control_type: str = ''
 
 
-# Curation data domain name -> (page, entity dataclass).
+# Data domain name -> (page, entity dataclass).
 CURATION_MAP: dict[str, tuple[str, type]] = {
     'aria_roles': ('aria', AriaRoleData),
     'attributes': ('indices', AttributeData),
@@ -116,7 +116,25 @@ CURATION_MAP: dict[str, tuple[str, type]] = {
 }
 
 # Publishing data domain name -> entity dataclass.
-CLASS_FROM_DOMAIN: dict[str, type] = {domain: cls for domain, (_, cls) in CURATION_MAP.items()} | {
-    'aria_role_spec': AriaRoleSpec,
-    'aria_role_docs': AriaRoleDocs,
+CLASS_FROM_DOMAIN: dict[str, type] = {domain: cls for domain, (_, cls) in CURATION_MAP.items()}
+
+# Data domain name -> (page, entity dataclass, datatypeclass to fields dict).
+DATA_MAP: dict[str, dict[str, str | type | tuple[type, set[str]]]] = {
+    'aria_roles': {
+        'page': 'aria',
+        'source_cls': AriaRoleData,
+        'spec': (AriaRoleSpec, {
+            'is_abstract',
+            'parents',
+            'children',
+            'states.deprecated_since',
+            'properties.deprecated_since',
+        }),
+        'docs': (AriaRoleDocs, {
+            'url',
+            'description',
+            'states.url',
+            'properties.url',
+        }),
+    },
 }
