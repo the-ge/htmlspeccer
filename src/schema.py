@@ -3,6 +3,9 @@ from dataclasses import dataclass, field
 
 logger = logging.getLogger(__name__)
 
+type InputData = AriaRoleData | AttributeData | ContentCategoryData | ElementData | ElementKindData | EventHandlerData | GlobalAttributeData | InputTypeData
+type OutputData = AriaRoleDocs | AriaRoleSpec
+
 
 # ---- Typed entities (curate-stage output shape) ----
 
