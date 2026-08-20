@@ -21,6 +21,32 @@ class Publisher:
         self.input_data_dir = input_data_dir
         self.manifest_path = manifest_path
 
+    def publish(self) -> dict[str, int]:
+        """Write dist JSON+YAML for each domain, segregated or not.
+
+        Returns:
+            Per-domain item counts (manifest entries); segregated data domains get two entries each,
+            keyed f'{domain}_{datatype}' (e.g. 'aria_roles_spec', 'aria_roles_docs')
+        """
+        DIST_JSON_DATA_DIR.mkdir(parents=True, exist_ok=True)
+        DIST_YAML_DATA_DIR.mkdir(parents=True, exist_ok=True)
+
+        results, segregated_results = self.read_data_domains()
+        counts = {}
+
+        for name, data in results.items():
+            counts[name] = write_domain(name, data, DIST_JSON_DATA_DIR, DIST_YAML_DATA_DIR)
+
+        for domain, by_datatype in segregated_results.items():
+            for datatype, data in by_datatype.items():
+                json_dir = DIST_JSON_DATA_DIR / datatype
+                yaml_dir = DIST_YAML_DATA_DIR / datatype
+                json_dir.mkdir(parents=True, exist_ok=True)
+                yaml_dir.mkdir(parents=True, exist_ok=True)
+                counts[f'{domain}_{datatype}'] = write_domain(domain, data, json_dir, yaml_dir)
+
+        return counts
+
     def read_data_domains(self) -> tuple[dict[str, dict], dict[str, dict[str, dict]]]:
         """Load each data domain's entities from CURATED_DATA_DIR, group into the published shape.
 
@@ -53,29 +79,3 @@ class Publisher:
             dictifier = dictify_attributes if domain == 'attributes' else dictify
             results[domain] = make_serializable(dictifier(entries))
         return results, segregated_results
-
-    def publish(self) -> dict[str, int]:
-        """Write dist JSON+YAML for each domain, segregated or not.
-
-        Returns:
-            Per-domain item counts (manifest entries); segregated data domains get two entries each,
-            keyed f'{domain}_{datatype}' (e.g. 'aria_roles_spec', 'aria_roles_docs')
-        """
-        DIST_JSON_DATA_DIR.mkdir(parents=True, exist_ok=True)
-        DIST_YAML_DATA_DIR.mkdir(parents=True, exist_ok=True)
-
-        results, segregated_results = self.read_data_domains()
-        counts = {}
-
-        for name, data in results.items():
-            counts[name] = write_domain(name, data, DIST_JSON_DATA_DIR, DIST_YAML_DATA_DIR)
-
-        for domain, by_datatype in segregated_results.items():
-            for datatype, data in by_datatype.items():
-                json_dir = DIST_JSON_DATA_DIR / datatype
-                yaml_dir = DIST_YAML_DATA_DIR / datatype
-                json_dir.mkdir(parents=True, exist_ok=True)
-                yaml_dir.mkdir(parents=True, exist_ok=True)
-                counts[f'{domain}_{datatype}'] = write_domain(domain, data, json_dir, yaml_dir)
-
-        return counts
