@@ -14,7 +14,7 @@ This repository was originally a fork of [Tawesoft](https://github.com/tawesoft)
 | [WHATWG HTML Living Standard Index Page](https://html.spec.whatwg.org/multipage/indices.html) | <!-- INDICES_LAST_UPDATED:START -->Thu, 20 Aug 2026 09:26:41 GMT<!-- INDICES_LAST_UPDATED:END --> |
 | [The input element](https://html.spec.whatwg.org/multipage/input.html) | <!-- INPUT_LAST_UPDATED:START -->Thu, 20 Aug 2026 09:26:39 GMT<!-- INPUT_LAST_UPDATED:END --> |
 | [The HTML syntax](https://html.spec.whatwg.org/multipage/syntax.html) | <!-- SYNTAX_LAST_UPDATED:START -->Thu, 20 Aug 2026 09:26:40 GMT<!-- SYNTAX_LAST_UPDATED:END --> |
-| [Accessible Rich Internet Applications (WAI-ARIA)](https://w3c.github.io/aria/) | <!-- ARIA_LAST_UPDATED:START -->Mon, 10 Aug 2026 09:44:53 GMT<!-- ARIA_LAST_UPDATED:END --> |
+| [Accessible Rich Internet Applications (WAI-ARIA)](https://w3c.github.io/aria/) | <!-- ARIA_LAST_UPDATED:START -->Thu, 20 Aug 2026 12:20:44 GMT<!-- ARIA_LAST_UPDATED:END --> |
 
 > [!CAUTION]
 > **I do not intend to keep any backwards compatibility whatsoever with the old [**html5spec** repository](https://github.com/tawesoft/html5spec/).** If you are relying on the old repository conventions, your best bet would be to fork it yourself. Sorry about that ¯\\\_\_(ツ)\_\_/¯.
