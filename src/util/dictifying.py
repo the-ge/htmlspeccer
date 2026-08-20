@@ -6,20 +6,10 @@ from typing import Any, get_origin
 from schema import (
     CURATION_MAP,
     DATA_MAP,
-    AriaRoleData,
-    AriaRoleDocs,
-    AriaRoleSpec,
     AttributeData,
-    ContentCategoryData,
-    ElementData,
-    ElementKindData,
-    EventHandlerData,
-    GlobalAttributeData,
-    InputTypeData,
+    InputData,
+    OutputData,
 )
-
-type InputData = AriaRoleData | AttributeData | ContentCategoryData | ElementData | ElementKindData | EventHandlerData | GlobalAttributeData | InputTypeData
-type OutputData = AriaRoleDocs | AriaRoleSpec
 
 logger = logging.getLogger(__name__)
 
