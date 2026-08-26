@@ -10,10 +10,10 @@ This repository was originally a fork of [Tawesoft](https://github.com/tawesoft)
 
 | Page | Last Updated |
 | :--- | :--- |
-| [Semantics, structure, and APIs of HTML documents](https://html.spec.whatwg.org/multipage/dom.html) | <!-- DOM_LAST_UPDATED:START -->Wed, 26 Aug 2026 14:40:22 GMT<!-- DOM_LAST_UPDATED:END --> |
-| [WHATWG HTML Living Standard Index Page](https://html.spec.whatwg.org/multipage/indices.html) | <!-- INDICES_LAST_UPDATED:START -->Wed, 26 Aug 2026 14:40:24 GMT<!-- INDICES_LAST_UPDATED:END --> |
-| [The input element](https://html.spec.whatwg.org/multipage/input.html) | <!-- INPUT_LAST_UPDATED:START -->Wed, 26 Aug 2026 14:40:22 GMT<!-- INPUT_LAST_UPDATED:END --> |
-| [The HTML syntax](https://html.spec.whatwg.org/multipage/syntax.html) | <!-- SYNTAX_LAST_UPDATED:START -->Wed, 26 Aug 2026 14:40:23 GMT<!-- SYNTAX_LAST_UPDATED:END --> |
+| [Semantics, structure, and APIs of HTML documents](https://html.spec.whatwg.org/multipage/dom.html) | <!-- DOM_LAST_UPDATED:START -->Wed, 26 Aug 2026 18:52:06 GMT<!-- DOM_LAST_UPDATED:END --> |
+| [WHATWG HTML Living Standard Index Page](https://html.spec.whatwg.org/multipage/indices.html) | <!-- INDICES_LAST_UPDATED:START -->Wed, 26 Aug 2026 18:52:07 GMT<!-- INDICES_LAST_UPDATED:END --> |
+| [The input element](https://html.spec.whatwg.org/multipage/input.html) | <!-- INPUT_LAST_UPDATED:START -->Wed, 26 Aug 2026 18:52:06 GMT<!-- INPUT_LAST_UPDATED:END --> |
+| [The HTML syntax](https://html.spec.whatwg.org/multipage/syntax.html) | <!-- SYNTAX_LAST_UPDATED:START -->Wed, 26 Aug 2026 18:52:07 GMT<!-- SYNTAX_LAST_UPDATED:END --> |
 | [Accessible Rich Internet Applications (WAI-ARIA)](https://w3c.github.io/aria/) | <!-- ARIA_LAST_UPDATED:START -->Tue, 25 Aug 2026 08:47:30 GMT<!-- ARIA_LAST_UPDATED:END --> |
 
 > [!CAUTION]
@@ -27,7 +27,7 @@ If the following issues are not crossed of, they are not solved by the updates s
 
 | Location | Description | Last checked at |
 | :--- | :--- | :--- |
-| [**`controls`**](https://html.spec.whatwg.org/multipage/indices.html#attributes-3:attr-media-controls) table row | the "Element(s)" cell is missing a `;` between the `video` and `img` `<code>` elements. | <!-- INDICES_LAST_UPDATED:START -->Wed, 26 Aug 2026 14:40:24 GMT<!-- INDICES_LAST_UPDATED:END --> |
+| [**`controls`**](https://html.spec.whatwg.org/multipage/indices.html#attributes-3:attr-media-controls) table row | the "Element(s)" cell is missing a `;` between the `video` and `img` `<code>` elements. | <!-- INDICES_LAST_UPDATED:START -->Wed, 26 Aug 2026 18:52:07 GMT<!-- INDICES_LAST_UPDATED:END --> |
 
 ## Original README (minus the "Alternatives" section)
 
